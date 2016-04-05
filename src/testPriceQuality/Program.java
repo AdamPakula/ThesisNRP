@@ -51,7 +51,7 @@ public class Program {
 		
 		algorithm = new NSGAIIBuilder<IntegerSolution>(problem, crossover, mutation)
 				.setSelectionOperator(selection)
-				.setMaxEvaluations(250)
+				.setMaxEvaluations(500)
 				.setPopulationSize(100)
 				.build();
 		
