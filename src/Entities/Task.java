@@ -23,7 +23,12 @@ public class Task {
 	/**
 	 * The tasks which needed to be executed before
 	 */
-	private List<Task> previous;
+	private List<Task> previousTasks;
+	
+	/**
+	 * The skills required to do the task
+	 */
+	private List<Skill> requiredSkills;
 
 	/**
 	 * @return the name
@@ -70,25 +75,40 @@ public class Task {
 	/**
 	 * @return the previous
 	 */
-	public List<Task> getPrevious() {
-		return previous;
+	public List<Task> getPreviousTasks() {
+		return previousTasks;
 	}
 
 	/**
 	 * @param previous the previous to set
 	 */
-	public void setPrevious(List<Task> previous) {
-		this.previous = previous;
+	public void setPreviousTasks(List<Task> previous) {
+		this.previousTasks = previous;
 	}
 	
+	/**
+	 * @return the requiredSkills
+	 */
+	public List<Skill> getRequiredSkills() {
+		return requiredSkills;
+	}
+
+	/**
+	 * @param requiredSkills the requiredSkills to set
+	 */
+	public void setRequiredSkills(List<Skill> requiredSkills) {
+		this.requiredSkills = requiredSkills;
+	}
+
 	public Task(String name, int priority, Double duration) {
-		this(name, priority, duration, null);
+		this(name, priority, duration, null, null);
 	}
 	
-	public Task(String name, int priority, Double duration, List<Task> previous) {
+	public Task(String name, int priority, Double duration, List<Task> previousTasks, List<Skill> requiredSkills) {
 		this.name = name;
 		this.priority = priority;
 		this.duration = duration;
-		this.previous = previous;
+		this.previousTasks = previousTasks;
+		this.requiredSkills = requiredSkills;
 	}
 }
