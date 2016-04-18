@@ -14,8 +14,14 @@ public enum Priority {
 	FOUR(4, 20),
 	FIVE(5, 10);
 	
+	/**
+	 * The priority level
+	 */
 	private int level;
 	
+	/**
+	 * The score of the priority
+	 */
 	private int score;
 	
 	/**
@@ -32,6 +38,11 @@ public enum Priority {
 		return score;
 	}
 
+	/**
+	 * Constructor
+	 * @param level the level of the priority
+	 * @param score the score of the priority
+	 */
 	private Priority(int level, int score) {
 		this.level = level;
 		this.score = score;
