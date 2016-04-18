@@ -19,14 +19,12 @@ import entities.Task;
  */
 public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextReleaseProblem> {
 
-	protected PlanningSolution(NextReleaseProblem problem) {
-		super(problem);
-		overallConstraintViolationDegree = 0.0 ;
-	    numberOfViolatedConstraints = 0 ;
-
-	    initializePlannedTaskVariables();
-	    initializeObjectiveValues();
-	}
+	/* --- Attributes --- */
+	
+	/**
+	 * Generated Id
+	 */
+	private static final long serialVersionUID = 615615442782301271L;
 	
 	/**
 	 * Tasks planned for the solution
@@ -37,6 +35,9 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 	 * Tasks unplanned for the solution
 	 */
 	private ArrayList<Task> undoneTasks;
+	
+	
+	/* --- Getters and Setters --- */
 
 	/**
 	 * @return the undoneTasks
@@ -58,30 +59,17 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 	public void setPlannedTasks(List<PlannedTask> plannedTasks) {
 		this.plannedTasks = plannedTasks;
 	}
+	
+	
+	/* --- Constructors --- */
+	
+	protected PlanningSolution(NextReleaseProblem problem) {
+		super(problem);
+		overallConstraintViolationDegree = 0.0 ;
+	    numberOfViolatedConstraints = 0 ;
 
-	/**
-	 * Initialize the variables
-	 */
-	private void initializePlannedTaskVariables() {
-		int numberOfTasks = problem.getTasks().size();
-		int numberOfEmployees = problem.getEmployees().size();
-		
-		int nbTasksToDo = randomGenerator.nextInt(0, numberOfTasks);
-		
-		undoneTasks = new ArrayList<Task>(problem.getTasks());
-		
-		plannedTasks = new ArrayList<PlannedTask>(nbTasksToDo);
-
-		int hightEmployeeGeneratorLimit = numberOfEmployees--;
-		
-		int numTaskToDo;
-		for (int i = 0 ; i < nbTasksToDo ; i++) {
-			numTaskToDo = randomGenerator.nextInt(0, undoneTasks.size());
-			plannedTasks.add(new PlannedTask(
-				undoneTasks.get(numTaskToDo),
-				problem.getEmployees().get(randomGenerator.nextInt(0, hightEmployeeGeneratorLimit))));
-			undoneTasks.remove(numTaskToDo);
-		}
+	    initializePlannedTaskVariables();
+	    initializeObjectiveValues();
 	}
 
 	/**
@@ -103,12 +91,39 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 	    numberOfViolatedConstraints = planningSolution.numberOfViolatedConstraints ;
 
 	    attributes = new HashMap<Object, Object>(planningSolution.attributes) ;
+	    
+	    plannedTasks = new ArrayList<>(planningSolution.getPlannedTasks());
+	    undoneTasks = new ArrayList<>(planningSolution.getUndoneTasks());
 	}
-
+	
+	
+	/* --- Methods --- */
+	
 	/**
-	 * Generated Id
+	 * Initialize the variables
 	 */
-	private static final long serialVersionUID = 615615442782301271L;
+	private void initializePlannedTaskVariables() {
+		int numberOfTasks = problem.getTasks().size();
+		int numberOfEmployees = problem.getEmployees().size();
+		
+		int nbTasksToDo = randomGenerator.nextInt(0, numberOfTasks);
+		
+		undoneTasks = new ArrayList<Task>(problem.getTasks());
+		
+		plannedTasks = new ArrayList<PlannedTask>(nbTasksToDo);
+
+		int hightEmployeeGeneratorLimit = numberOfEmployees-1;
+		
+		int numTaskToDo;
+		
+		for (int i = 0 ; i < nbTasksToDo ; i++) {
+			numTaskToDo = randomGenerator.nextInt(0, undoneTasks.size()-1);
+			plannedTasks.add(new PlannedTask(
+				undoneTasks.get(numTaskToDo),
+				problem.getEmployees().get(randomGenerator.nextInt(0, hightEmployeeGeneratorLimit))));
+			undoneTasks.remove(numTaskToDo);
+		}
+	}
 
 	@Override
 	public String getVariableValueString(int index) {
