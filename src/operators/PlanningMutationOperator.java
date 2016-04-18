@@ -116,7 +116,7 @@ public class PlanningMutationOperator implements MutationOperator<PlanningSoluti
 	 */
 	private void addNewTask(PlanningSolution solution) {
 		int insertionPosition = randomGenerator.nextInt(0, solution.getPlannedTasks().size());
-		int removePosition = randomGenerator.nextInt(0, solution.getPlannedTasks().size()-1);
+		int removePosition = randomGenerator.nextInt(0, solution.getUndoneTasks().size()-1);
 		Task newTask = solution.getUndoneTasks().get(removePosition);
 		Employee newEmployee = problem.getEmployees().get(randomGenerator.nextInt(0, problem.getEmployees().size()-1));
 		solution.getUndoneTasks().remove(removePosition);
