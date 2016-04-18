@@ -79,7 +79,15 @@ public class PlanningCrossoverOperator implements CrossoverOperator<PlanningSolu
 			int minSize = Math.min(parent1.getPlannedTasks().size(), parent2.getPlannedTasks().size());
 			
 			if (minSize > 0) {
-				int splitPosition = randomGenerator.nextInt(1, minSize - 2);
+				int splitPosition;
+				
+				if (minSize == 1) {
+					splitPosition = 1;
+				} 
+				else {
+					splitPosition = randomGenerator.nextInt(1, minSize - 1);
+				}
+				
 				child1.setPlannedTasks(new ArrayList<PlannedTask>(parent1.getPlannedTasks().subList(0, splitPosition)));
 				List<PlannedTask> endParent1 = new ArrayList<PlannedTask>(parent1.getPlannedTasks().subList(splitPosition, parent1.getPlannedTasks().size()));
 				
