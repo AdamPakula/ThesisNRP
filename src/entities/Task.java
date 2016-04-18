@@ -1,5 +1,6 @@
 package entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Task {
@@ -108,7 +109,7 @@ public class Task {
 		this.name = name;
 		this.priority = priority;
 		this.duration = duration;
-		this.previousTasks = previousTasks;
-		this.requiredSkills = requiredSkills;
+		this.previousTasks = previousTasks == null ? new ArrayList<Task>() : previousTasks;
+		this.requiredSkills = requiredSkills == null ? new ArrayList<Skill>() : requiredSkills;
 	}
 }
