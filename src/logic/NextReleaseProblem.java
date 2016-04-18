@@ -5,7 +5,9 @@ package logic;
 
 import java.util.List;
 
+import org.uma.jmetal.problem.ConstrainedProblem;
 import org.uma.jmetal.problem.impl.AbstractGenericProblem;
+import org.uma.jmetal.util.solutionattribute.impl.NumberOfViolatedConstraints;
 
 import entities.Employee;
 import entities.Priority;
@@ -18,8 +20,10 @@ import entities.Task;
  * 0: doing the most number of tasks
  *
  */
-public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution> {
+public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution> implements ConstrainedProblem<PlanningSolution> {
 
+	/* --- Attributes --- */
+	
 	/**
 	 * Generated Id
 	 */
@@ -34,6 +38,14 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 	 * Employees available for the iteration
 	 */
 	private List<Employee> employees;
+	
+	/**
+	 * Number of violated constraints
+	 */
+	private NumberOfViolatedConstraints<PlanningSolution> numberOfViolatedConstraints;
+	
+	
+	/* --- Constructors --- */
 
 	/**
 	 * Constructor
@@ -47,6 +59,8 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 		setNumberOfVariables(1);
 		setName("Next Release Problem");
 		setNumberOfObjectives(1);
+		setNumberOfConstraints(1);
+		numberOfViolatedConstraints = new NumberOfViolatedConstraints<PlanningSolution>();
 	}
 	
 	@Override
@@ -88,9 +102,37 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 		this.employees = employees;
 	}
 
+	/**
+	 * @return the numberOfViolatedConstraints
+	 */
+	public NumberOfViolatedConstraints<PlanningSolution> getNumberOfViolatedConstraints() {
+		return numberOfViolatedConstraints;
+	}
+
 	@Override
 	public PlanningSolution createSolution() {
 		return new PlanningSolution(this);
 	}
 
+	@Override
+	public void evaluateConstraints(PlanningSolution solution) {
+		int numViolatedConstraints = 0;
+		for (int i = 0 ; i < solution.getPlannedTasks().size() ; i++) {
+			Task currentTask = solution.getPlannedTasks().get(i).getTask();
+			for (Task previousTask : currentTask.getPreviousTasks()) {
+				boolean found = false;
+				int j = 0;
+				while (!found && j < i) { //TODO update condition when we will compare by time and not only by order
+					if (solution.getPlannedTasks().get(j).getTask() == previousTask) {
+						found = true;
+					}
+					j++;
+				}
+				if (!found) {
+					numViolatedConstraints++;
+				}
+			}
+		}
+		numberOfViolatedConstraints.setAttribute(solution, numViolatedConstraints);
+	}
 }
