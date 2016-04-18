@@ -146,7 +146,7 @@ public class PlanningCrossoverOperator implements CrossoverOperator<PlanningSolu
 		for (PlannedTask task1 : list1) {
 			for (PlannedTask task2 : list2) {
 				if (task1.getTask() == task2.getTask()) {
-					duplicateTasks.add(task1);
+					duplicateTasks.add(task2);
 				}
 			}
 		}
