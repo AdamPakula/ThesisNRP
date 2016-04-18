@@ -17,7 +17,7 @@ import entities.Task;
  * @author Vavou
  * 
  * Objectives: 
- * 0: doing the most number of tasks
+ * 0: Doing the hight score in priority
  *
  */
 public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution> implements ConstrainedProblem<PlanningSolution> {
@@ -122,7 +122,7 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 			for (Task previousTask : currentTask.getPreviousTasks()) {
 				boolean found = false;
 				int j = 0;
-				while (!found && j < i) { //TODO update condition when we will compare by time and not only by order
+				while (!found && j < i) { //TODO update condition when we will compare by time and not by order
 					if (solution.getPlannedTasks().get(j).getTask() == previousTask) {
 						found = true;
 					}
