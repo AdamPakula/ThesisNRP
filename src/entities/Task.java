@@ -1,4 +1,4 @@
-package Entities;
+package entities;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ public class Task {
 	 * The priority of the task
 	 * There is no special scale but we consider than the lowest number is the most important task
 	 */
-	private int priority;
+	private Priority priority;
 	
 	/**
 	 * The duration of the task in hours
@@ -47,14 +47,14 @@ public class Task {
 	/**
 	 * @return the priority
 	 */
-	public int getPriority() {
+	public Priority getPriority() {
 		return priority;
 	}
 
 	/**
 	 * @param priority the priority to set
 	 */
-	public void setPriority(int priority) {
+	public void setPriority(Priority priority) {
 		this.priority = priority;
 	}
 
@@ -100,11 +100,11 @@ public class Task {
 		this.requiredSkills = requiredSkills;
 	}
 
-	public Task(String name, int priority, Double duration) {
+	public Task(String name, Priority priority, Double duration) {
 		this(name, priority, duration, null, null);
 	}
 	
-	public Task(String name, int priority, Double duration, List<Task> previousTasks, List<Skill> requiredSkills) {
+	public Task(String name, Priority priority, Double duration, List<Task> previousTasks, List<Skill> requiredSkills) {
 		this.name = name;
 		this.priority = priority;
 		this.duration = duration;
