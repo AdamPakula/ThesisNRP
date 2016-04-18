@@ -8,16 +8,11 @@ package entities;
  *
  */
 public enum Priority {
-	ONE(1, 5120),
-	TWO(10, 2560),
-	THREE(10, 1280),
-	FOUR(10, 640),
-	FIVE(10, 320),
-	SIX(10, 160),
-	SEVEN(10, 80),
-	HEIGHT(10, 40),
-	NINE(10, 20),
-	TEN(10, 10);
+	ONE(1, 160),
+	TWO(2, 80),
+	THREE(3, 40),
+	FOUR(4, 20),
+	FIVE(5, 10);
 	
 	private int level;
 	
