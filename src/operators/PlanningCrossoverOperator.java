@@ -94,8 +94,8 @@ public class PlanningCrossoverOperator implements CrossoverOperator<PlanningSolu
 				child2.setPlannedTasks(new ArrayList<PlannedTask>(parent2.getPlannedTasks().subList(0, splitPosition)));
 				List<PlannedTask> endParent2 = new ArrayList<PlannedTask>(parent2.getPlannedTasks().subList(splitPosition, parent2.getPlannedTasks().size()));
 				
-				updateUnPlannedTasks(child1, endParent1);
-				updateUnPlannedTasks(child2, endParent2);
+				updateUnPlannedTasksByAdding(child1, endParent1);
+				updateUnPlannedTasksByAdding(child2, endParent2);
 				
 				List<PlannedTask> duplicatesInChild1 = findDuplicates(child1.getPlannedTasks(), endParent2);
 				List<PlannedTask> duplicatesInChild2 = findDuplicates(child2.getPlannedTasks(), endParent1);
@@ -107,9 +107,6 @@ public class PlanningCrossoverOperator implements CrossoverOperator<PlanningSolu
 					
 					endParent2.set(endParent2.indexOf(taskToChangeFromEndParent2ToEndParent1), taskToChangeFromEndParent1ToEndParent2);
 					endParent1.set(endParent1.indexOf(taskToChangeFromEndParent1ToEndParent2), taskToChangeFromEndParent2ToEndParent1);
-					
-					child1.getUndoneTasks().remove(taskToChangeFromEndParent1ToEndParent2);
-					child2.getUndoneTasks().remove(taskToChangeFromEndParent2ToEndParent1);
 				
 					duplicatesInChild1.remove(0);
 					duplicatesInChild2.remove(0);
@@ -124,6 +121,9 @@ public class PlanningCrossoverOperator implements CrossoverOperator<PlanningSolu
 					endParent1.remove(duplicatesInChild2.get(0));
 					duplicatesInChild2.remove(0);
 				}
+				
+				updateUnPlannedTaksByRemoving(child1, endParent2);
+				updateUnPlannedTaksByRemoving(child2, endParent1);
 				
 				child1.getPlannedTasks().addAll(endParent2);
 				child2.getPlannedTasks().addAll(endParent1);
@@ -164,9 +164,15 @@ public class PlanningCrossoverOperator implements CrossoverOperator<PlanningSolu
 	 * @param solution the solution
 	 * @param tasks the tasks to put in the unplanned list
 	 */
-	private void updateUnPlannedTasks(PlanningSolution solution, List<PlannedTask> tasks) {
+	private void updateUnPlannedTasksByAdding(PlanningSolution solution, List<PlannedTask> tasks) {
 		for (PlannedTask task : tasks) {
 			solution.getUndoneTasks().add(task.getTask());
+		}
+	}
+	
+	private void updateUnPlannedTaksByRemoving(PlanningSolution solution, List<PlannedTask> tasks) {
+		for (PlannedTask task : tasks) {
+			solution.getUndoneTasks().remove(task.getTask());
 		}
 	}
 }
