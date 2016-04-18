@@ -159,7 +159,11 @@ public class PlanningCrossoverOperator implements CrossoverOperator<PlanningSolu
 		return 2;
 	}
 
-	
+	/**
+	 * Add the tasks in the list to the unplanned tasks list of the solution
+	 * @param solution the solution
+	 * @param tasks the tasks to put in the unplanned list
+	 */
 	private void updateUnPlannedTasks(PlanningSolution solution, List<PlannedTask> tasks) {
 		for (PlannedTask task : tasks) {
 			solution.getUndoneTasks().add(task.getTask());
