@@ -1,7 +1,5 @@
 package entities;
 
-import java.util.Date;
-
 /**
  * Describes a task in a planning
  * @author Vavou
@@ -9,10 +7,19 @@ import java.util.Date;
  */
 public class PlannedTask {
 	
+	/**
+	 * The task to do
+	 */
 	private Task task;
 	
+	/**
+	 * The begin hour of the planned task
+	 */
 	private double beginHour;
 	
+	/**
+	 * The employee who will do the task
+	 */
 	private Employee employee;
 
 	/**
