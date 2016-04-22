@@ -63,7 +63,7 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 	
 	/* --- Constructors --- */
 	
-	protected PlanningSolution(NextReleaseProblem problem) {
+	public PlanningSolution(NextReleaseProblem problem) {
 		super(problem);
 		overallConstraintViolationDegree = 0.0 ;
 	    numberOfViolatedConstraints = 0 ;
@@ -92,7 +92,10 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 
 	    attributes = new HashMap<Object, Object>(planningSolution.attributes) ;
 	    
-	    plannedTasks = new ArrayList<>(planningSolution.getPlannedTasks());
+	    plannedTasks = new ArrayList<>();
+	    for (PlannedTask task : planningSolution.getPlannedTasks()) {
+	    	plannedTasks.add(new PlannedTask(task));
+	    }
 	    undoneTasks = new ArrayList<>(planningSolution.getUndoneTasks());
 	}
 	
@@ -131,7 +134,7 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 	}
 
 	@Override
-	public Solution<PlannedTask> copy() {
+	public PlanningSolution copy() {
 		return new PlanningSolution(this);
 	}
 

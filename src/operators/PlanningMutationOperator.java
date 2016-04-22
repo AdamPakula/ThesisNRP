@@ -12,6 +12,7 @@ import entities.PlannedTask;
 import entities.Task;
 import logic.NextReleaseProblem;
 import logic.PlanningSolution;
+import program.UtilDebug;
 
 /**
  * @author Vavou
@@ -77,6 +78,7 @@ public class PlanningMutationOperator implements MutationOperator<PlanningSoluti
 	
 	@Override
 	public PlanningSolution execute(PlanningSolution source) {
+		
 		for (int i = 0 ; i < source.getPlannedTasks().size() ; i++) {
 			if (doMutation()) { // If we have to do a mutation
 				PlannedTask taskToMutate = source.getPlannedTasks().get(i);
@@ -88,6 +90,7 @@ public class PlanningMutationOperator implements MutationOperator<PlanningSoluti
 				}
 			}
 		}
+		
 		if (source.getUndoneTasks().size() > 0) {
 			if (doMutation()) {
 				addNewTask(source);
@@ -139,10 +142,9 @@ public class PlanningMutationOperator implements MutationOperator<PlanningSoluti
 		}
 		else { // If the random selected task is not yet planned, let's change it
 			int positionNewTask = randomNumTask - numberOfPlannedTasks;
-			Task taskToAdd = solution.getUndoneTasks().get(positionNewTask);
-			solution.getUndoneTasks().remove(positionNewTask);
+			Task taskToAdd = solution.getUndoneTasks().remove(positionNewTask);
 			solution.getUndoneTasks().add(taskToChange.getTask());
-			taskToChange.setTask(taskToAdd);
+			solution.getPlannedTasks().set(taskPosition, new PlannedTask(taskToAdd, taskToChange.getEmployee()));
 		}
 	}
 	

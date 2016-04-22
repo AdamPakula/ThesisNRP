@@ -68,4 +68,10 @@ public class PlannedTask {
 		this.task = task;
 		this.employee = employee;
 	}
+
+	public PlannedTask(PlannedTask plannedTask) {
+		task = plannedTask.getTask();
+		employee = plannedTask.getEmployee();
+		beginHour = plannedTask.getBeginHour();
+	}
 }

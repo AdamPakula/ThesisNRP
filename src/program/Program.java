@@ -71,6 +71,9 @@ public class Program {
 		int solutionCpt = 1;
 		for (PlanningSolution solution : population) {
 			System.out.println("Solution " + solutionCpt + " with " + problem.getNumberOfViolatedConstraints().getAttribute(solution) + " violated constraints" + ":");
+			if (!UtilDebug.isSolutionCoherent(solution)) {
+				System.out.println("SHIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIT");
+			}
 			for (PlannedTask task : solution.getPlannedTasks()) {
 				System.out.println("-" + task.getTask().getName() + " done by " + task.getEmployee().getName());
 			}
