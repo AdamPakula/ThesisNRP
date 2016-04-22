@@ -33,6 +33,11 @@ public class Program {
 		tasks.add(new Task("Task 1", Priority.THREE, 2.0));
 		tasks.add(new Task("Task 2", Priority.TWO, 5.0));
 		tasks.add(new Task("Task 3", Priority.THREE, 2.0));
+		Task task4 = new Task("Task 4", Priority.TWO, 10.0);
+		tasks.add(task4);
+		Task task5 = new Task("Task 5", Priority.FIVE, 3.0);
+		task5.getPreviousTasks().add(task4);
+		tasks.add(task5);
 		
 		List<Employee> employees = new ArrayList<Employee>();
 		employees.add(new Employee("Employee 1", 5.0));
@@ -65,7 +70,7 @@ public class Program {
 		
 		int solutionCpt = 1;
 		for (PlanningSolution solution : population) {
-			System.out.println("Solution " + solutionCpt + ":");
+			System.out.println("Solution " + solutionCpt + " with " + problem.getNumberOfViolatedConstraints().getAttribute(solution) + " violated constraints" + ":");
 			for (PlannedTask task : solution.getPlannedTasks()) {
 				System.out.println("-" + task.getTask().getName() + " done by " + task.getEmployee().getName());
 			}
