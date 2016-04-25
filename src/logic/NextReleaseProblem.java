@@ -3,7 +3,10 @@
  */
 package logic;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.uma.jmetal.problem.ConstrainedProblem;
 import org.uma.jmetal.problem.impl.AbstractGenericProblem;
@@ -11,6 +14,7 @@ import org.uma.jmetal.util.solutionattribute.impl.NumberOfViolatedConstraints;
 
 import entities.Employee;
 import entities.Priority;
+import entities.Skill;
 import entities.Task;
 
 /**
@@ -44,6 +48,12 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 	 */
 	private NumberOfViolatedConstraints<PlanningSolution> numberOfViolatedConstraints;
 	
+	/**
+	 * Employees sorted by skill 
+	 * An employee is in a the lists of all his skills
+	 */
+	private Map<Skill, List<Employee>> skilledEmployees;
+	
 	
 	/* --- Constructors --- */
 
@@ -55,6 +65,18 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 	public NextReleaseProblem(List<Task> tasks, List<Employee> employees) {
 		this.tasks = tasks;
 		this.employees = employees;
+		
+		skilledEmployees = new HashMap<>();
+		for (Employee employee : employees) {
+			for (Skill skill : employee.getSkills()) {
+				List<Employee> employeesList = skilledEmployees.get(skill);
+				if (employeesList == null) {
+					employeesList = new ArrayList<>();
+					skilledEmployees.put(skill, employeesList);
+				}
+				employeesList.add(employee);
+			}
+		}
 		
 		setNumberOfVariables(1);
 		setName("Next Release Problem");
@@ -93,6 +115,13 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 	 */
 	public List<Employee> getEmployees() {
 		return employees;
+	}
+	
+	/**
+	 * @return the employees with a skill
+	 */
+	public List<Employee> getEmployees(Skill skill) {
+		return skilledEmployees.get(skill);
 	}
 
 	/**
