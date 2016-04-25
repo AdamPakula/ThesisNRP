@@ -21,7 +21,7 @@ import entities.Task;
  * @author Vavou
  * 
  * Objectives: 
- * 0: Doing the hight score in priority
+ * 0: Doing the high score in priority
  *
  */
 public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution> implements ConstrainedProblem<PlanningSolution> {
