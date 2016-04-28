@@ -3,6 +3,8 @@
  */
 package operators;
 
+import java.util.List;
+
 import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetal.util.pseudorandom.JMetalRandom;
@@ -118,7 +120,8 @@ public class PlanningMutationOperator implements MutationOperator<PlanningSoluti
 		int insertionPosition = randomGenerator.nextInt(0, solution.getPlannedTasks().size());
 		int removePosition = randomGenerator.nextInt(0, solution.getUndoneTasks().size()-1);
 		Task newTask = solution.getUndoneTasks().get(removePosition);
-		Employee newEmployee = problem.getEmployees().get(randomGenerator.nextInt(0, problem.getEmployees().size()-1));
+		List<Employee> skilledEmployees = problem.getEmployees(newTask.getRequiredSkills().get(0));
+		Employee newEmployee = skilledEmployees.get(randomGenerator.nextInt(0, skilledEmployees.size()-1));
 		solution.getUndoneTasks().remove(removePosition);
 		solution.getPlannedTasks().add(insertionPosition, new PlannedTask(newTask, newEmployee));
 	}
@@ -150,7 +153,9 @@ public class PlanningMutationOperator implements MutationOperator<PlanningSoluti
 	 * @param taskToChange the planned task to modify
 	 */
 	private void changeEmployee(PlannedTask taskToChange) {
-		int employeePosition = randomGenerator.nextInt(0, problem.getEmployees().size()-1);
-		taskToChange.setEmployee(problem.getEmployees().get(employeePosition));
+		List<Employee> skilledEmployees = problem.getEmployees(taskToChange.getTask().getRequiredSkills().get(0));
+		if (skilledEmployees.size() > 1) {
+			taskToChange.setEmployee(skilledEmployees.get(randomGenerator.nextInt(0, skilledEmployees.size()-1)));
+		}
 	}
 }
