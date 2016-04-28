@@ -5,6 +5,8 @@ import java.util.List;
 
 public class Task {
 
+	/* --- Atributes --- */
+	
 	/**
 	 * The name of the task
 	 */
@@ -31,6 +33,9 @@ public class Task {
 	 */
 	private List<Skill> requiredSkills;
 
+	
+	/* --- Getters and setters --- */
+	
 	/**
 	 * @return the name
 	 */
@@ -100,11 +105,28 @@ public class Task {
 	public void setRequiredSkills(List<Skill> requiredSkills) {
 		this.requiredSkills = requiredSkills;
 	}
+	
+	
+	/* --- Constructors --- */
 
+	/**
+	 * Construct a task which not needs skills and not have previous mandatory tasks
+	 * @param name the name of the task
+	 * @param priority the priority of the task
+	 * @param duration the duration of the task
+	 */
 	public Task(String name, Priority priority, Double duration) {
 		this(name, priority, duration, null, null);
 	}
 	
+	/**
+	 * Construct a task
+	 * @param name the name of the task
+	 * @param priority the priority of the task
+	 * @param duration the duration of the task
+	 * @param previousTasks the list of the previous tasks or null
+	 * @param requiredSkills the required skills to do this task
+	 */
 	public Task(String name, Priority priority, Double duration, List<Task> previousTasks, List<Skill> requiredSkills) {
 		this.name = name;
 		this.priority = priority;
