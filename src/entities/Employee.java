@@ -8,6 +8,8 @@ import java.util.List;
  *
  */
 public class Employee {
+	
+	/* --- Atributes --- */
 
 	/**
 	 * The name of the employee
@@ -24,6 +26,9 @@ public class Employee {
 	 */
 	private double weekAvailability;
 
+	
+	/* --- Getters and setters --- */
+	
 	/**
 	 * Returns the name of the employee
 	 * @return the name of the employee
@@ -68,6 +73,9 @@ public class Employee {
 	public void setWeekAvailability(double weekAvailability) {
 		this.weekAvailability = weekAvailability;
 	}
+	
+	
+	/* --- Constructor --- */
 	
 	/**
 	 * Constructs a new employee
