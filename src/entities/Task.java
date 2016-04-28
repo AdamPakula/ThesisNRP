@@ -108,16 +108,6 @@ public class Task {
 	
 	
 	/* --- Constructors --- */
-
-	/**
-	 * Construct a task which not needs skills and not have previous mandatory tasks
-	 * @param name the name of the task
-	 * @param priority the priority of the task
-	 * @param duration the duration of the task
-	 */
-	public Task(String name, Priority priority, Double duration) {
-		this(name, priority, duration, null, null);
-	}
 	
 	/**
 	 * Construct a task
