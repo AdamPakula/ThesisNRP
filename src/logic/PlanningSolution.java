@@ -10,6 +10,7 @@ import java.util.List;
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.solution.impl.AbstractGenericSolution;
 
+import entities.Employee;
 import entities.PlannedTask;
 import entities.Task;
 
@@ -104,24 +105,22 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 	 */
 	private void initializePlannedTaskVariables() {
 		int numberOfTasks = problem.getTasks().size();
-		int numberOfEmployees = problem.getEmployees().size();
 		
 		int nbTasksToDo = randomGenerator.nextInt(0, numberOfTasks);
 		
 		undoneTasks = new ArrayList<Task>(problem.getTasks());
-		
 		plannedTasks = new ArrayList<PlannedTask>(nbTasksToDo);
 
-		int hightEmployeeGeneratorLimit = numberOfEmployees-1;
-		
-		int numTaskToDo;
+		Task taskToDo;
+		List<Employee> employees;
 		
 		for (int i = 0 ; i < nbTasksToDo ; i++) {
-			numTaskToDo = randomGenerator.nextInt(0, undoneTasks.size()-1);
+			taskToDo = undoneTasks.get(randomGenerator.nextInt(0, undoneTasks.size()-1));
+			employees = problem.getEmployees(taskToDo.getRequiredSkills().get(0));
 			plannedTasks.add(new PlannedTask(
-				undoneTasks.get(numTaskToDo),
-				problem.getEmployees().get(randomGenerator.nextInt(0, hightEmployeeGeneratorLimit))));
-			undoneTasks.remove(numTaskToDo);
+				taskToDo,
+				employees.get(randomGenerator.nextInt(0, employees.size()-1))));
+			undoneTasks.remove(taskToDo);
 		}
 	}
 
