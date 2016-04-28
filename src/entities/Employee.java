@@ -1,5 +1,6 @@
 package entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -82,8 +83,9 @@ public class Employee {
 	 * @param name
 	 * @param weekAvailability in hours per week
 	 */
-	public Employee(String name, double weekAvailability) {
+	public Employee(String name, double weekAvailability, List<Skill> skills) {
 		this.name = name;
 		this.weekAvailability = weekAvailability;
+		this.skills = skills == null ? new ArrayList<>() : skills;
 	}
 }
