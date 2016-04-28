@@ -85,16 +85,8 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 		numberOfViolatedConstraints = new NumberOfViolatedConstraints<PlanningSolution>();
 	}
 	
-	@Override
-	public void evaluate(PlanningSolution solution) {
-		final int MAX_PRIORITY = tasks.size() * Priority.ONE.getScore();
-		int totalScore = 0;
-		
-		for (int i = 0 ; i < solution.getPlannedTasks().size() ; i++) {
-			totalScore += solution.getPlannedTasks().get(i).getTask().getPriority().getScore();
-		}
-		solution.setObjective(0, MAX_PRIORITY - totalScore);
-	}
+	
+	/* --- Getters and setters --- */
 
 	/**
 	 * @return the tasks
@@ -129,6 +121,20 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 	 */
 	public void setEmployees(List<Employee> employees) {
 		this.employees = employees;
+	}
+	
+	
+	/* --- Methods --- */
+	
+	@Override
+	public void evaluate(PlanningSolution solution) {
+		final int MAX_PRIORITY = tasks.size() * Priority.ONE.getScore();
+		int totalScore = 0;
+		
+		for (int i = 0 ; i < solution.getPlannedTasks().size() ; i++) {
+			totalScore += solution.getPlannedTasks().get(i).getTask().getPriority().getScore();
+		}
+		solution.setObjective(0, MAX_PRIORITY - totalScore);
 	}
 
 	/**
