@@ -1,7 +1,7 @@
 /**
  * 
  */
-package operators;
+package logic.operators;
 
 import java.util.List;
 
