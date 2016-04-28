@@ -101,13 +101,6 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 	public void setTasks(List<Task> tasks) {
 		this.tasks = tasks;
 	}
-
-	/**
-	 * @return the employees
-	 */
-	public List<Employee> getEmployees() {
-		return employees;
-	}
 	
 	/**
 	 * Return the number of employees
