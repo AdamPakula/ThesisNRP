@@ -20,6 +20,7 @@ import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
 import entities.Employee;
 import entities.PlannedTask;
 import entities.Priority;
+import entities.Skill;
 import entities.Task;
 import logic.NextReleaseProblem;
 import logic.PlanningSolution;
@@ -29,20 +30,28 @@ import operators.PlanningMutationOperator;
 public class Program {
 
 	public static void main(String[] args) {
+		Skill cpp = new Skill("C++");
+		Skill java = new Skill("Java");
+		
+		List<Skill> cppSkills = new ArrayList<>();
+		cppSkills.add(cpp);
+		List<Skill> javaSkills = new ArrayList<>();
+		javaSkills.add(java);
+		List<Skill> bothSkills = new ArrayList<>();
+		bothSkills.add(java);
+		bothSkills.add(java);
+		
 		List<Task> tasks = new ArrayList<Task>();
-		tasks.add(new Task("Task 1", Priority.THREE, 2.0));
-		tasks.add(new Task("Task 2", Priority.TWO, 5.0));
-		tasks.add(new Task("Task 3", Priority.THREE, 2.0));
-		Task task4 = new Task("Task 4", Priority.TWO, 10.0);
-		tasks.add(task4);
-		Task task5 = new Task("Task 5", Priority.FIVE, 3.0);
-		task5.getPreviousTasks().add(task4);
-		tasks.add(task5);
+		tasks.add(new Task("Task 1", Priority.THREE, 2.0, null, cppSkills));
+		tasks.add(new Task("Task 2", Priority.TWO, 5.0, null, javaSkills));
+		tasks.add(new Task("Task 3", Priority.THREE, 2.0, null, cppSkills));
+		tasks.add(new Task("Task 4", Priority.TWO, 10.0, null, cppSkills));
+		tasks.add(new Task("Task 5", Priority.FIVE, 3.0, new ArrayList<>(tasks.subList(3, 4)), javaSkills));
 		
 		List<Employee> employees = new ArrayList<Employee>();
-		employees.add(new Employee("Employee 1", 5.0));
-		employees.add(new Employee("Employee 2", 20.0));
-		employees.add(new Employee("Employee 3", 15.0));
+		employees.add(new Employee("Employee 1", 5.0, cppSkills));
+		employees.add(new Employee("Employee 2", 20.0, javaSkills));
+		employees.add(new Employee("Employee 3", 15.0, bothSkills));
 		
 		NextReleaseProblem problem = new NextReleaseProblem(tasks, employees);
 		Algorithm<List<PlanningSolution>> algorithm;
