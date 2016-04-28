@@ -110,6 +110,14 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 	}
 	
 	/**
+	 * Return the number of employees
+	 * @return the number of employees
+	 */
+	public int getNumberOfEmployees() {
+		return employees.size();
+	}
+	
+	/**
 	 * @return the employees with a skill
 	 */
 	public List<Employee> getEmployees(Skill skill) {
