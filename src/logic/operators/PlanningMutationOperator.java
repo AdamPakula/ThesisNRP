@@ -137,8 +137,9 @@ public class PlanningMutationOperator implements MutationOperator<PlanningSoluti
 		int randomNumTask = randomGenerator.nextInt(0, numberOfTasks - 1);
 		int numberOfPlannedTasks = solution.getPlannedTasks().size();
 		if (randomNumTask < numberOfPlannedTasks) { // If the random selected task is already planned then exchange with the current
-			solution.getPlannedTasks().set(taskPosition, solution.getPlannedTasks().get(randomNumTask));
-			solution.getPlannedTasks().set(randomNumTask, taskToChange);
+			PlannedTask otherToChange = solution.getPlannedTasks().get(randomNumTask);
+			solution.getPlannedTasks().set(taskPosition, new PlannedTask(otherToChange.getTask(), otherToChange.getEmployee()));
+			solution.getPlannedTasks().set(randomNumTask, new PlannedTask(taskToChange.getTask(), taskToChange.getEmployee()));
 		}
 		else { // If the random selected task is not yet planned, let's change it
 			int positionNewTask = randomNumTask - numberOfPlannedTasks;
