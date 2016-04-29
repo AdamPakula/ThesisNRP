@@ -11,7 +11,6 @@ import java.util.Map;
 import org.uma.jmetal.problem.ConstrainedProblem;
 import org.uma.jmetal.problem.impl.AbstractGenericProblem;
 import org.uma.jmetal.util.solutionattribute.impl.NumberOfViolatedConstraints;
-import org.uma.jmetal.util.solutionattribute.impl.OverallConstraintViolation;
 
 import entities.Employee;
 import entities.PlannedTask;
@@ -51,11 +50,6 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 	private NumberOfViolatedConstraints<PlanningSolution> numberOfViolatedConstraints;
 	
 	/**
-	 * Overall constraint violation degree
-	 */
-	private OverallConstraintViolation<PlanningSolution> overallConstraintViolationDegree;
-	
-	/**
 	 * Employees sorted by skill 
 	 * An employee is in a the lists of all his skills
 	 */
@@ -64,12 +58,12 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 	/**
 	 * The index of the priority score objective in the objectives list
 	 */
-	public final static int INDEX_OBJECTIVE_PRIORITY = 0;
+	public final static int INDEX_PRIORITY_OBJECTIVE = 0;
 	
 	/**
 	 * The index of the end date objective in the objectives list
 	 */
-	public final static int INDEX_OBJECTIVE_END_DATE = 1;
+	public final static int INDEX_END_DATE_OBJECTIVE = 1;
 	
 	
 	/* --- Constructors --- */
@@ -106,7 +100,6 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 		setNumberOfConstraints(numberOfConstraints);
 		
 		numberOfViolatedConstraints = new NumberOfViolatedConstraints<PlanningSolution>();
-		overallConstraintViolationDegree = new OverallConstraintViolation<>();
 	}
 	
 	
@@ -162,8 +155,8 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 			priorityScore += solution.getPlannedTasks().get(i).getTask().getPriority().getScore();
 		}
 		
-		solution.setObjective(INDEX_OBJECTIVE_PRIORITY, MAX_PRIORITY - priorityScore);
-		solution.setObjective(INDEX_OBJECTIVE_END_DATE, evaluateEndDate(solution));
+		solution.setObjective(INDEX_PRIORITY_OBJECTIVE, MAX_PRIORITY - priorityScore);
+		solution.setObjective(INDEX_END_DATE_OBJECTIVE, evaluateEndDate(solution));
 	}
 	
 	private double evaluateEndDate(PlanningSolution solution) {
@@ -207,7 +200,7 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 				}
 			}
 		}
-		overallConstraintViolationDegree.setAttribute(solution, -1.0 * numViolatedConstraints);
+
 		numberOfViolatedConstraints.setAttribute(solution, numViolatedConstraints);
 	}
 }
