@@ -133,11 +133,18 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 	public List<Employee> getEmployees(Skill skill) {
 		return skilledEmployees.get(skill);
 	}
+	
+	/**
+	 * @return the list of the employees
+	 */
+	public List<Employee> getEmployees() {
+		return employees;
+	}
 
 	/**
 	 * @param employees the employees to set
 	 */
-	public void setEmployees(List<Employee> employees) {
+	private void setEmployees(List<Employee> employees) {
 		this.employees = employees;
 	}
 	
