@@ -90,7 +90,7 @@ public class PlanningMutationOperator implements MutationOperator<PlanningSoluti
 				}
 			}
 		}
-		if (source.getUndoneTasks().size() > 0) {
+		for (int i = 0 ; i < source.getUndoneTasks().size() ; i++) {
 			if (doMutation()) {
 				addNewTask(source);
 			}
