@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.solution.impl.AbstractGenericSolution;
@@ -199,5 +200,27 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 	public Solution<PlannedTask> copy() {
 		return new PlanningSolution(this);
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
 
+		if (getClass() != obj.getClass())
+			return false;
+
+		PlanningSolution other = (PlanningSolution) obj;
+		
+		int size = this.getPlannedTasks().size();
+		boolean equals = other.getPlannedTasks().size() == size;
+		int i = 0;
+		while (equals && i < size) {
+			if (!Objects.equals(other.getPlannedTasks().get(i), this.getPlannedTasks().get(i))) {
+				equals = false;
+			}
+			i++;
+		}
+
+		return equals;
+	}
 }
