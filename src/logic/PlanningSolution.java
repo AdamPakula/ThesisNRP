@@ -123,6 +123,46 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 			undoneTasks.remove(taskToDo);
 		}
 	}
+	
+	public void schedule() {
+		double minHour;
+		
+		resetBeginHours();
+		
+		for (PlannedTask plannedTask : plannedTasks) {
+			minHour = 0.0;
+			for (Task task : plannedTask.getTask().getPreviousTasks()) {
+				minHour = Math.max(minHour, getBeginHour(task) + task.getDuration());
+			}
+			
+			// TODO check employees
+			// TODO check employee timetable
+			plannedTask.setBeginHour(minHour);
+		}
+	}
+	
+	/**
+	 * Reset the begin hours of all the planned task to 0.0
+	 */
+	private void resetBeginHours() {
+		for (PlannedTask plannedTask : plannedTasks) {
+			plannedTask.setBeginHour(0.0);
+		}
+	}
+	
+	/**
+	 * Get the begin hour of a planned task wich includes the parameter task
+	 * @param task
+	 * @return the begin hour of the planned task or 0.0 if it is not yet planned
+	 */
+	private double getBeginHour(Task task) {
+		for (PlannedTask plannedTask : plannedTasks) {
+			if (plannedTask.getTask() == task) {
+				return plannedTask.getBeginHour();
+			}
+		}
+		return 0.0;
+	}
 
 	@Override
 	public String getVariableValueString(int index) {
