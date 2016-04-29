@@ -11,6 +11,7 @@ import java.util.Map;
 import org.uma.jmetal.problem.ConstrainedProblem;
 import org.uma.jmetal.problem.impl.AbstractGenericProblem;
 import org.uma.jmetal.util.solutionattribute.impl.NumberOfViolatedConstraints;
+import org.uma.jmetal.util.solutionattribute.impl.OverallConstraintViolation;
 
 import entities.Employee;
 import entities.Priority;
@@ -47,6 +48,11 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 	 * Number of violated constraints
 	 */
 	private NumberOfViolatedConstraints<PlanningSolution> numberOfViolatedConstraints;
+	
+	/**
+	 * Overall constraint violation degree
+	 */
+	private OverallConstraintViolation<PlanningSolution> overallConstraintViolationDegree;
 	
 	/**
 	 * Employees sorted by skill 
@@ -89,6 +95,7 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 		setNumberOfConstraints(numberOfConstraints);
 		
 		numberOfViolatedConstraints = new NumberOfViolatedConstraints<PlanningSolution>();
+		overallConstraintViolationDegree = new OverallConstraintViolation<>();
 	}
 	
 	
@@ -175,6 +182,7 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 				}
 			}
 		}
+		overallConstraintViolationDegree.setAttribute(solution, -1.0 * numViolatedConstraints);
 		numberOfViolatedConstraints.setAttribute(solution, numViolatedConstraints);
 	}
 }
