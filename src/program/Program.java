@@ -23,6 +23,7 @@ import logic.PlanningSolution;
 import logic.comparators.PlanningSolutionDominanceComparator;
 import logic.operators.PlanningCrossoverOperator;
 import logic.operators.PlanningMutationOperator;
+import view.HTMLPrinter;
 
 public class Program {
 	
@@ -52,10 +53,13 @@ public class Program {
 	private static void printPopulation(List<PlanningSolution> population) {
 		int solutionCpt = 1;
 		for (PlanningSolution solution : population) {
-			System.out.println("Solution " + solutionCpt + ":");
+			System.out.println("Solution " + solutionCpt + ": (" 
+					+ solution.getObjective(0) + "\t" + solution.getObjective(1) + ")");
 			for (PlannedTask task : solution.getPlannedTasks()) {
 				System.out.println("-" + task.getTask().getName() + " done by " + task.getEmployee().getName() + " at hour " + task.getBeginHour());
 			}
+			System.out.println("End Date: " + solution.getEndDate());
+			System.out.println();
 			solutionCpt++;
 		}
 	}
@@ -107,8 +111,13 @@ public class Program {
 		AlgorithmRunner algoRunner = new AlgorithmRunner.Executor(algorithm).execute();
 		
 		List<PlanningSolution> population = algorithm.getResult();
+		for (PlanningSolution planningSolution : population) {
+			problem.evaluate(planningSolution);
+		}
 		filter(population);
 		printPopulation(population);
+		HTMLPrinter browserDisplay = new HTMLPrinter(problem, population);
+		browserDisplay.run();
 		
 	}
 }
