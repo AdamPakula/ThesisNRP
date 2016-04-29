@@ -6,6 +6,7 @@ package logic;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.solution.impl.AbstractGenericSolution;
@@ -125,19 +126,30 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 	}
 	
 	public void schedule() {
-		double minHour;
+		double newBeginHour;
+		Map<Employee, Double> employeeAvailability = new HashMap<>();
 		
 		resetBeginHours();
 		
 		for (PlannedTask plannedTask : plannedTasks) {
-			minHour = 0.0;
-			for (Task task : plannedTask.getTask().getPreviousTasks()) {
-				minHour = Math.max(minHour, getBeginHour(task) + task.getDuration());
+			newBeginHour = 0.0;
+			Task currentTask = plannedTask.getTask();
+			
+			// Checks the previous tasks end hour
+			for (Task previousTask : currentTask.getPreviousTasks()) {
+				newBeginHour = Math.max(newBeginHour, getBeginHour(previousTask) + previousTask.getDuration());
 			}
 			
-			// TODO check employees
+			// Checks the employee availability
+			Employee currentEmployee = plannedTask.getEmployee();
+			Double employeeAvailableHour = employeeAvailability.get(currentEmployee);
+			if (employeeAvailableHour != null) {
+				newBeginHour = Math.max(newBeginHour, employeeAvailableHour.doubleValue());
+			}
+			
 			// TODO check employee timetable
-			plannedTask.setBeginHour(minHour);
+			plannedTask.setBeginHour(newBeginHour);
+			employeeAvailability.put(currentEmployee, new Double(newBeginHour + currentTask.getDuration()));
 		}
 	}
 	
@@ -162,6 +174,20 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 			}
 		}
 		return 0.0;
+	}
+	
+	/**
+	 * Return the hour in all of the planned tasks will be done
+	 * @return the end hour
+	 */
+	public double getEndDate() {
+		double endHour = 0.0;
+
+		for (PlannedTask task : plannedTasks) {
+			endHour = Math.max(endHour, task.getBeginHour() + task.getTask().getDuration());
+		}
+
+		return endHour;
 	}
 
 	@Override

@@ -156,17 +156,7 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 		}
 		
 		solution.setObjective(INDEX_PRIORITY_OBJECTIVE, MAX_PRIORITY - priorityScore);
-		solution.setObjective(INDEX_END_DATE_OBJECTIVE, evaluateEndDate(solution));
-	}
-	
-	private double evaluateEndDate(PlanningSolution solution) {
-		double endHour = 0.0;
-		
-		for (PlannedTask task : solution.getPlannedTasks()) {
-			endHour = Math.max(endHour, task.getBeginHour() + task.getTask().getDuration());
-		}
-		
-		return endHour;
+		solution.setObjective(INDEX_END_DATE_OBJECTIVE, solution.getEndDate());
 	}
 
 	/**
