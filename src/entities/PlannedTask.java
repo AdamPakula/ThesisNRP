@@ -67,5 +67,6 @@ public class PlannedTask {
 	public PlannedTask(Task task, Employee employee) {
 		this.task = task;
 		this.employee = employee;
+		beginHour = 0.0;
 	}
 }
