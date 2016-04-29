@@ -24,7 +24,7 @@ public class PlanningSolutionConstraintViolationComparator implements Constraint
 	
 	/**
 	 * Constructor
-	 * Initializes the number of violated constraints atribute
+	 * Initializes the number of violated constraints attribute
 	 */
 	public PlanningSolutionConstraintViolationComparator() {
 		numberOfViolatedConstraints = new NumberOfViolatedConstraints<>();
