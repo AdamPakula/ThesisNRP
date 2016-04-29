@@ -14,6 +14,7 @@ import org.uma.jmetal.util.solutionattribute.impl.NumberOfViolatedConstraints;
 import org.uma.jmetal.util.solutionattribute.impl.OverallConstraintViolation;
 
 import entities.Employee;
+import entities.PlannedTask;
 import entities.Priority;
 import entities.Skill;
 import entities.Task;
@@ -60,6 +61,16 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 	 */
 	private Map<Skill, List<Employee>> skilledEmployees;
 	
+	/**
+	 * The index of the priority score objective in the objectives list
+	 */
+	public final static int INDEX_OBJECTIVE_PRIORITY = 0;
+	
+	/**
+	 * The index of the end date objective in the objectives list
+	 */
+	public final static int INDEX_OBJECTIVE_END_DATE = 1;
+	
 	
 	/* --- Constructors --- */
 
@@ -86,7 +97,7 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 		
 		setNumberOfVariables(1);
 		setName("Next Release Problem");
-		setNumberOfObjectives(1);
+		setNumberOfObjectives(2);
 		
 		int numberOfConstraints = 0;
 		for (Task task : tasks) {
@@ -143,12 +154,26 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 	@Override
 	public void evaluate(PlanningSolution solution) {
 		final int MAX_PRIORITY = tasks.size() * Priority.ONE.getScore();
-		int totalScore = 0;
+		int priorityScore = 0;
+		
+		solution.schedule();
 		
 		for (int i = 0 ; i < solution.getPlannedTasks().size() ; i++) {
-			totalScore += solution.getPlannedTasks().get(i).getTask().getPriority().getScore();
+			priorityScore += solution.getPlannedTasks().get(i).getTask().getPriority().getScore();
 		}
-		solution.setObjective(0, MAX_PRIORITY - totalScore);
+		
+		solution.setObjective(INDEX_OBJECTIVE_PRIORITY, MAX_PRIORITY - priorityScore);
+		solution.setObjective(INDEX_OBJECTIVE_END_DATE, evaluateEndDate(solution));
+	}
+	
+	private double evaluateEndDate(PlanningSolution solution) {
+		double endHour = 0.0;
+		
+		for (PlannedTask task : solution.getPlannedTasks()) {
+			endHour = Math.max(endHour, task.getBeginHour() + task.getTask().getDuration());
+		}
+		
+		return endHour;
 	}
 
 	/**
