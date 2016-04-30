@@ -1,43 +1,53 @@
 package logic;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.Set;
 
 import logic.comparators.PlanningSolutionDominanceComparator;
 
 public class PopulationCleaner {
 	
 	/**
-	 * Returns a new sorted set without duplicates based on the population
-	 * Specify the comparator as the <code>PlanningSolutionDominance</code> one
-	 * @param population The population to sort
-	 * @return sorted set population without duplicates
+	 * Sorts the population by dominance
+	 * uses a <code>PlaningSolutionDominanceComparator</code>
+	 * @param population the population to sort
 	 */
-	public static SortedSet<PlanningSolution> getSorted(List<PlanningSolution> population) {
-		SortedSet<PlanningSolution> sortedSolutions = new TreeSet<PlanningSolution>(
-				new PlanningSolutionDominanceComparator());
-		
-		for (PlanningSolution planningSolution : sortedSolutions) {
-			planningSolution.schedule();
-		}
-		sortedSolutions.addAll(population);
-		
-		return sortedSolutions;
+	private static void sortByDominance(List<PlanningSolution> population) {	
+		Collections.sort(population, new PlanningSolutionDominanceComparator());
 	}
 	
 	/**
-	 * Returns only the bests solutions using the comparator of the set
-	 * @param sortedPopulation The population within will be only kept the best solutions
+	 * Returns only the bests solutions
+	 * Uses the <code>PlanningSolutionDominanceComparator</code>
+	 * @param sortedPopulation The population with only the best solutions
 	 */
-	public static void getBestSolutions(SortedSet<PlanningSolution> sortedPopulation) {
-		PlanningSolution bestSolution = sortedPopulation.last();
-		Iterator<PlanningSolution> iterator = sortedPopulation.iterator();
+	public static Set<PlanningSolution> getBestSolutions(List<PlanningSolution> population) {
+		Set<PlanningSolution> bestSolutions = new HashSet<PlanningSolution>();
 		
-		while (sortedPopulation.comparator().compare(iterator.next(), bestSolution) < 0) {
-			iterator.remove();
+		if (population.size() == 0) {
+			return bestSolutions;
 		}
+		
+		Comparator<PlanningSolution> comparator = new PlanningSolutionDominanceComparator();
+		sortByDominance(population);
+		
+		PlanningSolution bestSolution = population.get(population.size()-1);
+		Iterator<PlanningSolution> iterator = population.iterator();
+		
+		System.err.println("Begin last verif");
+		
+		while (iterator.hasNext()) {
+			PlanningSolution currentSolution = (PlanningSolution) iterator.next();
+			if (comparator.compare(currentSolution, bestSolution) >= 0) {
+				bestSolutions.add(currentSolution);
+			}
+		}
+		
+		return bestSolutions;
 	}
 
 }
