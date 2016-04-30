@@ -202,6 +202,11 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 	}
 	
 	@Override
+	public int hashCode() {
+		return getPlannedTasks().size();
+	};
+	
+	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
