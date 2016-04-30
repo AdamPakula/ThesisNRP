@@ -38,8 +38,6 @@ public class PopulationCleaner {
 		PlanningSolution bestSolution = population.get(population.size()-1);
 		Iterator<PlanningSolution> iterator = population.iterator();
 		
-		System.err.println("Begin last verif");
-		
 		while (iterator.hasNext()) {
 			PlanningSolution currentSolution = (PlanningSolution) iterator.next();
 			if (comparator.compare(currentSolution, bestSolution) >= 0) {
