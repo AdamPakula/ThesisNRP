@@ -98,6 +98,9 @@ public class HTMLPrinter implements Runnable {
 		StringBuilder sb = new StringBuilder();
 		int numberOfTimeSlots = getNumberOfTimeSlots(solution);
 		
+		if (solution.getPlannedTasks().size() == 0) {
+			return sb.append("There is no planned task in this solution");
+		}
 		sb.append("<table><thead><tr><th></th>");
 		
 		// Head row of the planning table
