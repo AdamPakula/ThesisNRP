@@ -77,11 +77,11 @@ public class PlanningSolutionDominanceComparator implements Comparator<PlanningS
 			final int INDEX_END_DATE_OBJECTIVE = NextReleaseProblem.INDEX_END_DATE_OBJECTIVE;
 			double sol1EndDateObjectiveValue = solution1.getObjective(INDEX_END_DATE_OBJECTIVE);
 			double sol2EndDateObjectiveValue = solution2.getObjective(INDEX_END_DATE_OBJECTIVE);
-			if (sol1EndDateObjectiveValue > sol2EndDateObjectiveValue) {
-				return -1;
+			if (sol1EndDateObjectiveValue < sol2EndDateObjectiveValue) {
+				return 1;
 			}
 			else if (sol1EndDateObjectiveValue > sol2EndDateObjectiveValue) {
-				return 1;
+				return -1;
 			}
 			else {
 				return 0;
