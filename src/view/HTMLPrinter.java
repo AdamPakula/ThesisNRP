@@ -44,7 +44,7 @@ public class HTMLPrinter implements Runnable {
 	@Override
 	public void run() {
 		
-		File htmlFile = new File("planning.html");
+		File htmlFile = new File("output/planning.html");
 		FileWriter fileW;
 
 		try {
