@@ -3,7 +3,10 @@ package program;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 import org.uma.jmetal.algorithm.Algorithm;
 import org.uma.jmetal.algorithm.multiobjective.nsgaii.NSGAIIBuilder;
@@ -35,15 +38,33 @@ public class Program {
 		List<PlanningSolution> newPop = new ArrayList<>();
 		Comparator<PlanningSolution> comparator = new PlanningSolutionDominanceComparator();
 		Collections.sort(population, comparator);
+		
+		// Clears the duplicates solutions
+		/*int i = 0;
+		int nbRemovedDuplicates = 0;
+		int positionDuplicate;
+		while (i < population.size() -1) {
+			positionDuplicate = population.subList(i + 1, population.size()).indexOf(population.get(i));
+			while (positionDuplicate != -1) {
+				population.remove(i + positionDuplicate);
+				nbRemovedDuplicates++;
+				positionDuplicate = population.subList(i + 1, population.size()).indexOf(population.get(i));
+			}
+			i++;
+		}*/
+		Set<PlanningSolution> set = new HashSet<>() ;
+        set.addAll(population);
+        population.clear();
+        population.addAll(set);
 
 		if (population.size() > 0) {
-			int i = population.size() - 1;
+			int j = population.size() - 1;
 			PlanningSolution reference = population.get(population.size()-1);
 			
 			do {
-				newPop.add(population.get(i));
-				i--;
-			} while (i >= 0 && comparator.compare(reference, population.get(i)) == 0);
+				newPop.add(population.get(j));
+				j--;
+			} while (j >= 0 && comparator.compare(reference, population.get(j)) == 0);
 		}
 		
 		population.clear();
