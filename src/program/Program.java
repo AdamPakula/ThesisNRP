@@ -1,11 +1,9 @@
 package program;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 import org.uma.jmetal.algorithm.Algorithm;
@@ -17,12 +15,10 @@ import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
 import org.uma.jmetal.util.AlgorithmRunner;
 
 import entities.Employee;
-import entities.PlannedTask;
-import entities.Priority;
-import entities.Skill;
 import entities.Task;
 import logic.NextReleaseProblem;
 import logic.PlanningSolution;
+import logic.PopulationCleaner;
 import logic.comparators.PlanningSolutionDominanceComparator;
 import logic.operators.PlanningCrossoverOperator;
 import logic.operators.PlanningMutationOperator;
@@ -30,63 +26,22 @@ import view.HTMLPrinter;
 
 public class Program {
 	
-	/**
-	 * Returns only the best solutions
-	 * @param population the population which will be ordered
-	 */
-	private static void filter(List<PlanningSolution> population) {
-		List<PlanningSolution> newPop = new ArrayList<>();
-		Comparator<PlanningSolution> comparator = new PlanningSolutionDominanceComparator();
-		Collections.sort(population, comparator);
-		
-		// Clears the duplicates solutions
-		/*int i = 0;
-		int nbRemovedDuplicates = 0;
-		int positionDuplicate;
-		while (i < population.size() -1) {
-			positionDuplicate = population.subList(i + 1, population.size()).indexOf(population.get(i));
-			while (positionDuplicate != -1) {
-				population.remove(i + positionDuplicate);
-				nbRemovedDuplicates++;
-				positionDuplicate = population.subList(i + 1, population.size()).indexOf(population.get(i));
-			}
-			i++;
-		}*/
-		Set<PlanningSolution> set = new HashSet<>() ;
-        set.addAll(population);
-        population.clear();
-        population.addAll(set);
-
-		if (population.size() > 0) {
-			int j = population.size() - 1;
-			PlanningSolution reference = population.get(population.size()-1);
-			
-			do {
-				newPop.add(population.get(j));
-				j--;
-			} while (j >= 0 && comparator.compare(reference, population.get(j)) == 0);
-		}
-		
-		population.clear();
-		population.addAll(newPop);
-	}
-	
-	private static void printPopulation(List<PlanningSolution> population) {
+	public static void printPopulation(Collection<PlanningSolution> population) {
 		int solutionCpt = 1;
-		for (PlanningSolution solution : population) {
-			System.out.println("Solution " + solutionCpt + ": (" 
-					+ solution.getObjective(0) + "\t" + solution.getObjective(1) + ")");
-			for (PlannedTask task : solution.getPlannedTasks()) {
-				System.out.println("-" + task.getTask().getName() + " done by " + task.getEmployee().getName() + " at hour " + task.getBeginHour());
-			}
-			System.out.println("End Date: " + solution.getEndDate());
+		Iterator<PlanningSolution> iterator = population.iterator();
+		
+		while (iterator.hasNext()) {
+			PlanningSolution currentSolution = iterator.next();
+			System.out.println("Solution " + solutionCpt++ + ": (" 
+					+ currentSolution.getObjective(0) + "\t" + currentSolution.getObjective(1) + ")");
+			System.out.print(currentSolution);
+			System.out.println("End Date: " + currentSolution.getEndDate());
 			System.out.println();
-			solutionCpt++;
 		}
 	}
 
 	public static void main(String[] args) {
-		Skill cpp = new Skill("C++");
+		/*Skill cpp = new Skill("C++");
 		Skill java = new Skill("Java");
 		
 		List<Skill> cppSkills = new ArrayList<>();
@@ -107,7 +62,11 @@ public class Program {
 		List<Employee> employees = new ArrayList<Employee>();
 		employees.add(new Employee("Employee 1", 5.0, cppSkills));
 		employees.add(new Employee("Employee 2", 20.0, javaSkills));
-		employees.add(new Employee("Employee 3", 15.0, bothSkills));
+		employees.add(new Employee("Employee 3", 15.0, bothSkills));*/
+		
+		Object inputLists[] = DataLoader.readData();
+		List<Task> tasks = (List<Task>) inputLists[0];
+		List<Employee> employees = (List<Employee>) inputLists[1];
 		
 		NextReleaseProblem problem = new NextReleaseProblem(tasks, employees);
 		Algorithm<List<PlanningSolution>> algorithm;
@@ -115,7 +74,7 @@ public class Program {
 	    MutationOperator<PlanningSolution> mutation;
 	    SelectionOperator<List<PlanningSolution>, PlanningSolution> selection;
 	    
-	    double crossoverProbability = 0.9;
+	    double crossoverProbability = 0.1;
 		crossover = new PlanningCrossoverOperator(crossoverProbability);
 	    
 	    double mutationProbability = 1.0 / problem.getTasks().size();
@@ -135,9 +94,13 @@ public class Program {
 		for (PlanningSolution planningSolution : population) {
 			problem.evaluate(planningSolution);
 		}
-		filter(population);
+		
+		System.err.println(population.size());
+		Set<PlanningSolution> filteredPopulation = PopulationCleaner.getBestSolutions(population);
+		System.err.println(filteredPopulation.size());
+		printPopulation(filteredPopulation);
 		printPopulation(population);
-		HTMLPrinter browserDisplay = new HTMLPrinter(problem, population);
+		HTMLPrinter browserDisplay = new HTMLPrinter(problem, new ArrayList<>(filteredPopulation));
 		browserDisplay.run();
 		
 	}
