@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.solution.impl.AbstractGenericSolution;
@@ -220,7 +219,7 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 		boolean equals = other.getPlannedTasks().size() == size;
 		int i = 0;
 		while (equals && i < size) {
-			if (!Objects.equals(other.getPlannedTasks().get(i), this.getPlannedTasks().get(i))) {
+			if (!other.getPlannedTasks().contains(this.getPlannedTasks().get(i))) {
 				equals = false;
 			}
 			i++;
