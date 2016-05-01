@@ -76,7 +76,7 @@ public class Program {
 		}
 		
 		Set<PlanningSolution> filteredPopulation = PopulationCleaner.getBestSolutions(population);
-		printPopulation(population);;
+		printPopulation(filteredPopulation);
 		HTMLPrinter browserDisplay = new HTMLPrinter(problem, new ArrayList<>(filteredPopulation));
 		browserDisplay.run();
 		
