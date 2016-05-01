@@ -13,7 +13,6 @@ import org.uma.jmetal.problem.impl.AbstractGenericProblem;
 import org.uma.jmetal.util.solutionattribute.impl.NumberOfViolatedConstraints;
 
 import entities.Employee;
-import entities.PlannedTask;
 import entities.Priority;
 import entities.Skill;
 import entities.Task;
@@ -154,15 +153,7 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 	@Override
 	public void evaluate(PlanningSolution solution) {
 		final int MAX_PRIORITY = tasks.size() * Priority.ONE.getScore();
-		int priorityScore = 0;
-		
-		solution.schedule();
-		
-		for (int i = 0 ; i < solution.getPlannedTasks().size() ; i++) {
-			priorityScore += solution.getPlannedTasks().get(i).getTask().getPriority().getScore();
-		}
-		
-		solution.setObjective(INDEX_PRIORITY_OBJECTIVE, MAX_PRIORITY - priorityScore);
+		solution.setObjective(INDEX_PRIORITY_OBJECTIVE, MAX_PRIORITY - solution.getPriorityScore());
 		solution.setObjective(INDEX_END_DATE_OBJECTIVE, solution.getEndDate());
 	}
 
@@ -180,24 +171,6 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 
 	@Override
 	public void evaluateConstraints(PlanningSolution solution) {
-		int numViolatedConstraints = 0;
-		for (int i = 0 ; i < solution.getPlannedTasks().size() ; i++) {
-			Task currentTask = solution.getPlannedTasks().get(i).getTask();
-			for (Task previousTask : currentTask.getPreviousTasks()) {
-				boolean found = false;
-				int j = 0;
-				while (!found && j < i) { //TODO update condition when we will compare by time and not by order
-					if (solution.getPlannedTasks().get(j).getTask() == previousTask) {
-						found = true;
-					}
-					j++;
-				}
-				if (!found) {
-					numViolatedConstraints++;
-				}
-			}
-		}
-
-		numberOfViolatedConstraints.setAttribute(solution, numViolatedConstraints);
+		numberOfViolatedConstraints.setAttribute(solution, solution.getNumberOfViolatedConstraint());
 	}
 }

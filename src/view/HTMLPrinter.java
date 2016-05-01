@@ -5,7 +5,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import entities.Employee;
@@ -98,7 +97,7 @@ public class HTMLPrinter implements Runnable {
 		StringBuilder sb = new StringBuilder();
 		int numberOfTimeSlots = getNumberOfTimeSlots(solution);
 		
-		if (solution.getPlannedTasks().size() == 0) {
+		if (solution.getNumberOfPlannedTasks() == 0) {
 			return sb.append("There is no planned task in this solution");
 		}
 		sb.append("<table><thead><tr><th></th>");
@@ -112,7 +111,7 @@ public class HTMLPrinter implements Runnable {
 		// Employee's rows of the planning table
 		for (Employee employee : problem.getEmployees()) {
 			sb.append("<tr><td>").append(employee.getName()).append("</td>");
-			List<PlannedTask> tasksOfEmployee = getPlannedTasks(solution, employee);
+			List<PlannedTask> tasksOfEmployee = solution.getTasksDoneBy(employee);
 			int colspan = 0;
 			for (int j = 0 ; j < numberOfTimeSlots ; j++) {
 				PlannedTask currentTask = null;
@@ -144,24 +143,6 @@ public class HTMLPrinter implements Runnable {
 		sb.append("</tr></tbody></table>");
 		
 		return sb;
-	}
-	
-	/**
-	 * Returns the list of the planned tasks done by an employee
-	 * @param s The solution with the planned tasks
-	 * @param e The employee
-	 * @return the list of the planned tasks done by the employee
-	 */
-	private List<PlannedTask> getPlannedTasks(PlanningSolution s, Employee e) {
-		List<PlannedTask> tasksOfEmployee = new ArrayList<>();
-		
-		for (PlannedTask plannedTask : s.getPlannedTasks()) {
-			if (plannedTask.getEmployee() == e) {
-				tasksOfEmployee.add(plannedTask);
-			}
-		}
-		
-		return tasksOfEmployee;
 	}
 	
 

@@ -72,6 +72,10 @@ public class PlannedTask {
 		beginHour = 0.0;
 	}
 	
+	public PlannedTask(PlannedTask origin) {
+		this(origin.getTask(), origin.getEmployee());
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

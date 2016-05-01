@@ -4,6 +4,7 @@
 package logic.operators;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.uma.jmetal.operator.CrossoverOperator;
@@ -73,10 +74,11 @@ public class PlanningCrossoverOperator implements CrossoverOperator<PlanningSolu
 		offspring.add((PlanningSolution) parent2.copy()) ;
 		
 		if (randomGenerator.nextDouble() < crossoverProbability) {
+			// The two final solutions containing, at the beginning, a copy of the parents
 			PlanningSolution child1 = offspring.get(0);
 			PlanningSolution child2 = offspring.get(1);
 			
-			int minSize = Math.min(parent1.getPlannedTasks().size(), parent2.getPlannedTasks().size());
+			int minSize = Math.min(parent1.getNumberOfPlannedTasks(), parent2.getNumberOfPlannedTasks());
 			
 			if (minSize > 0) {
 				int splitPosition;
@@ -85,94 +87,55 @@ public class PlanningCrossoverOperator implements CrossoverOperator<PlanningSolu
 					splitPosition = 1;
 				} 
 				else {
-					splitPosition = randomGenerator.nextInt(1, minSize - 1);
+					splitPosition = randomGenerator.nextInt(1, minSize);
 				}
 				
-				child1.setPlannedTasks(new ArrayList<PlannedTask>(parent1.getPlannedTasks().subList(0, splitPosition)));
-				List<PlannedTask> endParent1 = new ArrayList<PlannedTask>(parent1.getPlannedTasks().subList(splitPosition, parent1.getPlannedTasks().size()));
-				
-				child2.setPlannedTasks(new ArrayList<PlannedTask>(parent2.getPlannedTasks().subList(0, splitPosition)));
-				List<PlannedTask> endParent2 = new ArrayList<PlannedTask>(parent2.getPlannedTasks().subList(splitPosition, parent2.getPlannedTasks().size()));
-				
-				updateUnPlannedTasksByAdding(child1, endParent1);
-				updateUnPlannedTasksByAdding(child2, endParent2);
-				
-				List<PlannedTask> duplicatesInChild1 = findDuplicates(child1.getPlannedTasks(), endParent2);
-				List<PlannedTask> duplicatesInChild2 = findDuplicates(child2.getPlannedTasks(), endParent1);
-				
-				// Exchange the duplicates tasks in child 1 with the ones in child 2
-				while (duplicatesInChild1.size() > 0 && duplicatesInChild2.size() > 0) {
-					PlannedTask taskToChangeFromEndParent2ToEndParent1 = duplicatesInChild1.get(0),
-							taskToChangeFromEndParent1ToEndParent2 = duplicatesInChild2.get(0);
-					
-					endParent2.set(endParent2.indexOf(taskToChangeFromEndParent2ToEndParent1), taskToChangeFromEndParent1ToEndParent2);
-					endParent1.set(endParent1.indexOf(taskToChangeFromEndParent1ToEndParent2), taskToChangeFromEndParent2ToEndParent1);
-				
-					duplicatesInChild1.remove(0);
-					duplicatesInChild2.remove(0);
+				// Copy and unschedule the post-cut tasks
+				List<PlannedTask> futurEndChild1 = child2.getEndPlannedTasksSubListCopy(splitPosition);
+				List<PlannedTask> futurEndChild2 = child1.getEndPlannedTasksSubListCopy(splitPosition);
+				for (PlannedTask plannedTask : futurEndChild2) {
+					child1.unschedule(plannedTask);
+				}
+				for (PlannedTask plannedTask : futurEndChild1) {
+					child2.unschedule(plannedTask);
 				}
 				
-				while (duplicatesInChild1.size() > 0) {
-					endParent2.remove(duplicatesInChild1.get(0));
-					duplicatesInChild1.remove(0);
+				
+				// schedule the new ends and keep it in the list only if they were already planned
+				Iterator<PlannedTask> iteratorEndChild1 = futurEndChild1.iterator();
+				while (iteratorEndChild1.hasNext()) {
+					PlannedTask plannedTask = (PlannedTask) iteratorEndChild1.next();
+					if (!child1.isAlreadyPlanned(plannedTask.getTask())) {
+						child1.scheduleAtTheEnd(plannedTask.getTask(), plannedTask.getEmployee());
+						iteratorEndChild1.remove();
+					}
+				}
+				Iterator<PlannedTask> iteratorEndChild2 = futurEndChild2.iterator();
+				while (iteratorEndChild2.hasNext()) {
+					PlannedTask plannedTask = (PlannedTask) iteratorEndChild2.next();
+					if (!child2.isAlreadyPlanned(plannedTask.getTask())) {
+						child2.scheduleAtTheEnd(plannedTask.getTask(), plannedTask.getEmployee());
+						iteratorEndChild2.remove();
+					}
 				}
 				
-				while (duplicatesInChild2.size() > 0) {
-					endParent1.remove(duplicatesInChild2.get(0));
-					duplicatesInChild2.remove(0);
+				// Exchanging the tasks
+				iteratorEndChild1 = futurEndChild1.iterator();
+				iteratorEndChild2 = futurEndChild2.iterator();
+				while (iteratorEndChild1.hasNext() && iteratorEndChild2.hasNext()) {
+					PlannedTask task = iteratorEndChild1.next();
+					child1.scheduleAtTheEnd(task.getTask(), task.getEmployee());
+					task = iteratorEndChild2.next();
+					child2.scheduleAtTheEnd(task.getTask(), task.getEmployee());
 				}
-				
-				updateUnPlannedTaksByRemoving(child1, endParent2);
-				updateUnPlannedTaksByRemoving(child2, endParent1);
-				
-				child1.getPlannedTasks().addAll(endParent2);
-				child2.getPlannedTasks().addAll(endParent1);
 			}
 		}
 
 		return offspring;
 	}
-	
-	/**
-	 * Find the duplicated tasks in two lists
-	 * @param list1 the first list
-	 * @param list2 the second list
-	 * @return the list of the duplicate tasks
-	 */
-	// TODO: improve replacing by a map with the indexes
-	private List<PlannedTask> findDuplicates(List<PlannedTask> list1, List<PlannedTask> list2) {
-		List<PlannedTask> duplicateTasks = new ArrayList<PlannedTask>();
-		
-		for (PlannedTask task1 : list1) {
-			for (PlannedTask task2 : list2) {
-				if (task1.getTask() == task2.getTask()) {
-					duplicateTasks.add(task2);
-				}
-			}
-		}
-		
-		return duplicateTasks;
-	}
 
 	@Override
 	public int getNumberOfParents() {
 		return 2;
-	}
-
-	/**
-	 * Add the tasks in the list to the unplanned tasks list of the solution
-	 * @param solution the solution
-	 * @param tasks the tasks to put in the unplanned list
-	 */
-	private void updateUnPlannedTasksByAdding(PlanningSolution solution, List<PlannedTask> tasks) {
-		for (PlannedTask task : tasks) {
-			solution.getUndoneTasks().add(task.getTask());
-		}
-	}
-	
-	private void updateUnPlannedTaksByRemoving(PlanningSolution solution, List<PlannedTask> tasks) {
-		for (PlannedTask task : tasks) {
-			solution.getUndoneTasks().remove(task.getTask());
-		}
 	}
 }
