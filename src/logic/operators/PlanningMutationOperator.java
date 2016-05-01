@@ -3,6 +3,7 @@
  */
 package logic.operators;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.uma.jmetal.operator.MutationOperator;
@@ -77,27 +78,29 @@ public class PlanningMutationOperator implements MutationOperator<PlanningSoluti
 	/* --- Methods --- */
 	
 	@Override
-	public PlanningSolution execute(PlanningSolution source) {
-		int nbPlannedTasks = source.getNumberOfPlannedTasks();
+	public PlanningSolution execute(PlanningSolution parent) {
+		PlanningSolution child = new PlanningSolution(parent);
+		int nbPlannedTasks = child.getNumberOfPlannedTasks();
+		
 		for (int i = 0 ; i < nbPlannedTasks ; i++) {
 			if (doMutation()) { // If we have to do a mutation
-				PlannedTask taskToMutate = source.getPlannedTask(i);
+				PlannedTask taskToMutate = child.getPlannedTask(i);
 				if (randomGenerator.nextDouble() < 0.5) {
 					changeEmployee(taskToMutate);
 				}
 				else {
-					changeTask(source, taskToMutate, i);
+					changeTask(child, taskToMutate, i);
 				}
 			}
 		}
 		
 		for (int i = nbPlannedTasks ; i < problem.getTasks().size() ; i++) {
 			if (doMutation()) {
-				addNewTask(source);
+				addNewTask(child);
 			}
 		}
 		
-		return source;
+		return child;
 	}
 	
 	/**
