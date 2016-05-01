@@ -3,7 +3,6 @@
  */
 package logic.operators;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.uma.jmetal.operator.MutationOperator;
