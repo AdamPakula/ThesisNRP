@@ -44,7 +44,7 @@ public class Program {
 	}
 
 	public static void main(String[] args) {		
-		Object inputLists[] = DataLoader.readData();
+		Object inputLists[] = DataLoader.readData(TestFile.SIMPLEST);
 		List<Task> tasks = (List<Task>) inputLists[0];
 		List<Employee> employees = (List<Employee>) inputLists[1];
 		

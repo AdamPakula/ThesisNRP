@@ -21,12 +21,14 @@ public class DataLoader {
 	private final static int INDEX_EMPLOYEE_NAME = 0;
 	private final static int INDEX_EMPLOYEE_AVAILABILITY = 1;
 	private final static int INDEX_EMPLOYEE_SKILLS = 2;
+	
+	public final static String INPUT_DIRECTORY = new String("test/inputs/");
 
-	public static Object[] readData() {
+	public static Object[] readData(TestFile file) {
 		Object[] data = null;
 		
-		try(BufferedReader tasksBufferedReader = new BufferedReader(new FileReader("test/inputs/simplest.tasks"));
-				BufferedReader employeesBufferedReader = new BufferedReader(new FileReader("test/inputs/simplest.employees"))) {
+		try(BufferedReader tasksBufferedReader = new BufferedReader(new FileReader(INPUT_DIRECTORY + file.getTasksFileName()));
+				BufferedReader employeesBufferedReader = new BufferedReader(new FileReader(INPUT_DIRECTORY + file.getEmployeesFileName()))) {
 			
 			// Reading the tasks and skills
 			List<Skill> skills = new ArrayList<>();
