@@ -153,7 +153,10 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 
 	    numberOfViolatedConstraints = planningSolution.numberOfViolatedConstraints;
 	    
-	    plannedTasks = new CopyOnWriteArrayList<>(planningSolution.getPlannedTasks());
+	    plannedTasks = new CopyOnWriteArrayList<>();
+	    for (PlannedTask plannedTask : planningSolution.getPlannedTasks()) {
+			plannedTasks.add(new PlannedTask(plannedTask));
+		}
 	    undoneTasks = new CopyOnWriteArrayList<>(planningSolution.getUndoneTasks());
 	    isUpToDate = false;
 	}
