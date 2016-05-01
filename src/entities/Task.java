@@ -124,4 +124,9 @@ public class Task {
 		this.previousTasks = previousTasks == null ? new ArrayList<Task>() : previousTasks;
 		this.requiredSkills = requiredSkills == null ? new ArrayList<Skill>() : requiredSkills;
 	}
+	
+	@Override
+	public String toString() {
+		return getName();
+	}
 }
