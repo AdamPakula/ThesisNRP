@@ -18,6 +18,7 @@ public class DataLoader {
 	private final static int INDEX_TASK_PRIORITY = 1;
 	private final static int INDEX_TASK_DURATION = 2;
 	private final static int INDEX_TASK_SKILLS = 3;
+	private final static int INDEX_TASK_PREVIOUS = 4;
 	private final static int INDEX_EMPLOYEE_NAME = 0;
 	private final static int INDEX_EMPLOYEE_AVAILABILITY = 1;
 	private final static int INDEX_EMPLOYEE_SKILLS = 2;
@@ -36,7 +37,7 @@ public class DataLoader {
 			String line = tasksBufferedReader.readLine();
 
 			while (line != null) {
-				tasks.add(readTask(line, skills));
+				tasks.add(readTask(line, skills, tasks));
 				
 				line = tasksBufferedReader.readLine();
 			}
@@ -91,18 +92,27 @@ public class DataLoader {
 	 * Reads a task in the line and update the skills list if there is a new
 	 * @param line data file line
 	 * @param skills list of skills already known
+	 * @param tasks The tasks already planned
 	 * @return the new task or null if the line is not well formated
 	 */
-	private static Task readTask(String line, List<Skill> skills) {
+	private static Task readTask(String line, List<Skill> skills, List<Task> tasks) {
 		String[] parts = line.split("\\t");
 		
 		if (parts.length < 4)
 			return null;
 		
+		List<Task> previousTasks = new ArrayList<>();
+		if(parts.length == 5) {
+			String previousTaksNumbers[] = parts[INDEX_TASK_PREVIOUS].split(" ");
+			for (String taskNumber : previousTaksNumbers) {
+				previousTasks.add(tasks.get(new Integer(taskNumber).intValue()));
+			}
+		}
+		
 		Task task = new Task(parts[INDEX_TASK_NAME], 
 						Priority.getPriorityByLevel(new Integer(parts[INDEX_TASK_PRIORITY])), 
 						new Double(parts[INDEX_TASK_DURATION]), 
-						null, 
+						previousTasks, 
 						readSkills(skills, parts[INDEX_TASK_SKILLS]));
 		
 		return task;
