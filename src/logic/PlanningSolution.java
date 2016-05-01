@@ -187,9 +187,6 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 	 * @return the begin hour of the planned task or 0.0 if it is not yet planned
 	 */
 	private double getBeginHour(Task task) {
-		if (!isUpToDate) {
-			updatePlanningDates();
-		}
 		for (PlannedTask plannedTask : plannedTasks) {
 			if (plannedTask.getTask() == task) {
 				return plannedTask.getBeginHour();
