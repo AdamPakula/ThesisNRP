@@ -139,13 +139,6 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 	public List<Employee> getEmployees() {
 		return employees;
 	}
-
-	/**
-	 * @param employees the employees to set
-	 */
-	private void setEmployees(List<Employee> employees) {
-		this.employees = employees;
-	}
 	
 	
 	/* --- Methods --- */
