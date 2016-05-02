@@ -53,6 +53,11 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 	 * An employee is in a the lists of all his skills
 	 */
 	private Map<Skill, List<Employee>> skilledEmployees;
+
+	/**
+	 * The number of weeks of the iteration
+	 */
+	private int nbWeeks;
 	
 	/**
 	 * The index of the priority score objective in the objectives list
@@ -71,10 +76,12 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 	 * Constructor
 	 * @param tasks tasks of the iteration
 	 * @param employees employees available during the iteration
+	 * @param nbWeeks The number of weeks of the iteration
 	 */
-	public NextReleaseProblem(List<Task> tasks, List<Employee> employees) {
+	public NextReleaseProblem(List<Task> tasks, List<Employee> employees, int nbWeeks) {
 		this.tasks = tasks;
 		this.employees = employees;
+		this.nbWeeks = nbWeeks;
 		
 		skilledEmployees = new HashMap<>();
 		for (Employee employee : employees) {
@@ -116,6 +123,14 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 	 */
 	public void setTasks(List<Task> tasks) {
 		this.tasks = tasks;
+	}
+	
+	/**
+	 * Returns the number of weeks of the iteration
+	 * @return The number of weeks of the iteration
+	 */
+	public int getNbWeeks() {
+		return nbWeeks;
 	}
 	
 	/**
