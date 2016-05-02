@@ -54,6 +54,16 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 	 */
 	private Map<Skill, List<Employee>> skilledEmployees;
 	
+	/**
+	 * The index of the priority score objective in the objectives list
+	 */
+	public final static int INDEX_PRIORITY_OBJECTIVE = 0;
+	
+	/**
+	 * The index of the end date objective in the objectives list
+	 */
+	public final static int INDEX_END_DATE_OBJECTIVE = 1;
+	
 	
 	/* --- Constructors --- */
 
@@ -80,8 +90,14 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 		
 		setNumberOfVariables(1);
 		setName("Next Release Problem");
-		setNumberOfObjectives(1);
-		setNumberOfConstraints(1);
+		setNumberOfObjectives(2);
+		
+		int numberOfConstraints = 0;
+		for (Task task : tasks) {
+			numberOfConstraints += task.getPreviousTasks().size();
+		}
+		setNumberOfConstraints(numberOfConstraints);
+		
 		numberOfViolatedConstraints = new NumberOfViolatedConstraints<PlanningSolution>();
 	}
 	
@@ -116,12 +132,12 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 	public List<Employee> getEmployees(Skill skill) {
 		return skilledEmployees.get(skill);
 	}
-
+	
 	/**
-	 * @param employees the employees to set
+	 * @return the list of the employees
 	 */
-	public void setEmployees(List<Employee> employees) {
-		this.employees = employees;
+	public List<Employee> getEmployees() {
+		return employees;
 	}
 	
 	
@@ -130,12 +146,8 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 	@Override
 	public void evaluate(PlanningSolution solution) {
 		final int MAX_PRIORITY = tasks.size() * Priority.ONE.getScore();
-		int totalScore = 0;
-		
-		for (int i = 0 ; i < solution.getPlannedTasks().size() ; i++) {
-			totalScore += solution.getPlannedTasks().get(i).getTask().getPriority().getScore();
-		}
-		solution.setObjective(0, MAX_PRIORITY - totalScore);
+		solution.setObjective(INDEX_PRIORITY_OBJECTIVE, MAX_PRIORITY - solution.getPriorityScore());
+		solution.setObjective(INDEX_END_DATE_OBJECTIVE, solution.getEndDate());
 	}
 
 	/**
@@ -152,23 +164,6 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 
 	@Override
 	public void evaluateConstraints(PlanningSolution solution) {
-		int numViolatedConstraints = 0;
-		for (int i = 0 ; i < solution.getPlannedTasks().size() ; i++) {
-			Task currentTask = solution.getPlannedTasks().get(i).getTask();
-			for (Task previousTask : currentTask.getPreviousTasks()) {
-				boolean found = false;
-				int j = 0;
-				while (!found && j < i) { //TODO update condition when we will compare by time and not by order
-					if (solution.getPlannedTasks().get(j).getTask() == previousTask) {
-						found = true;
-					}
-					j++;
-				}
-				if (!found) {
-					numViolatedConstraints++;
-				}
-			}
-		}
-		numberOfViolatedConstraints.setAttribute(solution, numViolatedConstraints);
+		numberOfViolatedConstraints.setAttribute(solution, solution.getNumberOfViolatedConstraint());
 	}
 }

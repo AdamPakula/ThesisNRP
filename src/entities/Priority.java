@@ -48,4 +48,18 @@ public enum Priority {
 		this.score = score;
 	}
 
+	public static Priority getPriorityByLevel(int level) {
+		switch (level) {
+			case 1:
+				return Priority.ONE;
+			case 2:
+				return Priority.TWO;
+			case 3:
+				return Priority.THREE;
+			case 4:
+				return Priority.FOUR;
+			default:
+				return Priority.FIVE;
+		}
+	}
 }

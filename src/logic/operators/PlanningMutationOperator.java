@@ -1,7 +1,7 @@
 /**
  * 
  */
-package operators;
+package logic.operators;
 
 import java.util.List;
 
@@ -11,7 +11,6 @@ import org.uma.jmetal.util.pseudorandom.JMetalRandom;
 
 import entities.Employee;
 import entities.PlannedTask;
-import entities.Task;
 import logic.NextReleaseProblem;
 import logic.PlanningSolution;
 
@@ -78,25 +77,29 @@ public class PlanningMutationOperator implements MutationOperator<PlanningSoluti
 	/* --- Methods --- */
 	
 	@Override
-	public PlanningSolution execute(PlanningSolution source) {
-		for (int i = 0 ; i < source.getPlannedTasks().size() ; i++) {
+	public PlanningSolution execute(PlanningSolution parent) {
+		PlanningSolution child = new PlanningSolution(parent);
+		int nbPlannedTasks = child.getNumberOfPlannedTasks();
+		
+		for (int i = 0 ; i < nbPlannedTasks ; i++) {
 			if (doMutation()) { // If we have to do a mutation
-				PlannedTask taskToMutate = source.getPlannedTasks().get(i);
+				PlannedTask taskToMutate = child.getPlannedTask(i);
 				if (randomGenerator.nextDouble() < 0.5) {
 					changeEmployee(taskToMutate);
 				}
 				else {
-					changeTask(source, taskToMutate, i);
+					changeTask(child, taskToMutate, i);
 				}
 			}
 		}
-		if (source.getUndoneTasks().size() > 0) {
+		
+		for (int i = nbPlannedTasks ; i < problem.getTasks().size() ; i++) {
 			if (doMutation()) {
-				addNewTask(source);
+				addNewTask(child);
 			}
 		}
 		
-		return source;
+		return child;
 	}
 	
 	/**
@@ -109,7 +112,7 @@ public class PlanningMutationOperator implements MutationOperator<PlanningSoluti
 	}
 
 	/**
-	 * Add an random unplanned task in the planning
+	 * Add an random unplanned task to the planning
 	 * - chose randomly an unplanned task
 	 * - remove it from the unplanned tasks list of the solution
 	 * - chose randomly an employee
@@ -117,13 +120,7 @@ public class PlanningMutationOperator implements MutationOperator<PlanningSoluti
 	 * @param solution the solution to mutate
 	 */
 	private void addNewTask(PlanningSolution solution) {
-		int insertionPosition = randomGenerator.nextInt(0, solution.getPlannedTasks().size());
-		int removePosition = randomGenerator.nextInt(0, solution.getUndoneTasks().size()-1);
-		Task newTask = solution.getUndoneTasks().get(removePosition);
-		List<Employee> skilledEmployees = problem.getEmployees(newTask.getRequiredSkills().get(0));
-		Employee newEmployee = skilledEmployees.get(randomGenerator.nextInt(0, skilledEmployees.size()-1));
-		solution.getUndoneTasks().remove(removePosition);
-		solution.getPlannedTasks().add(insertionPosition, new PlannedTask(newTask, newEmployee));
+		solution.scheduleRandomTask();
 	}
 	
 	/**
@@ -134,17 +131,16 @@ public class PlanningMutationOperator implements MutationOperator<PlanningSoluti
 	 * @param taskPosition The position of the task to modify in the planning (the plannedTask list)
 	 */
 	private void changeTask(PlanningSolution solution, PlannedTask taskToChange, int taskPosition) {
-		int randomNumTask = randomGenerator.nextInt(0, numberOfTasks - 1);
-		int numberOfPlannedTasks = solution.getPlannedTasks().size();
-		if (randomNumTask < numberOfPlannedTasks) { // If the random selected task is already planned then exchange with the current
-			solution.getPlannedTasks().set(taskPosition, solution.getPlannedTasks().get(randomNumTask));
-			solution.getPlannedTasks().set(randomNumTask, taskToChange);
+		int randomPosition = randomGenerator.nextInt(0, numberOfTasks);
+		if (randomPosition < solution.getNumberOfPlannedTasks() - 1) { // If the random selected task is already planned then exchange with the current
+			if (taskPosition == randomPosition) { 
+				randomPosition++; // If problem then apply a % (modulo) size
+			}
+			solution.exchange(taskPosition, randomPosition);
 		}
-		else { // If the random selected task is not yet planned, let's change it
-			int positionNewTask = randomNumTask - numberOfPlannedTasks;
-			Task taskToAdd = solution.getUndoneTasks().remove(positionNewTask);
-			solution.getUndoneTasks().add(taskToChange.getTask());
-			solution.getPlannedTasks().set(taskPosition, new PlannedTask(taskToAdd, taskToChange.getEmployee()));
+		else { // If the random selected task is not yet planned, let's do it
+			solution.unschedule(taskToChange);
+			solution.scheduleRandomTask(taskPosition);
 		}
 	}
 	

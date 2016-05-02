@@ -1,5 +1,7 @@
 package entities;
 
+import java.util.Objects;
+
 /**
  * Describes a task in a planning
  * @author Vavou
@@ -67,5 +69,25 @@ public class PlannedTask {
 	public PlannedTask(Task task, Employee employee) {
 		this.task = task;
 		this.employee = employee;
+		beginHour = 0.0;
+	}
+	
+	public PlannedTask(PlannedTask origin) {
+		this(origin.getTask(), origin.getEmployee());
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+
+		if (getClass() != obj.getClass())
+			return false;
+
+		PlannedTask other = (PlannedTask) obj;
+
+		return Objects.equals(other.getTask(), this.getTask()) &&
+				Objects.equals(other.getEmployee(), this.getEmployee()) &&
+				Objects.equals(other.getBeginHour(), this.getBeginHour());
 	}
 }
