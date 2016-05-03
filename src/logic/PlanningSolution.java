@@ -105,6 +105,11 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 		return null;
 	}
 	
+	public void setPlannedTasks(List<PlannedTask> list) {
+		isUpToDate = false;
+		plannedTasks = list;
+	}
+	
 	/**
 	 * Get a copy of the planned task from position in the original list
 	 * @param beginPosition the begin position
@@ -136,7 +141,7 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 	 * initialize a random set of planned tasks
 	 * @param problem
 	 */
-	protected PlanningSolution(NextReleaseProblem problem) {
+	public PlanningSolution(NextReleaseProblem problem) {
 		super(problem);
 	    numberOfViolatedConstraints = 0;
 
@@ -176,23 +181,6 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 			plannedTasks.set(pos1, new PlannedTask(plannedTasks.get(pos2)));
 			plannedTasks.set(pos2, new PlannedTask(task1));
 		}
-		else {
-			System.err.println("not exchanged\t" + pos1 + "\t" + pos2);
-		}
-	}
-	
-	/**
-	 * Get the begin hour of a planned task which includes the parameter task
-	 * @param task
-	 * @return the begin hour of the planned task or 0.0 if it is not yet planned
-	 */
-	private double getBeginHour(Task task) {
-		for (PlannedTask plannedTask : plannedTasks) {
-			if (plannedTask.getTask() == task) {
-				return plannedTask.getBeginHour();
-			}
-		}
-		return 0.0;
 	}
 	
 	/**
@@ -247,6 +235,17 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 	}
 
 	/* --- Methods --- */
+	
+	private PlannedTask findPlannedTask(Task task) {
+		for (Iterator<PlannedTask> iterator = plannedTasks.iterator(); iterator.hasNext();) {
+			PlannedTask plannedTask = iterator.next();
+			if (plannedTask.getTask().equals(task)) {
+				return plannedTask;
+			}
+		}
+		
+		return null;
+	}
 	
 	/**
 	 * Initialize the variables
@@ -347,10 +346,10 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 	 * Executes only if isUpToDate is false
 	 * Updates he isUpToDate field to true
 	 */
-	private void updatePlanningDates() {
+	public void updatePlanningDates() {
 		if (!isUpToDate) {
 			double newBeginHour;
-			Map<Employee, Double> employeeAvailability = new HashMap<>();
+			Map<Employee, Double[][]> employeeAvailability = new HashMap<>();
 			
 			resetBeginHours();
 			endDate = 0.0;
@@ -361,21 +360,73 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 				
 				// Checks the previous tasks end hour
 				for (Task previousTask : currentTask.getPreviousTasks()) {
-					newBeginHour = Math.max(newBeginHour, getBeginHour(previousTask) + previousTask.getDuration());
+					PlannedTask previousPlannedTask = findPlannedTask(previousTask);
+					if (previousPlannedTask != null) {
+						newBeginHour = Math.max(newBeginHour, previousPlannedTask.getEndHour());
+					}
 				}
 				
 				// Checks the employee availability
 				Employee currentEmployee = plannedTask.getEmployee();
-				Double employeeAvailableHour = employeeAvailability.get(currentEmployee);
-				if (employeeAvailableHour != null) {
-					newBeginHour = Math.max(newBeginHour, employeeAvailableHour.doubleValue());
+				Double employeeAvailableHour[][] = employeeAvailability.get(currentEmployee);
+				// 0 : min available hour in the week
+				// 1 : number of remain hours in the week
+				int currentWeek = 0;
+				
+				if (employeeAvailableHour == null) {
+					employeeAvailableHour = new Double[problem.getNbWeeks()][];
+					// Initialization of the table of availability
+					for (int i = 0 ; i < problem.getNbWeeks() ; i++) {
+						employeeAvailableHour[i] = new Double[2];
+						employeeAvailableHour[i][0] = i * problem.getNbHoursByWeek();
+						employeeAvailableHour[i][1] = 0.0;
+					}
+					employeeAvailability.put(currentEmployee, employeeAvailableHour);
+				}
+				else {
+					int i = problem.getNbWeeks() -1;
+					boolean found = false;
+					while (!found && i >= 0) {
+						if (employeeAvailableHour[i][1] != 0.0) {
+							found = true;
+							currentWeek = i;
+						}
+						i--;
+					}
+					newBeginHour = Math.max(newBeginHour, employeeAvailableHour[currentWeek][0]);
 				}
 				
-				// TODO check employee timetable
+				double remainHours = currentTask.getDuration();
 				plannedTask.setBeginHour(newBeginHour);
-				double taskEndHour = newBeginHour + currentTask.getDuration();
-				employeeAvailability.put(currentEmployee, new Double(taskEndHour));
-				endDate = Math.max(taskEndHour, endDate);
+				
+				do {
+					double endWeek = (currentWeek + 1) * problem.getNbHoursByWeek();
+					if (remainHours < currentEmployee.getWeekAvailability() - employeeAvailableHour[currentWeek][1]
+							&& remainHours + employeeAvailableHour[currentWeek][0] < endWeek) { // If the task can be terminated in this week
+						employeeAvailableHour[currentWeek][0] = Math.max(newBeginHour, employeeAvailableHour[currentWeek][0]) + remainHours;
+						employeeAvailableHour[currentWeek][1] -= remainHours;
+						plannedTask.setEndHour(employeeAvailableHour[currentWeek][0]);
+						
+						remainHours = 0.0;
+					}
+					else {
+						double nbHoursToAddInThisWeek = Math.min(endWeek - remainHours, 
+								employeeAvailableHour[currentWeek][1] - remainHours);
+						if (nbHoursToAddInThisWeek > 0.0) { // If we can add some hours
+							employeeAvailableHour[currentWeek][0] += nbHoursToAddInThisWeek;
+							employeeAvailableHour[currentWeek][1] -= nbHoursToAddInThisWeek;
+							remainHours -= nbHoursToAddInThisWeek;
+						}
+					}
+					
+					currentWeek++;
+				} while (currentWeek < problem.getNbWeeks() && remainHours > 0.0 );
+				
+				if (remainHours > 0.0) {
+					//TODO Could no be added so constraint ++
+				}
+				
+				endDate = Math.max(plannedTask.getEndHour(), endDate);
 			}
 			updateConstraints();
 			isUpToDate = true;
