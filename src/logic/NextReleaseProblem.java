@@ -60,6 +60,11 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 	private int nbWeeks;
 	
 	/**
+	 * The number of worked hours by week
+	 */
+	private double nbHoursByWeek;
+	
+	/**
 	 * The index of the priority score objective in the objectives list
 	 */
 	public final static int INDEX_PRIORITY_OBJECTIVE = 0;
@@ -78,10 +83,11 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 	 * @param employees employees available during the iteration
 	 * @param nbWeeks The number of weeks of the iteration
 	 */
-	public NextReleaseProblem(List<Task> tasks, List<Employee> employees, int nbWeeks) {
+	public NextReleaseProblem(List<Task> tasks, List<Employee> employees, int nbWeeks, double nbHoursByWeek) {
 		this.tasks = tasks;
 		this.employees = employees;
 		this.nbWeeks = nbWeeks;
+		this.nbHoursByWeek = nbHoursByWeek;
 		
 		skilledEmployees = new HashMap<>();
 		for (Employee employee : employees) {
@@ -131,6 +137,14 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 	 */
 	public int getNbWeeks() {
 		return nbWeeks;
+	}
+	
+	/**
+	 * Returns the number of worked hours by week
+	 * @return the number of worked hours by week
+	 */
+	public double getNbHoursByWeek() {
+		return nbHoursByWeek;
 	}
 	
 	/**
