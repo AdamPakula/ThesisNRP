@@ -3,7 +3,8 @@ package program;
 public enum TestFile {
 	SIMPLEST("simplest"),
 	SIMPLE_OPTIMISATION("simple_optimisation"),
-	PRECEDENCE("precedence");
+	PRECEDENCE("precedence"),
+	PRECEDENCES("precedences");
 	
 	private String fileName;
 	
