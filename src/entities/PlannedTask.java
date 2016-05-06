@@ -20,6 +20,11 @@ public class PlannedTask {
 	private double beginHour;
 	
 	/**
+	 * The end hour of the planned task
+	 */
+	private double endHour;
+	
+	/**
 	 * The employee who will do the task
 	 */
 	private Employee employee;
@@ -64,6 +69,20 @@ public class PlannedTask {
 	 */
 	public void setEmployee(Employee employee) {
 		this.employee = employee;
+	}
+
+	/**
+	 * @return the endHour
+	 */
+	public double getEndHour() {
+		return endHour;
+	}
+
+	/**
+	 * @param endHour the endHour to set
+	 */
+	public void setEndHour(double endHour) {
+		this.endHour = endHour;
 	}
 
 	public PlannedTask(Task task, Employee employee) {
