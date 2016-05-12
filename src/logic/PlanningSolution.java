@@ -260,13 +260,13 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 		plannedTasks = new CopyOnWriteArrayList<PlannedTask>();
 	
 		Task taskToDo;
-		List<Employee> skiledEmployees;
+		List<Employee> skilledEmployees;
 		
 		for (int i = 0 ; i < nbTasksToDo ; i++) {
 			taskToDo = undoneTasks.get(randomGenerator.nextInt(0, undoneTasks.size()-1));
-			skiledEmployees = problem.getEmployees(taskToDo.getRequiredSkills().get(0));
+			skilledEmployees = problem.getSkilledEmployees(taskToDo.getRequiredSkills().get(0));
 			scheduleAtTheEnd(taskToDo,
-					skiledEmployees.get(randomGenerator.nextInt(0, skiledEmployees.size()-1)));
+					skilledEmployees.get(randomGenerator.nextInt(0, skilledEmployees.size()-1)));
 		}
 	}
 
@@ -318,7 +318,7 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 		if (undoneTasks.size() <= 0)
 			return;
 		Task newTask = undoneTasks.get(randomGenerator.nextInt(0, undoneTasks.size() -1)); //Maybe size-1
-		List<Employee> skilledEmployees = problem.getEmployees(newTask.getRequiredSkills().get(0));
+		List<Employee> skilledEmployees = problem.getSkilledEmployees(newTask.getRequiredSkills().get(0));
 		Employee newEmployee = skilledEmployees.get(randomGenerator.nextInt(0, skilledEmployees.size()-1));
 		schedule(insertionPosition, newTask, newEmployee);
 	}

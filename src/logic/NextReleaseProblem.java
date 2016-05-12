@@ -158,7 +158,7 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 	/**
 	 * @return the employees with a skill
 	 */
-	public List<Employee> getEmployees(Skill skill) {
+	public List<Employee> getSkilledEmployees(Skill skill) {
 		return skilledEmployees.get(skill);
 	}
 	
