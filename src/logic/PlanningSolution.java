@@ -236,6 +236,11 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 
 	/* --- Methods --- */
 	
+	/**
+	 * Returns the planned task corresponding to the task given in parameter
+	 * @param task The searched task
+	 * @return The planned Task or null if it is not yet planned
+	 */
 	private PlannedTask findPlannedTask(Task task) {
 		for (Iterator<PlannedTask> iterator = plannedTasks.iterator(); iterator.hasNext();) {
 			PlannedTask plannedTask = iterator.next();
