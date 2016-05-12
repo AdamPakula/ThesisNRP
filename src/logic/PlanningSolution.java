@@ -190,7 +190,6 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 	 */
 	public int getPriorityScore() {
 		int score = 0;
-		updatePlanningDates();
 		
 		for (PlannedTask plannedTask : plannedTasks) {
 			score += plannedTask.getTask().getPriority().getScore();
@@ -466,6 +465,9 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 				
 				endDate = Math.max(plannedTask.getEndHour(), endDate);
 			}
+			
+			setObjective(NextReleaseProblem.INDEX_PRIORITY_OBJECTIVE, getPriorityScore());
+			setObjective(NextReleaseProblem.INDEX_END_DATE_OBJECTIVE, endDate);
 			updateConstraints();
 			isUpToDate = true;
 		}
