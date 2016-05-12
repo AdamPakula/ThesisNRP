@@ -133,9 +133,4 @@ public class PlanningCrossoverOperator implements CrossoverOperator<PlanningSolu
 
 		return offspring;
 	}
-
-	@Override
-	public int getNumberOfParents() {
-		return 2;
-	}
 }

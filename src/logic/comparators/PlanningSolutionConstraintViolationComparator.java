@@ -40,9 +40,9 @@ public class PlanningSolutionConstraintViolationComparator implements Constraint
 		if (numViolatedConstraintInSol1 == numViolatedConstraintInSol2)
 			return 0;
 		else if (numViolatedConstraintInSol1 > numViolatedConstraintInSol2)
-			return -1;
-		else
 			return 1;
+		else
+			return -1;
 	}
 
 }

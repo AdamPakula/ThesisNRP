@@ -44,7 +44,7 @@ public class Program {
 	}
 
 	public static void main(String[] args) {		
-		Object inputLists[] = DataLoader.readData(TestFile.SIMPLEST);
+		Object inputLists[] = DataLoader.readData(TestFile.PRECEDENCES);
 		List<Task> tasks = (List<Task>) inputLists[0];
 		List<Employee> employees = (List<Employee>) inputLists[1];
 		
@@ -64,21 +64,18 @@ public class Program {
 
 		algorithm = new NSGAIIBuilder<PlanningSolution>(problem, crossover, mutation)
 				.setSelectionOperator(selection)
-				.setMaxEvaluations(250)
+				.setMaxIterations(250)
 				.setPopulationSize(100)
 				.build();
 		
 		AlgorithmRunner algoRunner = new AlgorithmRunner.Executor(algorithm).execute();
 		
 		List<PlanningSolution> population = algorithm.getResult();
-		for (PlanningSolution planningSolution : population) {
-			problem.evaluate(planningSolution);
-		}
 		
 		Set<PlanningSolution> filteredPopulation = PopulationCleaner.getBestSolutions(population);
+		printPopulation(population);
 		printPopulation(filteredPopulation);
 		HTMLPrinter browserDisplay = new HTMLPrinter(problem, new ArrayList<>(filteredPopulation));
 		browserDisplay.run();
-		
 	}
 }

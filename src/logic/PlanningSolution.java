@@ -127,8 +127,6 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 		return undoneTasks;
 	}
 	
-	/* --- Constructors --- */
-	
 	/**
 	 * @return the isUpToDate
 	 */
@@ -136,6 +134,9 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 		return isUpToDate;
 	}
 
+	
+	/* --- Constructors --- */
+	
 	/**
 	 * Constructor
 	 * initialize a random set of planned tasks
@@ -286,7 +287,6 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 		else {
 			initializePlannedTasksWithPrecedences(nbTasksToDo);
 		}
-		
 	}
 	
 	/**

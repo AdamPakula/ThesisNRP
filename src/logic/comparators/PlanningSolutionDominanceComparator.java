@@ -60,28 +60,28 @@ public class PlanningSolutionDominanceComparator implements Comparator<PlanningS
 	 * If they are equals, it compares the end date objective
 	 * @param solution1 the first solution
 	 * @param solution2 the second solution
-	 * @return -1 if solution2 is better than first, 0 if they are equals and 1 if first solution is better than the second
+	 * @return -1 if solution1 is better than the second, 0 if they are equals and 1 if the second solution is better than the first
 	 */
 	private int dominanceTest(PlanningSolution solution1, PlanningSolution solution2) {
-		final int INDEX_PRIORITY_OBJECTIVE = NextReleaseProblem.INDEX_PRIORITY_OBJECTIVE;	
+		final int INDEX_PRIORITY_OBJECTIVE = NextReleaseProblem.INDEX_PRIORITY_OBJECTIVE;
 		double sol1PriorityObjectiveValue = solution1.getObjective(INDEX_PRIORITY_OBJECTIVE);
 		double sol2PriorityObjectiveValue = solution2.getObjective(INDEX_PRIORITY_OBJECTIVE);
 
 		if (sol1PriorityObjectiveValue < sol2PriorityObjectiveValue) {
-			return 1;
+			return -1;
 		}
 		else if (sol1PriorityObjectiveValue > sol2PriorityObjectiveValue) {
-			return -1;
+			return 1;
 		}
 		else {
 			final int INDEX_END_DATE_OBJECTIVE = NextReleaseProblem.INDEX_END_DATE_OBJECTIVE;
 			double sol1EndDateObjectiveValue = solution1.getObjective(INDEX_END_DATE_OBJECTIVE);
 			double sol2EndDateObjectiveValue = solution2.getObjective(INDEX_END_DATE_OBJECTIVE);
 			if (sol1EndDateObjectiveValue < sol2EndDateObjectiveValue) {
-				return 1;
+				return -1;
 			}
 			else if (sol1EndDateObjectiveValue > sol2EndDateObjectiveValue) {
-				return -1;
+				return 1;
 			}
 			else {
 				return 0;
