@@ -255,7 +255,8 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 		int numberOfTasks = problem.getTasks().size();
 		int nbTasksToDo = randomGenerator.nextInt(0, numberOfTasks);
 		
-		undoneTasks = new CopyOnWriteArrayList<Task>(problem.getTasks());
+		undoneTasks = new CopyOnWriteArrayList<Task>();
+		undoneTasks.addAll(problem.getTasks());
 		plannedTasks = new CopyOnWriteArrayList<PlannedTask>();
 	
 		Task taskToDo;
