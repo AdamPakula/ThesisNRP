@@ -248,6 +248,22 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 	}
 	
 	/**
+	 * Initializes the planned tasks randomly
+	 * @param number the number of tasks to plan
+	 */
+	private void initializePlannedTasksRandomly(int number) {
+		Task taskToDo;
+		List<Employee> skilledEmployees;
+		
+		for (int i = 0 ; i < number ; i++) {
+			taskToDo = undoneTasks.get(randomGenerator.nextInt(0, undoneTasks.size()-1));
+			skilledEmployees = problem.getSkilledEmployees(taskToDo.getRequiredSkills().get(0));
+			scheduleAtTheEnd(taskToDo,
+					skilledEmployees.get(randomGenerator.nextInt(0, skilledEmployees.size()-1)));
+		}
+	}
+
+	/**
 	 * Initialize the variables
 	 * Load a random number of planned tasks
 	 */
@@ -259,17 +275,33 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 		undoneTasks.addAll(problem.getTasks());
 		plannedTasks = new CopyOnWriteArrayList<PlannedTask>();
 	
+		if (randomGenerator.nextInt(0, 1) == 0) {
+			initializePlannedTasksRandomly(nbTasksToDo);
+		}
+		else {
+			initializePlannedTasksWithPrecedences(nbTasksToDo);
+		}
+		
+	}
+	
+	/**
+	 * Initializes the planned tasks considering the precedences
+	 * @param number the number of tasks to plan
+	 */
+	private void initializePlannedTasksWithPrecedences(int number) {
 		Task taskToDo;
 		List<Employee> skilledEmployees;
+		List<Task> possibleTasks = updatePossibleTasks();
 		
-		for (int i = 0 ; i < nbTasksToDo ; i++) {
-			taskToDo = undoneTasks.get(randomGenerator.nextInt(0, undoneTasks.size()-1));
+		for (int i = 0 ; i < number ; i++) {
+			taskToDo = possibleTasks.get(randomGenerator.nextInt(0, possibleTasks.size()-1));
 			skilledEmployees = problem.getSkilledEmployees(taskToDo.getRequiredSkills().get(0));
 			scheduleAtTheEnd(taskToDo,
 					skilledEmployees.get(randomGenerator.nextInt(0, skilledEmployees.size()-1)));
+			possibleTasks = updatePossibleTasks();
 		}
 	}
-
+	
 	/**
 	 * Reset the begin hours of all the planned task to 0.0
 	 */
@@ -432,6 +464,32 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 			updateConstraints();
 			isUpToDate = true;
 		}
+	}
+
+	/**
+	 * Creates a list of the possible tasks to do regarding to the precedences of the undone tasks
+	 * @return the list of the possible tasks to do
+	 */
+	private List<Task> updatePossibleTasks() {
+		List<Task> possibleTasks = new ArrayList<>();
+		boolean possible;
+		int i;
+		
+		for (Task task : undoneTasks) {
+			possible = true;
+			i = 0;
+			while (possible && i < task.getPreviousTasks().size()) {
+				if (!isAlreadyPlanned(task.getPreviousTasks().get(i))) {
+					possible = false;
+				}
+				i++;
+			}
+			if (possible) {
+				possibleTasks.add(task);
+			}
+		}
+		
+		return possibleTasks;
 	}
 
 	private void updateConstraints() {
