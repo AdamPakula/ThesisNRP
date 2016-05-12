@@ -22,6 +22,7 @@ import entities.Task;
  * 
  * Objectives: 
  * 0: Doing the high score in priority
+ * 1: The shortest endDate
  *
  */
 public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution> implements ConstrainedProblem<PlanningSolution> {
@@ -174,9 +175,7 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 	
 	@Override
 	public void evaluate(PlanningSolution solution) {
-		final int MAX_PRIORITY = tasks.size() * Priority.ONE.getScore();
-		solution.setObjective(INDEX_PRIORITY_OBJECTIVE, MAX_PRIORITY - solution.getPriorityScore());
-		solution.setObjective(INDEX_END_DATE_OBJECTIVE, solution.getEndDate());
+		solution.updatePlanningDates();
 	}
 
 	/**
