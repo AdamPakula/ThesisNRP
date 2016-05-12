@@ -188,8 +188,8 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 	 * Calculate the sum of the priority of each task
 	 * @return the priority score
 	 */
-	public int getPriorityScore() {
-		int score = 0;
+	public double getPriorityScore() {
+		double score = 0;
 		
 		for (PlannedTask plannedTask : plannedTasks) {
 			score += plannedTask.getTask().getPriority().getScore();
