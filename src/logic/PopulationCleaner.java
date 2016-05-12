@@ -35,12 +35,12 @@ public class PopulationCleaner {
 		Comparator<PlanningSolution> comparator = new PlanningSolutionDominanceComparator();
 		sortByDominance(population);
 		
-		PlanningSolution bestSolution = population.get(population.size()-1);
+		PlanningSolution bestSolution = population.get(0);
 		Iterator<PlanningSolution> iterator = population.iterator();
 		
 		while (iterator.hasNext()) {
 			PlanningSolution currentSolution = (PlanningSolution) iterator.next();
-			if (comparator.compare(currentSolution, bestSolution) >= 0) {
+			if (comparator.compare(currentSolution, bestSolution) == 0) {
 				bestSolutions.add(currentSolution);
 			}
 		}
