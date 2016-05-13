@@ -124,4 +124,19 @@ public class PlannedTask {
 				other.getBeginHour() == this.getBeginHour() && 
 				other.getEndHour() == this.getEndHour();
 	}
+	
+	@Override
+	public int hashCode() {
+		return new Double(getBeginHour()).intValue();
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append(getTask()).append(" done by ").append(getEmployee())
+			.append(" from ").append(getBeginHour()).append(" to ").append(getEndHour());
+		
+		return sb.toString();
+	}
 }
