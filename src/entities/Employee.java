@@ -88,4 +88,35 @@ public class Employee {
 		this.weekAvailability = weekAvailability;
 		this.skills = skills == null ? new ArrayList<>() : skills;
 	}
+	
+	/**
+	 * Returns the name of the employee
+	 * @return the name of the employee
+	 */
+	@Override 
+	public String toString() {
+		return getName();
+	}
+	
+	/**
+	 * Two employees are equals if they have the same name
+	 * @param obj The other object to compare
+	 */
+	@Override 
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+
+		if (getClass() != obj.getClass())
+			return false;
+
+		Employee other = (Employee) obj;
+		
+		return this.getName().equals(other.getName());
+	}
+	
+	@Override
+	public int hashCode() {
+		return getName().length();
+	}
 }
