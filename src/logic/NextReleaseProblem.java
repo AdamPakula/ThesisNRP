@@ -11,9 +11,9 @@ import java.util.Map;
 import org.uma.jmetal.problem.ConstrainedProblem;
 import org.uma.jmetal.problem.impl.AbstractGenericProblem;
 import org.uma.jmetal.util.solutionattribute.impl.NumberOfViolatedConstraints;
+import org.uma.jmetal.util.solutionattribute.impl.OverallConstraintViolation;
 
 import entities.Employee;
-import entities.Priority;
 import entities.Skill;
 import entities.Task;
 
@@ -48,6 +48,11 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 	 * Number of violated constraints
 	 */
 	private NumberOfViolatedConstraints<PlanningSolution> numberOfViolatedConstraints;
+	
+	/**
+	 * Number of violated constraints
+	 */
+	private OverallConstraintViolation<PlanningSolution> overallConstraintViolation;
 	
 	/**
 	 * Employees sorted by skill 
@@ -188,6 +193,7 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 		setNumberOfConstraints(numberOfConstraints);
 		
 		numberOfViolatedConstraints = new NumberOfViolatedConstraints<PlanningSolution>();
+		overallConstraintViolation = new OverallConstraintViolation<>();
 	}
 	
 	
@@ -215,5 +221,6 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 	@Override
 	public void evaluateConstraints(PlanningSolution solution) {
 		numberOfViolatedConstraints.setAttribute(solution, solution.getNumberOfViolatedConstraint());
+		overallConstraintViolation.setAttribute(solution, solution.getNumberOfViolatedConstraint()*-1.0);
 	}
 }
