@@ -91,7 +91,7 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 	/**
 	 * @return the plannedTasks
 	 */
-	private List<PlannedTask> getPlannedTasks() {
+	public List<PlannedTask> getPlannedTasks() {
 		return plannedTasks;
 	}
 	
@@ -525,9 +525,7 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 		StringBuilder sb = new StringBuilder();
 		
 		for (PlannedTask task : getPlannedTasks()) {
-			sb.append("-").append(task.getTask().getName())
-				.append(" done by ").append(task.getEmployee().getName())
-				.append(" at hour " + task.getBeginHour());
+			sb.append("-").append(task);
 			sb.append(System.getProperty("line.separator"));
 		}
 		
