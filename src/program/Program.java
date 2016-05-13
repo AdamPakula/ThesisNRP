@@ -71,9 +71,9 @@ public class Program {
 		AlgorithmRunner algoRunner = new AlgorithmRunner.Executor(algorithm).execute();
 		
 		List<PlanningSolution> population = algorithm.getResult();
-		
-		Set<PlanningSolution> filteredPopulation = PopulationCleaner.getBestSolutions(population);
 		printPopulation(population);
+		Set<PlanningSolution> filteredPopulation = PopulationCleaner.getBestSolutions(population);
+		
 		printPopulation(filteredPopulation);
 		HTMLPrinter browserDisplay = new HTMLPrinter(problem, new ArrayList<>(filteredPopulation));
 		browserDisplay.run();
