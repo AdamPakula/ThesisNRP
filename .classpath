@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
-	<classpathentry kind="lib" path="C:/Users/Vavou/Informatique/ZZ3/Tesis/jMetal/jmetal-core-5.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Vavou/Informatique/ZZ3/Tesis/jMetal/jmetal-algorithm-5.0.jar"/>
+	<classpathentry exported="true" kind="con" path="org.springsource.ide.eclipse.gradle.classpathcontainer"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
