@@ -68,10 +68,10 @@ public class PlanningSolutionDominanceComparator implements Comparator<PlanningS
 		double sol2PriorityObjectiveValue = solution2.getObjective(INDEX_PRIORITY_OBJECTIVE);
 
 		if (sol1PriorityObjectiveValue < sol2PriorityObjectiveValue) {
-			return 1;
+			return -1;
 		}
 		else if (sol1PriorityObjectiveValue > sol2PriorityObjectiveValue) {
-			return -1;
+			return 1;
 		}
 		else {
 			final int INDEX_END_DATE_OBJECTIVE = NextReleaseProblem.INDEX_END_DATE_OBJECTIVE;
