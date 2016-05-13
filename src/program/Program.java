@@ -35,7 +35,6 @@ public class Program {
 			System.out.println("Solution " + solutionCpt++ + ": (" 
 					+ currentSolution.getObjective(0) + "\t" + currentSolution.getObjective(1) + ")");
 			System.out.print(currentSolution);
-			System.out.println("End Date: " + currentSolution.getEndDate());
 			if (!currentSolution.isUpToDate()) {
 				System.err.println("not up to date");
 			}
@@ -64,16 +63,16 @@ public class Program {
 
 		algorithm = new NSGAIIBuilder<PlanningSolution>(problem, crossover, mutation)
 				.setSelectionOperator(selection)
-				.setMaxIterations(250)
+				.setMaxIterations(500)
 				.setPopulationSize(100)
 				.build();
 		
 		AlgorithmRunner algoRunner = new AlgorithmRunner.Executor(algorithm).execute();
 		
 		List<PlanningSolution> population = algorithm.getResult();
-		printPopulation(population);
-		Set<PlanningSolution> filteredPopulation = PopulationCleaner.getBestSolutions(population);
 		
+		Set<PlanningSolution> filteredPopulation = PopulationCleaner.getBestSolutions(population);
+		printPopulation(population);
 		printPopulation(filteredPopulation);
 		HTMLPrinter browserDisplay = new HTMLPrinter(problem, new ArrayList<>(filteredPopulation));
 		browserDisplay.run();
