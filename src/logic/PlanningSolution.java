@@ -1,5 +1,6 @@
 /**
- * 
+ * A solution of the NRP
+ * It contains a plannedTasks list which give the order of the tasks which are planned
  */
 package logic;
 
