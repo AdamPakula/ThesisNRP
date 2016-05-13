@@ -91,7 +91,7 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 	/**
 	 * @return the plannedTasks
 	 */
-	public List<PlannedTask> getPlannedTasks() {
+	private List<PlannedTask> getPlannedTasks() {
 		return plannedTasks;
 	}
 	
@@ -336,8 +336,10 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 	 */
 	public void scheduleAtTheEnd(Task task, Employee e) {
 		isUpToDate = false;
-		undoneTasks.remove(task);
-		plannedTasks.add(new PlannedTask(task, e));
+		if (!isAlreadyPlanned(task)) {
+			undoneTasks.remove(task);
+			plannedTasks.add(new PlannedTask(task, e));
+		}
 	}
 	
 	/**
@@ -374,9 +376,12 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 	 * @param plannedTask
 	 */
 	public void unschedule(PlannedTask plannedTask) {
-		isUpToDate = false;
-		undoneTasks.add(plannedTask.getTask());
-		plannedTasks.remove(plannedTask);
+		if (isAlreadyPlanned(plannedTask.getTask())) {
+			isUpToDate = false;
+			undoneTasks.add(plannedTask.getTask());
+			plannedTasks.remove(plannedTask);
+				
+		}
 	}
 
 	/**
@@ -528,6 +533,8 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 			sb.append("-").append(task);
 			sb.append(System.getProperty("line.separator"));
 		}
+		
+		sb.append("End Date: ").append(getEndDate()).append(System.getProperty("line.separator"));
 		
 		return sb.toString();
 	}
