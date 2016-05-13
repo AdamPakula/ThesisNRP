@@ -44,24 +44,10 @@ public class Task {
 	}
 
 	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
 	 * @return the priority
 	 */
 	public Priority getPriority() {
 		return priority;
-	}
-
-	/**
-	 * @param priority the priority to set
-	 */
-	public void setPriority(Priority priority) {
-		this.priority = priority;
 	}
 
 	/**
@@ -72,24 +58,10 @@ public class Task {
 	}
 
 	/**
-	 * @param duration the duration to set
-	 */
-	public void setDuration(double duration) {
-		this.duration = duration;
-	}
-
-	/**
 	 * @return the previous
 	 */
 	public List<Task> getPreviousTasks() {
 		return previousTasks;
-	}
-
-	/**
-	 * @param previous the previous to set
-	 */
-	public void setPreviousTasks(List<Task> previous) {
-		this.previousTasks = previous;
 	}
 	
 	/**
@@ -97,13 +69,6 @@ public class Task {
 	 */
 	public List<Skill> getRequiredSkills() {
 		return requiredSkills;
-	}
-
-	/**
-	 * @param requiredSkills the requiredSkills to set
-	 */
-	public void setRequiredSkills(List<Skill> requiredSkills) {
-		this.requiredSkills = requiredSkills;
 	}
 	
 	
@@ -128,5 +93,23 @@ public class Task {
 	@Override
 	public String toString() {
 		return getName();
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+
+		if (getClass() != obj.getClass())
+			return false;
+
+		Task other = (Task) obj;
+
+		return other.getName().equals(this.getName());
+	}
+	
+	@Override
+	public int hashCode() {
+		return getName().length();
 	}
 }
