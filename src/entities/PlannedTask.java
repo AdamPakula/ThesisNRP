@@ -1,18 +1,18 @@
 package entities;
 
-import java.util.Objects;
-
 /**
  * Describes a task in a planning
+ * Contains 
+ * - the task to do
+ * - the employee in charge of the task
+ * - the begin hour in the planning
+ * - the end hour in the planning
  * @author Vavou
  *
  */
 public class PlannedTask {
 	
-	/**
-	 * The task to do
-	 */
-	private Task task;
+	/* --- Attributes --- */
 	
 	/**
 	 * The begin hour of the planned task
@@ -20,28 +20,23 @@ public class PlannedTask {
 	private double beginHour;
 	
 	/**
+	 * The employee who will do the task
+	 */
+	private Employee employee;
+	
+	/**
 	 * The end hour of the planned task
 	 */
 	private double endHour;
 	
 	/**
-	 * The employee who will do the task
+	 * The task to do
 	 */
-	private Employee employee;
+	private Task task;
+	
+	
+	/* --- Getters and setters --- */
 
-	/**
-	 * @return the task
-	 */
-	public Task getTask() {
-		return task;
-	}
-
-	/**
-	 * @param task the task to set
-	 */
-	public void setTask(Task task) {
-		this.task = task;
-	}
 
 	/**
 	 * @return the beginHour
@@ -85,6 +80,23 @@ public class PlannedTask {
 		this.endHour = endHour;
 	}
 
+	/**
+	 * @return the task
+	 */
+	public Task getTask() {
+		return task;
+	}
+
+	/**
+	 * @param task the task to set
+	 */
+	public void setTask(Task task) {
+		this.task = task;
+	}
+	
+	
+	/* --- Constructors --- */
+
 	public PlannedTask(Task task, Employee employee) {
 		this.task = task;
 		this.employee = employee;
@@ -94,6 +106,8 @@ public class PlannedTask {
 	public PlannedTask(PlannedTask origin) {
 		this(origin.getTask(), origin.getEmployee());
 	}
+	
+	/* --- Methods --- */
 	
 	@Override
 	public boolean equals(Object obj) {
@@ -105,8 +119,9 @@ public class PlannedTask {
 
 		PlannedTask other = (PlannedTask) obj;
 
-		return Objects.equals(other.getTask(), this.getTask()) &&
-				Objects.equals(other.getEmployee(), this.getEmployee()) &&
-				Objects.equals(other.getBeginHour(), this.getBeginHour());
+		return other.getTask().equals(this.getTask()) &&
+				other.getEmployee().equals(this.getEmployee()) &&
+				other.getBeginHour() == this.getBeginHour() && 
+				other.getEndHour() == this.getEndHour();
 	}
 }
