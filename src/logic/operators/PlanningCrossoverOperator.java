@@ -21,11 +21,6 @@ import logic.PlanningSolution;
 public class PlanningCrossoverOperator implements CrossoverOperator<PlanningSolution> {
 
 	/* --- Attributes --- */
-	
-	/**
-	 * Generated Id
-	 */
-	private static final long serialVersionUID = -9127657374482018148L;
 
 	/**
 	 * The crossover probability, between 0.0 and 1.0
@@ -130,7 +125,7 @@ public class PlanningCrossoverOperator implements CrossoverOperator<PlanningSolu
 				}
 			}
 		}
-
+		
 		return offspring;
 	}
 }
