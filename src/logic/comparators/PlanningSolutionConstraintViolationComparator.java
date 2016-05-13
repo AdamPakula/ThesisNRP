@@ -10,12 +10,7 @@ public class PlanningSolutionConstraintViolationComparator implements Constraint
 	/* --- Atributes --- */
 	
 	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -4451090564962725930L;
-	
-	/**
-	 * Number of Violated Constraint Atribute
+	 * Number of Violated Constraint Attribute
 	 */
 	private NumberOfViolatedConstraints<PlanningSolution> numberOfViolatedConstraints;
 	
