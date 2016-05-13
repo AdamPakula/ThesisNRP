@@ -227,7 +227,7 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 		
 		while (!found && it.hasNext()) {
 			PlannedTask plannedTask = (PlannedTask) it.next();
-			if (plannedTask.getTask() == task) {
+			if (plannedTask.getTask().equals(task)) {
 				found = true;
 			}
 		}
@@ -467,7 +467,7 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 					boolean found = false;
 					int j = 0;
 					while (!found && plannedTasks.get(j) != currentTask) { //TODO update condition when we will compare by time and not by order
-						if (plannedTasks.get(j).getTask() == previousTask) {
+						if (plannedTasks.get(j).getTask().equals(previousTask)) {
 							found = true;
 						}
 						j++;
