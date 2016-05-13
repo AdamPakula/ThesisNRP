@@ -66,6 +66,11 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 	private double nbHoursByWeek;
 	
 	/**
+	 * The priority score if there is no planned task
+	 */
+	private double worstScore;
+	
+	/**
 	 * The index of the priority score objective in the objectives list
 	 */
 	public final static int INDEX_PRIORITY_OBJECTIVE = 0;
@@ -74,46 +79,6 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 	 * The index of the end date objective in the objectives list
 	 */
 	public final static int INDEX_END_DATE_OBJECTIVE = 1;
-	
-	
-	/* --- Constructors --- */
-
-	/**
-	 * Constructor
-	 * @param tasks tasks of the iteration
-	 * @param employees employees available during the iteration
-	 * @param nbWeeks The number of weeks of the iteration
-	 */
-	public NextReleaseProblem(List<Task> tasks, List<Employee> employees, int nbWeeks, double nbHoursByWeek) {
-		this.tasks = tasks;
-		this.employees = employees;
-		this.nbWeeks = nbWeeks;
-		this.nbHoursByWeek = nbHoursByWeek;
-		
-		skilledEmployees = new HashMap<>();
-		for (Employee employee : employees) {
-			for (Skill skill : employee.getSkills()) {
-				List<Employee> employeesList = skilledEmployees.get(skill);
-				if (employeesList == null) {
-					employeesList = new ArrayList<>();
-					skilledEmployees.put(skill, employeesList);
-				}
-				employeesList.add(employee);
-			}
-		}
-		
-		setNumberOfVariables(1);
-		setName("Next Release Problem");
-		setNumberOfObjectives(2);
-		
-		int numberOfConstraints = 0;
-		for (Task task : tasks) {
-			numberOfConstraints += task.getPreviousTasks().size();
-		}
-		setNumberOfConstraints(numberOfConstraints);
-		
-		numberOfViolatedConstraints = new NumberOfViolatedConstraints<PlanningSolution>();
-	}
 	
 	
 	/* --- Getters and setters --- */
@@ -157,6 +122,13 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 	}
 	
 	/**
+	 * @return the numberOfViolatedConstraints
+	 */
+	public NumberOfViolatedConstraints<PlanningSolution> getNumberOfViolatedConstraints() {
+		return numberOfViolatedConstraints;
+	}
+
+	/**
 	 * @return the employees with a skill
 	 */
 	public List<Employee> getSkilledEmployees(Skill skill) {
@@ -170,24 +142,74 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 		return employees;
 	}
 	
+	/**
+	 * @return the worstScore
+	 */
+	public double getWorstScore() {
+		return worstScore;
+	}
+
+
+	/* --- Constructors --- */
+	
+	/**
+	 * Constructor
+	 * @param tasks tasks of the iteration
+	 * @param employees employees available during the iteration
+	 * @param nbWeeks The number of weeks of the iteration
+	 */
+	public NextReleaseProblem(List<Task> tasks, List<Employee> employees, int nbWeeks, double nbHoursByWeek) {
+		this.tasks = tasks;
+		this.employees = employees;
+		this.nbWeeks = nbWeeks;
+		this.nbHoursByWeek = nbHoursByWeek;
+		
+		skilledEmployees = new HashMap<>();
+		for (Employee employee : employees) {
+			for (Skill skill : employee.getSkills()) {
+				List<Employee> employeesList = skilledEmployees.get(skill);
+				if (employeesList == null) {
+					employeesList = new ArrayList<>();
+					skilledEmployees.put(skill, employeesList);
+				}
+				employeesList.add(employee);
+			}
+		}
+		
+		setNumberOfVariables(1);
+		setName("Next Release Problem");
+		setNumberOfObjectives(2);
+		initializeWorstScore();
+		
+		int numberOfConstraints = 0;
+		for (Task task : tasks) {
+			numberOfConstraints += task.getPreviousTasks().size();
+		}
+		setNumberOfConstraints(numberOfConstraints);
+		
+		numberOfViolatedConstraints = new NumberOfViolatedConstraints<PlanningSolution>();
+	}
+	
 	
 	/* --- Methods --- */
 	
-	@Override
-	public void evaluate(PlanningSolution solution) {
-		solution.updatePlanningDates();
+	private void initializeWorstScore() {
+		worstScore = 0.0;
+		for (Task task : tasks) {
+			worstScore += task.getPriority().getScore();
+		}
 	}
 
-	/**
-	 * @return the numberOfViolatedConstraints
-	 */
-	public NumberOfViolatedConstraints<PlanningSolution> getNumberOfViolatedConstraints() {
-		return numberOfViolatedConstraints;
-	}
 
 	@Override
 	public PlanningSolution createSolution() {
 		return new PlanningSolution(this);
+	}
+
+	@Override
+	public void evaluate(PlanningSolution solution) {
+		solution.updatePlanningDates();
+		solution.setObjective(INDEX_PRIORITY_OBJECTIVE, solution.getPriorityScore());
 	}
 
 	@Override
