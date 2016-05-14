@@ -20,6 +20,12 @@ public class PopulationCleaner {
 		Collections.sort(population, new PlanningSolutionDominanceComparator());
 	}
 	
+	public static PlanningSolution getBestSolution(List<PlanningSolution> population) {
+		sortByDominance(population);
+		
+		return population.get(0);
+	}
+	
 	/**
 	 * Returns only the bests solutions
 	 * Uses the <code>PlanningSolutionDominanceComparator</code>
@@ -32,10 +38,9 @@ public class PopulationCleaner {
 			return bestSolutions;
 		}
 		
-		Comparator<PlanningSolution> comparator = new PlanningSolutionDominanceComparator();
-		sortByDominance(population);
+		PlanningSolution bestSolution = getBestSolution(population);
 		
-		PlanningSolution bestSolution = population.get(0);
+		Comparator<PlanningSolution> comparator = new PlanningSolutionDominanceComparator();
 		Iterator<PlanningSolution> iterator = population.iterator();
 		
 		while (iterator.hasNext()) {
