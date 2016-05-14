@@ -4,7 +4,8 @@ public enum TestFile {
 	SIMPLEST("simplest"),
 	SIMPLE_OPTIMISATION("simple_optimisation"),
 	PRECEDENCE("precedence"),
-	PRECEDENCES("precedences");
+	PRECEDENCES("precedences"),
+	OVERFLOW("overflow");
 	
 	private String fileName;
 	
