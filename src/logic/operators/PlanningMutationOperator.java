@@ -23,11 +23,6 @@ public class PlanningMutationOperator implements MutationOperator<PlanningSoluti
 	/* --- Attributes --- */
 	
 	/**
-	 * Generated Id
-	 */
-	private static final long serialVersionUID = 6178932989907368331L;
-	
-	/**
 	 * The number of tasks of the problem
 	 */
 	private int numberOfTasks;
