@@ -43,17 +43,17 @@ public class Program {
 	}
 
 	public static void main(String[] args) {		
-		Object inputLists[] = DataLoader.readData(TestFile.PRECEDENCES);
+		Object inputLists[] = DataLoader.readData(TestFile.OVERFLOW_OPTIMISATION);
 		List<Task> tasks = (List<Task>) inputLists[0];
 		List<Employee> employees = (List<Employee>) inputLists[1];
 		
-		NextReleaseProblem problem = new NextReleaseProblem(tasks, employees, 3, 35.0);
+		NextReleaseProblem problem = new NextReleaseProblem(tasks, employees, 1, 35.0);
 		Algorithm<List<PlanningSolution>> algorithm;
 		CrossoverOperator<PlanningSolution> crossover;
 	    MutationOperator<PlanningSolution> mutation;
 	    SelectionOperator<List<PlanningSolution>, PlanningSolution> selection;
 	    
-	    double crossoverProbability = 0.1;
+	    double crossoverProbability = 0.5;
 		crossover = new PlanningCrossoverOperator(crossoverProbability);
 	    
 	    double mutationProbability = 1.0 / problem.getTasks().size();
