@@ -5,7 +5,8 @@ public enum TestFile {
 	SIMPLE_OPTIMISATION("simple_optimisation"),
 	PRECEDENCE("precedence"),
 	PRECEDENCES("precedences"),
-	OVERFLOW("overflow");
+	OVERFLOW("overflow"),
+	OVERFLOW_OPTIMISATION("overflow_optimisation");
 	
 	private String fileName;
 	
