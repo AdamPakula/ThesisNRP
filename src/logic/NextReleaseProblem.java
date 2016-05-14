@@ -229,7 +229,13 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 
 	@Override
 	public void evaluateConstraints(PlanningSolution solution) {
-		numberOfViolatedConstraints.setAttribute(solution, solution.getNumberOfViolatedConstraint());
-		overallConstraintViolation.setAttribute(solution, solution.getNumberOfViolatedConstraint()*-1.0);
+		int numberOfViolatedConstraint = solution.getNumberOfViolatedConstraint();
+		
+		if (solution.getEndDate() > nbWeeks * nbHoursByWeek) {
+			numberOfViolatedConstraint++;
+		}
+		
+		numberOfViolatedConstraints.setAttribute(solution, numberOfViolatedConstraint);
+		overallConstraintViolation.setAttribute(solution, numberOfViolatedConstraint*-1.0);
 	}
 }
