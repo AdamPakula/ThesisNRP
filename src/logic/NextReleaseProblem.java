@@ -185,12 +185,7 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 		setName("Next Release Problem");
 		setNumberOfObjectives(2);
 		initializeWorstScore();
-		
-		int numberOfConstraints = 0;
-		for (Task task : tasks) {
-			numberOfConstraints += task.getPreviousTasks().size();
-		}
-		setNumberOfConstraints(numberOfConstraints);
+		initializeNumberOfConstraint();
 		
 		numberOfViolatedConstraints = new NumberOfViolatedConstraints<PlanningSolution>();
 		overallConstraintViolation = new OverallConstraintViolation<>();
@@ -204,6 +199,20 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 		for (Task task : tasks) {
 			worstScore += task.getPriority().getScore();
 		}
+	}
+	
+	private void initializeNumberOfConstraint() {
+		int numberOfConstraints = 0;
+		
+		//Precedences
+		for (Task task : tasks) {
+			numberOfConstraints += task.getPreviousTasks().size();
+		}
+		
+		// Global overflow
+		numberOfConstraints++;
+		
+		setNumberOfConstraints(numberOfConstraints);
 	}
 
 
