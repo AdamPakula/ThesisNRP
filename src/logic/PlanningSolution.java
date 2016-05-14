@@ -5,10 +5,8 @@
 package logic;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.uma.jmetal.solution.Solution;
@@ -40,11 +38,6 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 	 * Tasks unplanned for the solution
 	 */
 	private List<Task> undoneTasks;
-	
-	/**
-	 * A boolean that save performance, calculating the end date only when changes have been done
-	 */
-	private boolean isUpToDate = false;
 
 	/**
 	 * The end hour of the solution
@@ -60,11 +53,15 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 	 * @return the end hour
 	 */
 	public double getEndDate() {
-		if (!isUpToDate) {
-			updatePlanningDates();
-		}
-	
 		return endDate;
+	}
+	
+	/**
+	 * Setter of the end date
+	 * @param endDate the new end date of the solution
+	 */
+	public void setEndDate(double endDate) {
+		this.endDate = endDate;
 	}
 	
 	/**
@@ -81,18 +78,14 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 	 * @return the number of violated constraints
 	 */
 	public int getNumberOfViolatedConstraint() {
-		if (!isUpToDate) {
-			updatePlanningDates();
-		}
-		
 		return numberOfViolatedConstraints;
 	}
 
 	/**
 	 * @return the plannedTasks
 	 */
-	private List<PlannedTask> getPlannedTasks() {
-		return plannedTasks;
+	public List<PlannedTask> getPlannedTasks() {
+		return new ArrayList<>(plannedTasks);
 	}
 	
 	/**
@@ -104,11 +97,6 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 		if (position >= 0 && position < plannedTasks.size())
 			return plannedTasks.get(position);
 		return null;
-	}
-	
-	public void setPlannedTasks(List<PlannedTask> list) {
-		isUpToDate = false;
-		plannedTasks = list;
 	}
 	
 	/**
@@ -127,13 +115,6 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 	private List<Task> getUndoneTasks() {
 		return undoneTasks;
 	}
-	
-	/**
-	 * @return the isUpToDate
-	 */
-	public boolean isUpToDate() {
-		return isUpToDate;
-	}
 
 	
 	/* --- Constructors --- */
@@ -148,6 +129,24 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 	    numberOfViolatedConstraints = 0;
 
 	    initializePlannedTaskVariables();
+	    initializeObjectiveValues();
+	}
+	
+	/**
+	 * Constructor
+	 * initialize a random set of planned tasks
+	 * @param problem
+	 */
+	public PlanningSolution(NextReleaseProblem problem, List<PlannedTask> plannedTasks) {
+		super(problem);
+	    numberOfViolatedConstraints = 0;
+
+	    undoneTasks = new CopyOnWriteArrayList<Task>();
+		undoneTasks.addAll(problem.getTasks());
+		this.plannedTasks = new CopyOnWriteArrayList<PlannedTask>();
+		for (PlannedTask plannedTask : plannedTasks) {
+			scheduleAtTheEnd(plannedTask.getTask(), plannedTask.getEmployee());
+		}
 	    initializeObjectiveValues();
 	}
 
@@ -165,7 +164,6 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 			plannedTasks.add(new PlannedTask(plannedTask));
 		}
 	    undoneTasks = new CopyOnWriteArrayList<>(planningSolution.getUndoneTasks());
-	    isUpToDate = false;
 	}
 	
 	
@@ -178,7 +176,6 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 	 */
 	public void exchange(int pos1, int pos2) {
 		if (pos1 >= 0 && pos2 >= 0 && pos1 < plannedTasks.size() && pos2 < plannedTasks.size() && pos1 != pos2) {
-			isUpToDate = false;
 			PlannedTask task1 = plannedTasks.get(pos1);
 			plannedTasks.set(pos1, new PlannedTask(plannedTasks.get(pos2)));
 			plannedTasks.set(pos2, new PlannedTask(task1));
@@ -242,7 +239,7 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 	 * @param task The searched task
 	 * @return The planned Task or null if it is not yet planned
 	 */
-	private PlannedTask findPlannedTask(Task task) {
+	public PlannedTask findPlannedTask(Task task) {
 		for (Iterator<PlannedTask> iterator = plannedTasks.iterator(); iterator.hasNext();) {
 			PlannedTask plannedTask = iterator.next();
 			if (plannedTask.getTask().equals(task)) {
@@ -310,11 +307,10 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 	/**
 	 * Reset the begin hours of all the planned task to 0.0
 	 */
-	private void resetBeginHours() {
+	public void resetBeginHours() {
 		for (PlannedTask plannedTask : plannedTasks) {
 			plannedTask.setBeginHour(0.0);
 		}
-		isUpToDate = false;
 	}
 	
 	/**
@@ -323,7 +319,6 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 	 * @param plannedTask the planned task to integrate to the planning
 	 */
 	public void schedule(int position, Task task, Employee e) {
-		isUpToDate = false;
 		undoneTasks.remove(task);
 		plannedTasks.add(position, new PlannedTask(task, e));
 	}
@@ -335,7 +330,6 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 	 * @param plannedTask
 	 */
 	public void scheduleAtTheEnd(Task task, Employee e) {
-		isUpToDate = false;
 		if (!isAlreadyPlanned(task)) {
 			undoneTasks.remove(task);
 			plannedTasks.add(new PlannedTask(task, e));
@@ -377,7 +371,6 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 	 */
 	public void unschedule(PlannedTask plannedTask) {
 		if (isAlreadyPlanned(plannedTask.getTask())) {
-			isUpToDate = false;
 			undoneTasks.add(plannedTask.getTask());
 			plannedTasks.remove(plannedTask);
 				
@@ -389,7 +382,7 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 	 * Executes only if isUpToDate is false
 	 * Updates he isUpToDate field to true
 	 */
-	public void updatePlanningDates() {
+	/*public void updatePlanningDates() {
 		if (!isUpToDate) {
 			double newBeginHour;
 			Map<Employee, Double> employeeAvailability = new HashMap<>();
@@ -433,7 +426,7 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 			setObjective(NextReleaseProblem.INDEX_END_DATE_OBJECTIVE, endDate);
 			isUpToDate = true;
 		}
-	}
+	}*/
 
 	/**
 	 * Creates a list of the possible tasks to do regarding to the precedences of the undone tasks
@@ -459,32 +452,6 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 		}
 		
 		return possibleTasks;
-	}
-
-	private void updateConstraints() {
-		if (!isUpToDate) {
-			int numViolatedConstraints = 0;		
-			Iterator<PlannedTask> iterator = plannedTasks.iterator();
-			
-			while (iterator.hasNext()) {
-				PlannedTask currentTask = iterator.next();
-				for (Task previousTask : currentTask.getTask().getPreviousTasks()) {
-					boolean found = false;
-					int j = 0;
-					while (!found && plannedTasks.get(j) != currentTask) { //TODO update condition when we will compare by time and not by order
-						if (plannedTasks.get(j).getTask().equals(previousTask)) {
-							found = true;
-						}
-						j++;
-					}
-					if (!found) {
-						numViolatedConstraints++;
-					}
-				}
-			}
-			
-			this.numberOfViolatedConstraints = numViolatedConstraints;
-		}
 	}
 
 	@Override

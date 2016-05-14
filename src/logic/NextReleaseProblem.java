@@ -5,6 +5,7 @@ package logic;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,7 @@ import org.uma.jmetal.util.solutionattribute.impl.NumberOfViolatedConstraints;
 import org.uma.jmetal.util.solutionattribute.impl.OverallConstraintViolation;
 
 import entities.Employee;
+import entities.PlannedTask;
 import entities.Skill;
 import entities.Task;
 
@@ -223,13 +225,71 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 
 	@Override
 	public void evaluate(PlanningSolution solution) {
-		solution.updatePlanningDates();
+		double newBeginHour;
+		double endPlanningHour = 0.0;
+		Map<Employee, Double> employeeAvailability = new HashMap<>();
+		List<PlannedTask> plannedTasks = solution.getPlannedTasks();
+			
+		solution.resetBeginHours();
+		
+		for (PlannedTask currentPlannedTask : plannedTasks) {
+			newBeginHour = 0.0;
+			Task currentTask = currentPlannedTask.getTask();
+				
+			// Checks the previous tasks end hour
+			for (Task previousTask : currentTask.getPreviousTasks()) {
+				PlannedTask previousPlannedTask = solution.findPlannedTask(previousTask);
+				if (previousPlannedTask != null) {
+					newBeginHour = Math.max(newBeginHour, previousPlannedTask.getEndHour());
+				}
+			}
+				
+			// Checks the employee availability
+			Employee currentEmployee = currentPlannedTask.getEmployee();
+			Double employeeAvailableHour = employeeAvailability.get(currentEmployee);
+
+			if (employeeAvailableHour == null) {
+				employeeAvailableHour = new Double(0.0);
+				employeeAvailability.put(currentEmployee, employeeAvailableHour);
+			}
+			else {
+				newBeginHour = Math.max(newBeginHour, employeeAvailableHour);
+			}
+
+			currentPlannedTask.setBeginHour(newBeginHour);
+			currentPlannedTask.setEndHour(newBeginHour + currentTask.getDuration());
+
+			endPlanningHour = Math.max(currentPlannedTask.getEndHour(), endPlanningHour);
+			employeeAvailability.put(currentEmployee, currentPlannedTask.getEndHour());
+		}
+		
+		solution.setEndDate(endPlanningHour);
 		solution.setObjective(INDEX_PRIORITY_OBJECTIVE, solution.getPriorityScore());
+		solution.setObjective(INDEX_END_DATE_OBJECTIVE, endPlanningHour);
 	}
 
 	@Override
 	public void evaluateConstraints(PlanningSolution solution) {
-		int numberOfViolatedConstraint = solution.getNumberOfViolatedConstraint();
+		int numberOfViolatedConstraint = 0;
+		List<PlannedTask> plannedTasks = solution.getPlannedTasks();
+		Iterator<PlannedTask> iterator = plannedTasks.iterator();
+		
+		while (iterator.hasNext()) {
+			PlannedTask currentTask = iterator.next();
+			for (Task previousTask : currentTask.getTask().getPreviousTasks()) {
+				boolean found = false;
+				int j = 0;
+				while (!found && plannedTasks.get(j) != currentTask) { //TODO update condition when we will compare by time and not by order
+					if (plannedTasks.get(j).getTask().equals(previousTask)) {
+						found = true;
+					}
+					j++;
+				}
+				if (!found) {
+					numberOfViolatedConstraint++;
+				}
+			}
+		}
 		
 		if (solution.getEndDate() > nbWeeks * nbHoursByWeek) {
 			numberOfViolatedConstraint++;

@@ -35,15 +35,12 @@ public class Program {
 			System.out.println("Solution " + solutionCpt++ + ": (" 
 					+ currentSolution.getObjective(0) + "\t" + currentSolution.getObjective(1) + ")");
 			System.out.print(currentSolution);
-			if (!currentSolution.isUpToDate()) {
-				System.err.println("not up to date");
-			}
 			System.out.println();
 		}
 	}
 
 	public static void main(String[] args) {		
-		Object inputLists[] = DataLoader.readData(TestFile.OVERFLOW_OPTIMISATION);
+		Object inputLists[] = DataLoader.readData(TestFile.PRECEDENCES);
 		List<Task> tasks = (List<Task>) inputLists[0];
 		List<Employee> employees = (List<Employee>) inputLists[1];
 		
