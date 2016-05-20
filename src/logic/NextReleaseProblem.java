@@ -16,6 +16,7 @@ import org.uma.jmetal.util.solutionattribute.impl.OverallConstraintViolation;
 
 import entities.Employee;
 import entities.PlannedTask;
+import entities.EmployeeWeekAvailability;
 import entities.Skill;
 import entities.Task;
 
@@ -227,7 +228,7 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 	public void evaluate(PlanningSolution solution) {
 		double newBeginHour;
 		double endPlanningHour = 0.0;
-		Map<Employee, Double> employeeAvailability = new HashMap<>();
+		Map<Employee, List<EmployeeWeekAvailability>> employeesTimeSlots = new HashMap<>();
 		List<PlannedTask> plannedTasks = solution.getPlannedTasks();
 			
 		solution.resetBeginHours();
@@ -246,23 +247,54 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 				
 			// Checks the employee availability
 			Employee currentEmployee = currentPlannedTask.getEmployee();
-			Double employeeAvailableHour = employeeAvailability.get(currentEmployee);
-
-			if (employeeAvailableHour == null) {
-				employeeAvailableHour = new Double(0.0);
-				employeeAvailability.put(currentEmployee, employeeAvailableHour);
+			List<EmployeeWeekAvailability> employeeTimeSlots = employeesTimeSlots.get(currentEmployee);
+			int currentWeek;
+			
+			if (employeeTimeSlots == null) {
+				employeeTimeSlots = new ArrayList<>();
+				employeeTimeSlots.add(new EmployeeWeekAvailability(newBeginHour, currentEmployee.getWeekAvailability()));
+				employeesTimeSlots.put(currentEmployee, employeeTimeSlots);
+				currentWeek = 0;
 			}
 			else {
-				newBeginHour = Math.max(newBeginHour, employeeAvailableHour);
+				currentWeek = employeeTimeSlots.size()-1;
+				newBeginHour = Math.max(newBeginHour, employeeTimeSlots.get(currentWeek).getEndHour());
 			}
 
 			currentPlannedTask.setBeginHour(newBeginHour);
-			currentPlannedTask.setEndHour(newBeginHour + currentTask.getDuration());
+			
+			double remainTaskHours = currentPlannedTask.getTask().getDuration();
+			double leftHoursInWeek;
+			EmployeeWeekAvailability currentWeekAvailability;
+			
+			
+			
+			do {
+				currentWeekAvailability = employeeTimeSlots.get(currentWeek);
+				leftHoursInWeek = Math.min((currentWeek + 1) * nbHoursByWeek - newBeginHour //Left Hours in the week
+						, currentWeekAvailability.getRemainHoursAvailable());
+				
+				if (remainTaskHours <= leftHoursInWeek) { // The task can be ended before the end of the week
+					currentWeekAvailability.setRemainHoursAvailable(currentWeekAvailability.getRemainHoursAvailable() - remainTaskHours);
+					currentWeekAvailability.setEndHour(currentWeekAvailability.getEndHour() + remainTaskHours);
+					remainTaskHours = 0.0;
+				}
+				else {
+					currentWeekAvailability.setRemainHoursAvailable(currentWeekAvailability.getRemainHoursAvailable() - leftHoursInWeek);
+					currentWeekAvailability.setEndHour(currentWeekAvailability.getEndHour() + leftHoursInWeek);
+					remainTaskHours -= leftHoursInWeek;
+					currentWeek++;
+					employeeTimeSlots.add(new EmployeeWeekAvailability(currentWeek*nbHoursByWeek, currentEmployee.getWeekAvailability()));
+				}
+				currentWeekAvailability.addPlannedTask(currentPlannedTask);
+			} while (remainTaskHours > 0.0);
+			
+			currentPlannedTask.setEndHour(currentWeekAvailability.getEndHour());
 
 			endPlanningHour = Math.max(currentPlannedTask.getEndHour(), endPlanningHour);
-			employeeAvailability.put(currentEmployee, currentPlannedTask.getEndHour());
 		}
 		
+		solution.setEmployeesPlanning(employeesTimeSlots);
 		solution.setEndDate(endPlanningHour);
 		solution.setObjective(INDEX_PRIORITY_OBJECTIVE, solution.getPriorityScore());
 		solution.setObjective(INDEX_END_DATE_OBJECTIVE, endPlanningHour);

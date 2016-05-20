@@ -7,12 +7,14 @@ package logic;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.solution.impl.AbstractGenericSolution;
 
 import entities.Employee;
+import entities.EmployeeWeekAvailability;
 import entities.PlannedTask;
 import entities.Task;
 
@@ -44,6 +46,11 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 	 * Is up to date only when isUpToDate field is true
 	 */
 	private double endDate;
+	
+	/**
+	 * The employees' week planning
+	 */
+	private Map<Employee, List<EmployeeWeekAvailability>> employeesPlanning;
 	
 	
 	/* --- Getters and Setters --- */
@@ -115,10 +122,24 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 	private List<Task> getUndoneTasks() {
 		return undoneTasks;
 	}
+	
+	/**
+	 * @return the employeesPlannings
+	 */
+	public Map<Employee, List<EmployeeWeekAvailability>> getEmployeesPlanning() {
+		return employeesPlanning;
+	}
+
+	/**
+	 * @param employeesPlannings the employeesPlannings to set
+	 */
+	public void setEmployeesPlanning(Map<Employee, List<EmployeeWeekAvailability>> employeesPlanning) {
+		this.employeesPlanning = employeesPlanning;
+	}
 
 	
 	/* --- Constructors --- */
-	
+
 	/**
 	 * Constructor
 	 * initialize a random set of planned tasks

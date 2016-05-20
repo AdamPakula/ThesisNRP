@@ -44,7 +44,7 @@ public class Program {
 		List<Task> tasks = (List<Task>) inputLists[0];
 		List<Employee> employees = (List<Employee>) inputLists[1];
 		
-		NextReleaseProblem problem = new NextReleaseProblem(tasks, employees, 1, 35.0);
+		NextReleaseProblem problem = new NextReleaseProblem(tasks, employees, 2, 35.0);
 		Algorithm<List<PlanningSolution>> algorithm;
 		CrossoverOperator<PlanningSolution> crossover;
 	    MutationOperator<PlanningSolution> mutation;
