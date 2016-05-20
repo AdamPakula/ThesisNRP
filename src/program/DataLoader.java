@@ -103,9 +103,9 @@ public class DataLoader {
 		
 		List<Task> previousTasks = new ArrayList<>();
 		if(parts.length == 5) {
-			String previousTaksNumbers[] = parts[INDEX_TASK_PREVIOUS].split(" ");
-			for (String taskNumber : previousTaksNumbers) {
-				previousTasks.add(tasks.get(new Integer(taskNumber).intValue()));
+			String previousTaksNames[] = parts[INDEX_TASK_PREVIOUS].split(",");
+			for (String previousTaskName : previousTaksNames) {
+				previousTasks.add(findTask(tasks, previousTaskName));
 			}
 		}
 		
@@ -145,5 +145,25 @@ public class DataLoader {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * Find a task by its name in the tasks list
+	 * @param tasks the list of tasks
+	 * @param name the name of the task to search
+	 * @return the corresponding task or null if it does not exist
+	 */
+	private static Task findTask(List<Task> tasks, String name) {
+		Task task = null;
+		int i = 0;
+		
+		while (task == null && i < tasks.size()) {
+			if (tasks.get(i).getName().equals(name)) {
+				task = tasks.get(i);
+			}
+			i++;
+		}
+		
+		return task;
 	}
 }
