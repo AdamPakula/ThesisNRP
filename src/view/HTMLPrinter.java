@@ -5,21 +5,18 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import entities.Employee;
+import entities.EmployeeWeekAvailability;
 import entities.PlannedTask;
-import logic.NextReleaseProblem;
 import logic.PlanningSolution;
 
 public class HTMLPrinter implements Runnable {
 	
 	/* --- Attributes --- */
-	
-	/**
-	 * The NRP to solve
-	 */
-	private NextReleaseProblem problem;
 	
 	/**
 	 * The solutions to display
@@ -32,11 +29,9 @@ public class HTMLPrinter implements Runnable {
 	/**
 	 * Constructor
 	 * Prepares the problem and the solutions attributes in order to be able to compute the run() method
-	 * @param problem The NRP problem to solve
 	 * @param solutions The Solutions of the NRP problem
 	 */
-	public HTMLPrinter(NextReleaseProblem problem, List<PlanningSolution> solutions) {
-		this.problem = problem;
+	public HTMLPrinter(List<PlanningSolution> solutions) {
 		this.solutions = solutions;
 	}
 
@@ -109,42 +104,62 @@ public class HTMLPrinter implements Runnable {
 		sb.append("</tr></thead><tbody>");
 		
 		// Employee's rows of the planning table
-		for (Employee employee : problem.getEmployees()) {
-			sb.append("<tr><td>").append(employee.getName()).append("</td>");
-			List<PlannedTask> tasksOfEmployee = solution.getTasksDoneBy(employee);
-			int colspan = 0;
-			for (int j = 0 ; j < numberOfTimeSlots ; j++) {
-				PlannedTask currentTask = null;
-				if (tasksOfEmployee.size() > 0) {
-					currentTask = tasksOfEmployee.get(0);
-				}
-				if (currentTask != null && currentTask.getBeginHour() == 1.0*j) {
-					colspan = new Double(currentTask.getTask().getDuration()).intValue();
-					sb.append("<td class=\"task\" colspan=\"").append(colspan).append("\">").append(currentTask.getTask().getName()).append("</td>");
-					tasksOfEmployee.remove(0);
-					colspan--;
-				}
-				else {
-					if (colspan == 0) {
-						sb.append("<td></td>");
-					}
-					else {
-						colspan--;
-					}
-				}
-			}
-			// In case of bug (tasks not displayed) //TODO Quit when resolved
-			while (tasksOfEmployee.size() > 0) {
-				sb.append("<td>").append(tasksOfEmployee.get(0).getTask().getName()).append(" undisplayed</td>");
-				tasksOfEmployee.remove(0);
-			}
+		Map<Employee, List<EmployeeWeekAvailability>> availabilities = solution.getEmployeesPlanning();
+		for (Employee e : availabilities.keySet()) {
+			sb.append(getEmployeeRowTag(e, availabilities.get(e), numberOfTimeSlots));
 		}
 				
-		sb.append("</tr></tbody></table>");
+		sb.append("</tbody></table>");
 		
 		return sb;
 	}
 	
+	private StringBuilder getEmployeeRowTag(Employee e, List<EmployeeWeekAvailability> plannings, int nbTimeSlot) {
+		StringBuilder sb = new StringBuilder("<tr>");
+		
+		sb.append("<td>").append(e.getName()).append("</td>");
+		
+		int i = 0;
+		Iterator<EmployeeWeekAvailability> it = plannings.iterator();
+		EmployeeWeekAvailability currentPlanning = it.hasNext() ? it.next() : null;
+		
+		while (i < nbTimeSlot) {
+			
+			if (currentPlanning == null || currentPlanning.getBeginHour() != 1.0*i) { // If there is no more task to display
+				sb.append("<td></td>");
+				i++;
+			}
+			else {
+				sb.append(getWeekColumnTag(currentPlanning));
+				i = new Double(currentPlanning.getEndHour()).intValue();
+				currentPlanning = it.hasNext() ? it.next() : null;
+			}
+		}
+		
+		sb.append("</tr>");
+		
+		return sb;
+	}
+	
+
+	private StringBuilder getWeekColumnTag(EmployeeWeekAvailability weekPlanning) {
+		StringBuilder sb = new StringBuilder();
+		double currentHour = weekPlanning.getBeginHour();
+		
+		for (PlannedTask plannedTask : weekPlanning.getPlannedTasks()) {
+			while (currentHour < plannedTask.getBeginHour()) {
+				sb.append("<td></td>");
+				currentHour += 1.0;
+			}
+			double colspan = Math.min(weekPlanning.getEndHour(), plannedTask.getEndHour()) - currentHour;
+			sb.append("<td class=\"task\" colspan=\"")
+				.append(new Double(colspan).intValue())
+				.append("\">").append(plannedTask.getTask().getName()).append("</td>");
+			currentHour = plannedTask.getEndHour();
+		}
+		
+		return sb;
+	}
 
 	/**
 	 * Returns the HTML style tag to put in the header of the HTML page

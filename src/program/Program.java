@@ -33,14 +33,14 @@ public class Program {
 		while (iterator.hasNext()) {
 			PlanningSolution currentSolution = iterator.next();
 			System.out.println("Solution " + solutionCpt++ + ": (" 
-					+ currentSolution.getObjective(0) + "\t" + currentSolution.getObjective(1) + ")");
+					+ currentSolution.getObjective(0) + "\t" + currentSolution.getObjective(1) + "\t" + currentSolution.getNumberOfViolatedConstraint() + ")");
 			System.out.print(currentSolution);
 			System.out.println();
 		}
 	}
 
 	public static void main(String[] args) {		
-		Object inputLists[] = DataLoader.readData(TestFile.SKILLS);
+		Object inputLists[] = DataLoader.readData(TestFile.EMPLOYEE_OVERFLOW);
 		List<Task> tasks = (List<Task>) inputLists[0];
 		List<Employee> employees = (List<Employee>) inputLists[1];
 		
@@ -67,11 +67,15 @@ public class Program {
 		AlgorithmRunner algoRunner = new AlgorithmRunner.Executor(algorithm).execute();
 		
 		List<PlanningSolution> population = algorithm.getResult();
-		
 		Set<PlanningSolution> filteredPopulation = PopulationCleaner.getBestSolutions(population);
 		printPopulation(population);
+		
+		for (PlanningSolution planningSolution : filteredPopulation) {
+			problem.evaluate(planningSolution);
+			problem.evaluateConstraints(planningSolution);
+		}
 		printPopulation(filteredPopulation);
-		HTMLPrinter browserDisplay = new HTMLPrinter(problem, new ArrayList<>(filteredPopulation));
+		HTMLPrinter browserDisplay = new HTMLPrinter(new ArrayList<>(filteredPopulation));
 		browserDisplay.run();
 	}
 }
