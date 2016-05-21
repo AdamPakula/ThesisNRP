@@ -271,12 +271,13 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 			
 			do {
 				currentWeekAvailability = employeeTimeSlots.get(currentWeek);
+				double newBeginHourInWeek = Math.max(newBeginHour, currentWeekAvailability.getEndHour());
 				leftHoursInWeek = Math.min((currentWeek + 1) * nbHoursByWeek - newBeginHour //Left Hours in the week
 						, currentWeekAvailability.getRemainHoursAvailable());
 				
 				if (remainTaskHours <= leftHoursInWeek) { // The task can be ended before the end of the week
 					currentWeekAvailability.setRemainHoursAvailable(currentWeekAvailability.getRemainHoursAvailable() - remainTaskHours);
-					currentWeekAvailability.setEndHour(currentWeekAvailability.getEndHour() + remainTaskHours);
+					currentWeekAvailability.setEndHour(newBeginHourInWeek + remainTaskHours);
 					remainTaskHours = 0.0;
 				}
 				else {
@@ -305,13 +306,15 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 		int numberOfViolatedConstraint = 0;
 		List<PlannedTask> plannedTasks = solution.getPlannedTasks();
 		Iterator<PlannedTask> iterator = plannedTasks.iterator();
+		int i = 0;
 		
 		while (iterator.hasNext()) {
 			PlannedTask currentTask = iterator.next();
+			
 			for (Task previousTask : currentTask.getTask().getPreviousTasks()) {
 				boolean found = false;
 				int j = 0;
-				while (!found && plannedTasks.get(j) != currentTask) { //TODO update condition when we will compare by time and not by order
+				while (!found && j < i) { //TODO update condition when we will compare by time and not by order
 					if (plannedTasks.get(j).getTask().equals(previousTask)) {
 						found = true;
 					}
@@ -321,6 +324,7 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 					numberOfViolatedConstraint++;
 				}
 			}
+			i++;
 		}
 		
 		if (solution.getEndDate() > nbWeeks * nbHoursByWeek) {
