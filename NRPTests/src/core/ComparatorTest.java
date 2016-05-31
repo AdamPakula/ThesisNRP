@@ -3,6 +3,7 @@ package core;
 import java.util.List;
 
 import org.junit.Test;
+import org.uma.jmetal.util.SolutionUtils;
 
 import entities.Employee;
 import entities.Task;
@@ -46,9 +47,7 @@ public class ComparatorTest extends TestCase {
 		nrp.evaluate(fullSolution);
 		nrp.evaluateConstraints(fullSolution);
 		
-		PlanningSolution bestSolution = 
-				new PlanningSolutionDominanceComparator().compare(fullSolution, emptySolution) < 0 ?
-						fullSolution : emptySolution;
+		PlanningSolution bestSolution = SolutionUtils.getBestSolution(fullSolution, emptySolution, new PlanningSolutionDominanceComparator());
 
 		assertEquals(bestSolution, fullSolution);
 		assertEquals(-1, new PlanningSolutionDominanceComparator().compare(fullSolution, emptySolution));
