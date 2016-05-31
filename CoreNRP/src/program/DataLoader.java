@@ -23,7 +23,7 @@ public class DataLoader {
 	private final static int INDEX_EMPLOYEE_AVAILABILITY = 1;
 	private final static int INDEX_EMPLOYEE_SKILLS = 2;
 	
-	public final static String INPUT_DIRECTORY = new String("test/inputs/");
+	public final static String INPUT_DIRECTORY = new String("../test/inputs/");
 
 	public static Object[] readData(TestFile file) {
 		Object[] data = null;
