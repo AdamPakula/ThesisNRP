@@ -79,6 +79,11 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 	private double worstScore;
 	
 	/**
+	 * The worst end date, if there is no planned task
+	 */
+	private double worstEndDate;
+	
+	/**
 	 * The index of the priority score objective in the objectives list
 	 */
 	public final static int INDEX_PRIORITY_OBJECTIVE = 0;
@@ -184,6 +189,7 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 			}
 		}
 		
+		worstEndDate = nbWeeks * nbHoursByWeek;
 		setNumberOfVariables(1);
 		setName("Next Release Problem");
 		setNumberOfObjectives(2);
@@ -298,7 +304,8 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 		solution.setEmployeesPlanning(employeesTimeSlots);
 		solution.setEndDate(endPlanningHour);
 		solution.setObjective(INDEX_PRIORITY_OBJECTIVE, solution.getPriorityScore());
-		solution.setObjective(INDEX_END_DATE_OBJECTIVE, endPlanningHour);
+		solution.setObjective(INDEX_END_DATE_OBJECTIVE, 
+				plannedTasks.size() == 0 ? worstEndDate : endPlanningHour);
 	}
 
 	@Override
