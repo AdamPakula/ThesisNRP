@@ -1,0 +1,56 @@
+package core;
+
+import java.util.List;
+
+import org.junit.Test;
+
+import entities.Employee;
+import entities.Task;
+import junit.framework.TestCase;
+import logic.NextReleaseProblem;
+import logic.PlanningSolution;
+import logic.comparators.PlanningSolutionDominanceComparator;
+import program.DataLoader;
+import program.TestFile;
+
+
+public class ComparatorTest extends TestCase {
+	
+	public ComparatorTest() {
+	}
+
+	public ComparatorTest(String name) {
+		super(name);
+	}
+	
+	@Test
+	public void testDates() {		
+		Object inputLists[] = DataLoader.readData(TestFile.PRECEDENCES);
+		List<Task> tasks = (List<Task>) inputLists[0];
+		List<Employee> employees = (List<Employee>) inputLists[1];
+		
+		NextReleaseProblem nrp = new NextReleaseProblem(tasks, employees, 3, 35);
+		
+		PlanningSolution emptySolution = new PlanningSolution(nrp);
+		while (emptySolution.getNumberOfPlannedTasks() > 0) {
+			emptySolution.unschedule(emptySolution.getPlannedTask(0));
+		}
+		nrp.evaluate(emptySolution);
+		nrp.evaluateConstraints(emptySolution);
+		
+		PlanningSolution fullSolution = new PlanningSolution(emptySolution);
+		fullSolution.scheduleAtTheEnd(tasks.get(0), employees.get(0));
+		fullSolution.scheduleAtTheEnd(tasks.get(1), employees.get(0));
+		fullSolution.scheduleAtTheEnd(tasks.get(2), employees.get(1));
+		fullSolution.scheduleAtTheEnd(tasks.get(3), employees.get(1));
+		nrp.evaluate(fullSolution);
+		nrp.evaluateConstraints(fullSolution);
+		
+		PlanningSolution bestSolution = 
+				new PlanningSolutionDominanceComparator().compare(fullSolution, emptySolution) < 0 ?
+						fullSolution : emptySolution;
+
+		assertEquals(bestSolution, fullSolution);
+		assertEquals(-1, new PlanningSolutionDominanceComparator().compare(fullSolution, emptySolution));
+	}
+}
