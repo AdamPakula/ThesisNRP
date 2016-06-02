@@ -32,10 +32,7 @@ public class Program {
 		
 		while (iterator.hasNext()) {
 			PlanningSolution currentSolution = iterator.next();
-			System.out.println("Solution " + solutionCpt++ + ": (" 
-					+ currentSolution.getObjective(0) + "\t" + currentSolution.getObjective(1) + "\t" + currentSolution.getNumberOfViolatedConstraint() + ")");
-			System.out.print(currentSolution);
-			System.out.println();
+			System.out.println("Solution " + solutionCpt++ + ": " + currentSolution);
 		}
 	}
 
@@ -44,7 +41,7 @@ public class Program {
 		List<Task> tasks = (List<Task>) inputLists[0];
 		List<Employee> employees = (List<Employee>) inputLists[1];
 		
-		NextReleaseProblem problem = new NextReleaseProblem(tasks, employees, 2, 35.0);
+		NextReleaseProblem problem = new NextReleaseProblem(tasks, employees, 3, 35.0);
 		Algorithm<List<PlanningSolution>> algorithm;
 		CrossoverOperator<PlanningSolution> crossover;
 	    MutationOperator<PlanningSolution> mutation;
@@ -60,7 +57,7 @@ public class Program {
 
 		algorithm = new NSGAIIBuilder<PlanningSolution>(problem, crossover, mutation)
 				.setSelectionOperator(selection)
-				.setMaxIterations(500)
+				.setMaxIterations(0)
 				.setPopulationSize(100)
 				.build();
 		
@@ -70,10 +67,6 @@ public class Program {
 		Set<PlanningSolution> filteredPopulation = PopulationCleaner.getBestSolutions(population);
 		printPopulation(population);
 		
-		for (PlanningSolution planningSolution : filteredPopulation) {
-			problem.evaluate(planningSolution);
-			problem.evaluateConstraints(planningSolution);
-		}
 		printPopulation(filteredPopulation);
 		HTMLPrinter browserDisplay = new HTMLPrinter(new ArrayList<>(filteredPopulation));
 		browserDisplay.run();

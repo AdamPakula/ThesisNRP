@@ -516,10 +516,19 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
+		String lineSeparator = System.getProperty("line.separator");
+		
+		sb.append('(');
+		for (int i = 0 ; i < getNumberOfObjectives() ; i++) {
+			sb.append(getObjective(i)).append('\t');
+		}
+		
+		sb.append(getNumberOfViolatedConstraint());
+		sb.append(')').append(lineSeparator);
 		
 		for (PlannedTask task : getPlannedTasks()) {
 			sb.append("-").append(task);
-			sb.append(System.getProperty("line.separator"));
+			sb.append(lineSeparator);
 		}
 		
 		sb.append("End Date: ").append(getEndDate()).append(System.getProperty("line.separator"));
