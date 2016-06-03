@@ -391,57 +391,6 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 	}
 
 	/**
-	 * Updates the dates of each planned task
-	 * Executes only if isUpToDate is false
-	 * Updates he isUpToDate field to true
-	 */
-	/*public void updatePlanningDates() {
-		if (!isUpToDate) {
-			double newBeginHour;
-			Map<Employee, Double> employeeAvailability = new HashMap<>();
-			
-			resetBeginHours();
-			endDate = 0.0;
-			
-			for (PlannedTask plannedTask : plannedTasks) {
-				newBeginHour = 0.0;
-				Task currentTask = plannedTask.getTask();
-				
-				// Checks the previous tasks end hour
-				for (Task previousTask : currentTask.getPreviousTasks()) {
-					PlannedTask previousPlannedTask = findPlannedTask(previousTask);
-					if (previousPlannedTask != null) {
-						newBeginHour = Math.max(newBeginHour, previousPlannedTask.getEndHour());
-					}
-				}
-				
-				// Checks the employee availability
-				Employee currentEmployee = plannedTask.getEmployee();
-				Double employeeAvailableHour = employeeAvailability.get(currentEmployee);
-				
-				if (employeeAvailableHour == null) {
-					employeeAvailableHour = new Double(0.0);
-					employeeAvailability.put(currentEmployee, employeeAvailableHour);
-				}
-				else {
-					newBeginHour = Math.max(newBeginHour, employeeAvailableHour);
-				}
-				
-				plannedTask.setBeginHour(newBeginHour);
-				plannedTask.setEndHour(newBeginHour + currentTask.getDuration());
-
-				endDate = Math.max(plannedTask.getEndHour(), endDate);
-				employeeAvailability.put(currentEmployee, plannedTask.getEndHour());
-			}
-			
-			updateConstraints();
-			setObjective(NextReleaseProblem.INDEX_PRIORITY_OBJECTIVE, getPriorityScore());
-			setObjective(NextReleaseProblem.INDEX_END_DATE_OBJECTIVE, endDate);
-			isUpToDate = true;
-		}
-	}*/
-
-	/**
 	 * Creates a list of the possible tasks to do regarding to the precedences of the undone tasks
 	 * @return the list of the possible tasks to do
 	 */
