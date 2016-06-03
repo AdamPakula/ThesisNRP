@@ -5,7 +5,6 @@ package logic;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -311,27 +310,15 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 	@Override
 	public void evaluateConstraints(PlanningSolution solution) {
 		int numberOfViolatedConstraint = 0;
-		List<PlannedTask> plannedTasks = solution.getPlannedTasks();
-		Iterator<PlannedTask> iterator = plannedTasks.iterator();
-		int i = 0;
 		
-		while (iterator.hasNext()) {
-			PlannedTask currentTask = iterator.next();
-			
+		for (PlannedTask currentTask : solution.getPlannedTasks()) {
 			for (Task previousTask : currentTask.getTask().getPreviousTasks()) {
-				boolean found = false;
-				int j = 0;
-				while (!found && j < i) { //TODO update condition when we will compare by time and not by order
-					if (plannedTasks.get(j).getTask().equals(previousTask)) {
-						found = true;
-					}
-					j++;
-				}
-				if (!found) {
+				PlannedTask previousPlannedTask = solution.findPlannedTask(previousTask);
+				
+				if (previousPlannedTask == null || previousPlannedTask.getEndHour() > currentTask.getBeginHour()) {
 					numberOfViolatedConstraint++;
 				}
 			}
-			i++;
 		}
 		
 		if (solution.getEndDate() > nbWeeks * nbHoursByWeek) {
