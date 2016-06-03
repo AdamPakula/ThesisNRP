@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
+import org.uma.jmetal.util.solutionattribute.impl.OverallConstraintViolation;
 
 import entities.Employee;
 import entities.PlannedTask;
@@ -72,7 +73,7 @@ public class SchedulerTest extends TestCase {
 		
 		assertEquals(solution.getPriorityScore(), solution.getObjective(NextReleaseProblem.INDEX_PRIORITY_OBJECTIVE));
 		assertEquals(solution.getEndDate(), solution.getObjective(NextReleaseProblem.INDEX_END_DATE_OBJECTIVE));
-		assertEquals(0, solution.getNumberOfViolatedConstraint());
+		assertEquals(0, new OverallConstraintViolation<>().getAttribute(solution));
 	}
 
 }

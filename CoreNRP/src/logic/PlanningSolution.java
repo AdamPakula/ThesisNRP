@@ -12,6 +12,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.solution.impl.AbstractGenericSolution;
+import org.uma.jmetal.util.solutionattribute.impl.NumberOfViolatedConstraints;
 
 import entities.Employee;
 import entities.EmployeeWeekAvailability;
@@ -77,15 +78,6 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 	 */
 	public int getNumberOfPlannedTasks() {
 		return plannedTasks.size();
-	}
-	
-	/**
-	 * Get the number of violated constraint
-	 * update the planning if it is not up to date
-	 * @return the number of violated constraints
-	 */
-	public int getNumberOfViolatedConstraint() {
-		return numberOfViolatedConstraints;
 	}
 
 	/**
@@ -523,7 +515,7 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 			sb.append(getObjective(i)).append('\t');
 		}
 		
-		sb.append(getNumberOfViolatedConstraint());
+		sb.append(new NumberOfViolatedConstraints<>().getAttribute(this));
 		sb.append(')').append(lineSeparator);
 		
 		for (PlannedTask task : getPlannedTasks()) {
