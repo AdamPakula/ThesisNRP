@@ -4,7 +4,5 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CoreNRP"/>
-	<classpathentry kind="lib" path="C:/Users/Vavou/Informatique/ZZ3/Tesis/EclipseProjects/CoreNRP/lib/jmetal-core-5.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Vavou/Informatique/ZZ3/Tesis/EclipseProjects/CoreNRP/lib/jmetal-algorithm-5.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
