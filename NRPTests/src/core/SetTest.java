@@ -114,7 +114,7 @@ public class SetTest extends TestCase {
 	    SelectionOperator<List<PlanningSolution>, PlanningSolution> selection;
 	    
 	    double crossoverProbability = 0.1;
-		crossover = new PlanningCrossoverOperator(crossoverProbability);
+		crossover = new PlanningCrossoverOperator(problem, crossoverProbability);
 	    
 	    double mutationProbability = 1.0 / problem.getTasks().size();
 	    mutation = new PlanningMutationOperator(problem, mutationProbability);
