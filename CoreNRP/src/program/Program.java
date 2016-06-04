@@ -48,16 +48,16 @@ public class Program {
 	    SelectionOperator<List<PlanningSolution>, PlanningSolution> selection;
 	    
 	    double crossoverProbability = 0.5;
-		crossover = new PlanningCrossoverOperator(crossoverProbability);
+		crossover = new PlanningCrossoverOperator(problem, crossoverProbability);
 	    
-	    double mutationProbability = 1.0 / problem.getTasks().size();
+	    double mutationProbability = 2.0 / problem.getTasks().size(); // 1/nbTask*2
 	    mutation = new PlanningMutationOperator(problem, mutationProbability);
 	    
 		selection = new BinaryTournamentSelection<>(new PlanningSolutionDominanceComparator());
 
 		algorithm = new NSGAIIBuilder<PlanningSolution>(problem, crossover, mutation)
 				.setSelectionOperator(selection)
-				.setMaxIterations(0)
+				.setMaxIterations(250)
 				.setPopulationSize(100)
 				.build();
 		
@@ -66,8 +66,8 @@ public class Program {
 		List<PlanningSolution> population = algorithm.getResult();
 		Set<PlanningSolution> filteredPopulation = PopulationCleaner.getBestSolutions(population);
 		printPopulation(population);
-		
 		printPopulation(filteredPopulation);
+		
 		HTMLPrinter browserDisplay = new HTMLPrinter(new ArrayList<>(filteredPopulation));
 		browserDisplay.run();
 	}

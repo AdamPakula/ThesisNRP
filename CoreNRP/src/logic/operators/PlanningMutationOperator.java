@@ -94,6 +94,9 @@ public class PlanningMutationOperator implements MutationOperator<PlanningSoluti
 			}
 		}
 		
+		/*RepairOperator reparator = new RepairOperator(problem);
+		reparator.repair(child);*/
+		
 		return child;
 	}
 	

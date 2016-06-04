@@ -12,6 +12,7 @@ import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetal.util.pseudorandom.JMetalRandom;
 
 import entities.PlannedTask;
+import logic.NextReleaseProblem;
 import logic.PlanningSolution;
 
 /**
@@ -31,6 +32,11 @@ public class PlanningCrossoverOperator implements CrossoverOperator<PlanningSolu
 	 * Random Generator
 	 */
 	private JMetalRandom randomGenerator ;
+	
+	/**
+	 * The next release problem
+	 */
+	private NextReleaseProblem problem;
 
 	
 	/* --- Constructors --- */
@@ -39,12 +45,13 @@ public class PlanningCrossoverOperator implements CrossoverOperator<PlanningSolu
 	 * Constructor
 	 * @param crossoverProbability the probability to do crossover, between 0.0 and 1.0
 	 */
-	public PlanningCrossoverOperator(double crossoverProbability) {
+	public PlanningCrossoverOperator(NextReleaseProblem problem, double crossoverProbability) {
 		if (crossoverProbability < 0) {
 			throw new JMetalException("Crossover probability is negative: " + crossoverProbability) ;
 		}
 
 		this.crossoverProbability = crossoverProbability;
+		this.problem = problem;
 		randomGenerator = JMetalRandom.getInstance() ;
 	}
 
@@ -125,6 +132,11 @@ public class PlanningCrossoverOperator implements CrossoverOperator<PlanningSolu
 				}
 			}
 		}
+		
+		/*RepairOperator reparator = new RepairOperator(problem);
+		for (PlanningSolution planningSolution : offspring) {
+			reparator.repair(planningSolution);
+		}*/
 		
 		return offspring;
 	}
