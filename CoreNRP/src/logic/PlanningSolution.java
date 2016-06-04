@@ -363,7 +363,7 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 	public void scheduleRandomTask(int insertionPosition) {
 		if (undoneTasks.size() <= 0)
 			return;
-		Task newTask = undoneTasks.get(randomGenerator.nextInt(0, undoneTasks.size() -1)); //Maybe size-1
+		Task newTask = undoneTasks.get(randomGenerator.nextInt(0, undoneTasks.size() -1));
 		List<Employee> skilledEmployees = problem.getSkilledEmployees(newTask.getRequiredSkills().get(0));
 		Employee newEmployee = skilledEmployees.get(randomGenerator.nextInt(0, skilledEmployees.size()-1));
 		schedule(insertionPosition, newTask, newEmployee);

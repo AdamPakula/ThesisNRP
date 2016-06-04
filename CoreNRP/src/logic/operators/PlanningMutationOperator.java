@@ -3,6 +3,7 @@
  */
 package logic.operators;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.uma.jmetal.operator.MutationOperator;
@@ -147,8 +148,9 @@ public class PlanningMutationOperator implements MutationOperator<PlanningSoluti
 	 * @param taskToChange the planned task to modify
 	 */
 	private void changeEmployee(PlannedTask taskToChange) {
-		List<Employee> skilledEmployees = problem.getSkilledEmployees(taskToChange.getTask().getRequiredSkills().get(0));
-		if (skilledEmployees.size() > 1) {
+		List<Employee> skilledEmployees = new ArrayList<>(problem.getSkilledEmployees(taskToChange.getTask().getRequiredSkills().get(0)));
+		skilledEmployees.remove(taskToChange.getEmployee());
+		if (skilledEmployees.size() > 0) {
 			taskToChange.setEmployee(skilledEmployees.get(randomGenerator.nextInt(0, skilledEmployees.size()-1)));
 		}
 	}
