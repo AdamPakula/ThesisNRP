@@ -73,6 +73,11 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 	private double nbHoursByWeek;
 	
 	/**
+	 * The overall of a violated constraint
+	 */
+	private double precedenceConstraintOverall;
+	
+	/**
 	 * The priority score if there is no planned task
 	 */
 	private double worstScore;
@@ -202,6 +207,10 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 	
 	/* --- Methods --- */
 	
+	/**
+	 * Initializes the worst score 
+	 * Corresponding to the addition of each task priority score
+	 */
 	private void initializeWorstScore() {
 		worstScore = 0.0;
 		for (Task task : tasks) {
@@ -209,6 +218,10 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 		}
 	}
 	
+	/**
+	 * Initializes the number of constraints for the problem
+	 * Corresponding to the number of precedences more one for the time overflow
+	 */
 	private void initializeNumberOfConstraint() {
 		int numberOfConstraints = 0;
 		
@@ -216,6 +229,8 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 		for (Task task : tasks) {
 			numberOfConstraints += task.getPreviousTasks().size();
 		}
+		
+		precedenceConstraintOverall = 1.0 / numberOfConstraints;
 		
 		// Global overflow
 		numberOfConstraints++;
@@ -309,23 +324,30 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 
 	@Override
 	public void evaluateConstraints(PlanningSolution solution) {
-		int numberOfViolatedConstraint = 0;
+		int numberOfPrecedencesViolated = 0;
+		int numberOfViolatedConstraints;
+		double overall;
 		
 		for (PlannedTask currentTask : solution.getPlannedTasks()) {
 			for (Task previousTask : currentTask.getTask().getPreviousTasks()) {
 				PlannedTask previousPlannedTask = solution.findPlannedTask(previousTask);
 				
 				if (previousPlannedTask == null || previousPlannedTask.getEndHour() > currentTask.getBeginHour()) {
-					numberOfViolatedConstraint++;
+					numberOfPrecedencesViolated++;
 				}
 			}
 		}
 		
+		overall = -1.0 * numberOfPrecedencesViolated * precedenceConstraintOverall;
+		numberOfViolatedConstraints = numberOfPrecedencesViolated;
+		
 		if (solution.getEndDate() > nbWeeks * nbHoursByWeek) {
-			numberOfViolatedConstraint++;
+			numberOfViolatedConstraints++;
+			overall -= 1.0;
 		}
 		
-		numberOfViolatedConstraints.setAttribute(solution, numberOfViolatedConstraint);
-		overallConstraintViolation.setAttribute(solution, numberOfViolatedConstraint*-1.0);
+		this.numberOfViolatedConstraints.setAttribute(solution, numberOfViolatedConstraints);
+		
+		overallConstraintViolation.setAttribute(solution, overall);
 	}
 }
