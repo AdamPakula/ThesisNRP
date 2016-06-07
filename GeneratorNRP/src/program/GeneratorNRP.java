@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Random;
 
 import entities.Employee;
+import entities.GeneratorParameters;
 import entities.Priority;
 import entities.Skill;
 import entities.Task;
@@ -21,21 +22,21 @@ public class GeneratorNRP {
 			int nbEmployees = new Integer(args[1]);
 			int nbSkills = new Integer(args[2]);
 			
-			writeFiles(nbTasks, nbEmployees, nbSkills);
+			writeFiles(new GeneratorParameters(nbTasks, nbEmployees, nbSkills, 0.1));
 		}
 		else {
 			System.err.println("Need the numbers of tasks, employees and skills in parameter");
 		}
 	}
 
-	private static void writeFiles(int nbTasks, int nbEmployees, int nbSkills) {
-		List<Skill> skills = new ArrayList<>(nbSkills);
-		List<Task> tasks = new ArrayList<>(nbTasks);
-		List<Employee> employees = new ArrayList<>(nbEmployees);
+	private static void writeFiles(GeneratorParameters parameters) {
+		List<Skill> skills = new ArrayList<>(parameters.getNumberOfSkills());
+		List<Task> tasks = new ArrayList<>(parameters.getNumberOfTasks());
+		List<Employee> employees = new ArrayList<>(parameters.getNumberOfEmployees());
 		Random randomGenerator = new Random();
 		
 		// Initialization of the skills
-		for (int i = 1 ; i <= nbSkills ; i++) {
+		for (int i = 1 ; i <= parameters.getNumberOfSkills() ; i++) {
 			skills.add(new Skill("Skill " + i));
 		}
 		
@@ -43,9 +44,9 @@ public class GeneratorNRP {
 		// Initialization of the tasks
 		Priority[] priorities = Priority.values();
 		
-		for (int i = 1 ; i <= nbTasks ; i++) {
+		for (int i = 1 ; i <= parameters.getNumberOfTasks() ; i++) {
 			List<Task> previousTasks = new ArrayList<>();
-			if (randomGenerator.nextDouble() < 0.1) {
+			if (randomGenerator.nextDouble() < parameters.getRateOfPrecedenceConstraints()) {
 				if (tasks.size() > 0) {
 					int nbPreviousTasks = randomGenerator.nextInt(tasks.size());
 					List<Task> futurPreviousTasks = new ArrayList<>(tasks);
@@ -69,7 +70,7 @@ public class GeneratorNRP {
 		
 		
 		// Initialization of the employees
-		for (int i = 1 ; i <= nbEmployees ; i ++) {
+		for (int i = 1 ; i <= parameters.getNumberOfEmployees() ; i ++) {
 			List<Skill> employeeSkills = new ArrayList<>(1);
 			employeeSkills.add(skills.get(randomGenerator.nextInt(skills.size())));
 			employees.add(new Employee("Employee " + i, 
