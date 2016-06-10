@@ -17,7 +17,6 @@ import junit.framework.TestCase;
 import logic.NextReleaseProblem;
 import logic.PlanningSolution;
 import program.DataLoader;
-import program.Program;
 import program.TestFile;
 
 /**
@@ -61,7 +60,6 @@ public class SchedulerTest extends TestCase {
 		
 		List<PlanningSolution> pop = new ArrayList<>();
 		pop.add(solution);
-		Program.printPopulation(pop);
 		
 		assertEquals(0.0, plannedTasks.get(0).getBeginHour());
 		assertEquals(2.0, plannedTasks.get(0).getEndHour());
