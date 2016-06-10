@@ -13,6 +13,7 @@ import org.uma.jmetal.util.AlgorithmRunner;
 
 import entities.Employee;
 import entities.PlannedTask;
+import entities.ProblemData;
 import entities.Task;
 import junit.framework.TestCase;
 import logic.NextReleaseProblem;
@@ -103,9 +104,9 @@ public class SetTest extends TestCase {
 	
 
 	private PlanningSolution getBestSolution(TestFile testFile, int nbWEEk, double nbHoursByWeek) {
-		Object inputLists[] = DataLoader.readData(testFile);
-		List<Task> tasks = (List<Task>) inputLists[0];
-		List<Employee> employees = (List<Employee>) inputLists[1];
+		ProblemData data = DataLoader.readData(testFile);
+		List<Task> tasks = data.getTasks();
+		List<Employee> employees = data.getEmployees();
 		
 		NextReleaseProblem problem = new NextReleaseProblem(tasks, employees, nbWEEk, nbHoursByWeek);
 		Algorithm<List<PlanningSolution>> algorithm;

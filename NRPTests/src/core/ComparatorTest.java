@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.uma.jmetal.util.SolutionUtils;
 
 import entities.Employee;
+import entities.ProblemData;
 import entities.Task;
 import junit.framework.TestCase;
 import logic.NextReleaseProblem;
@@ -26,9 +27,9 @@ public class ComparatorTest extends TestCase {
 	
 	@Test
 	public void testDates() {		
-		Object inputLists[] = DataLoader.readData(TestFile.PRECEDENCES);
-		List<Task> tasks = (List<Task>) inputLists[0];
-		List<Employee> employees = (List<Employee>) inputLists[1];
+		ProblemData data = DataLoader.readData(TestFile.PRECEDENCES);
+		List<Task> tasks = data.getTasks();
+		List<Employee> employees = data.getEmployees();
 		
 		NextReleaseProblem nrp = new NextReleaseProblem(tasks, employees, 3, 35);
 		
