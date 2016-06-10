@@ -14,9 +14,7 @@ import org.uma.jmetal.operator.SelectionOperator;
 import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
 import org.uma.jmetal.util.AlgorithmRunner;
 
-import entities.Employee;
 import entities.ProblemData;
-import entities.Task;
 import logic.NextReleaseProblem;
 import logic.PlanningSolution;
 import logic.PopulationCleaner;
