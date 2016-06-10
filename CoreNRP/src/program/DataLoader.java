@@ -9,6 +9,7 @@ import java.util.List;
 
 import entities.Employee;
 import entities.Priority;
+import entities.ProblemData;
 import entities.Skill;
 import entities.Task;
 
@@ -25,8 +26,8 @@ public class DataLoader {
 	
 	public final static String INPUT_DIRECTORY = new String("../test/inputs/");
 
-	public static Object[] readData(TestFile file) {
-		Object[] data = null;
+	public static ProblemData readData(TestFile file) {
+		ProblemData data = null;
 		
 		try(BufferedReader tasksBufferedReader = new BufferedReader(new FileReader(INPUT_DIRECTORY + file.getTasksFileName()));
 				BufferedReader employeesBufferedReader = new BufferedReader(new FileReader(INPUT_DIRECTORY + file.getEmployeesFileName()))) {
@@ -54,12 +55,9 @@ public class DataLoader {
 			}
 			employeesBufferedReader.close();
 			
-			data = new Object[2];
-			data[0] = tasks;
-			data[1] = employees;
+			data = new ProblemData(tasks, employees, skills);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.err.println("Input file not found");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

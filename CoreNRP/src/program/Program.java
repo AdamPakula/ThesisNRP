@@ -15,6 +15,7 @@ import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
 import org.uma.jmetal.util.AlgorithmRunner;
 
 import entities.Employee;
+import entities.ProblemData;
 import entities.Task;
 import logic.NextReleaseProblem;
 import logic.PlanningSolution;
@@ -37,11 +38,9 @@ public class Program {
 	}
 
 	public static void main(String[] args) {		
-		Object inputLists[] = DataLoader.readData(TestFile.GENERATED);
-		List<Task> tasks = (List<Task>) inputLists[0];
-		List<Employee> employees = (List<Employee>) inputLists[1];
+		ProblemData data = DataLoader.readData(TestFile.PRECEDENCES);
 		
-		NextReleaseProblem problem = new NextReleaseProblem(tasks, employees, 3, 35.0);
+		NextReleaseProblem problem = new NextReleaseProblem(data.getTasks(), data.getEmployees(), 3, 35.0);
 		Algorithm<List<PlanningSolution>> algorithm;
 		CrossoverOperator<PlanningSolution> crossover;
 	    MutationOperator<PlanningSolution> mutation;
@@ -57,7 +56,7 @@ public class Program {
 
 		algorithm = new NSGAIIBuilder<PlanningSolution>(problem, crossover, mutation)
 				.setSelectionOperator(selection)
-				.setMaxIterations(250)
+				.setMaxIterations(500)
 				.setPopulationSize(100)
 				.build();
 		
