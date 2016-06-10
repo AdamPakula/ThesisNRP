@@ -11,25 +11,35 @@ import java.util.Random;
 import entities.Employee;
 import entities.GeneratorParameters;
 import entities.Priority;
+import entities.ProblemData;
 import entities.Skill;
 import entities.Task;
 
 public class GeneratorNRP {
 
+	/**
+	 * Generate new data and write it into files
+	 * @param args number of tasks, employees and skill
+	 */
 	public static void main(String[] args) {
 		if (args.length == 3) {
 			int nbTasks = new Integer(args[0]);
 			int nbEmployees = new Integer(args[1]);
 			int nbSkills = new Integer(args[2]);
 			
-			writeFiles(new GeneratorParameters(nbTasks, nbEmployees, nbSkills, 0.1));
+			writeFiles(generate(new GeneratorParameters(nbTasks, nbEmployees, nbSkills, 0.1)));
 		}
 		else {
 			System.err.println("Need the numbers of tasks, employees and skills in parameter");
 		}
 	}
-
-	private static void writeFiles(GeneratorParameters parameters) {
+	
+	/**
+	 * Generate data for a next release problem
+	 * @param parameters the parameters of the generator
+	 * @return the generated data
+	 */
+	public static ProblemData generate(GeneratorParameters parameters) {
 		List<Skill> skills = new ArrayList<>(parameters.getNumberOfSkills());
 		List<Task> tasks = new ArrayList<>(parameters.getNumberOfTasks());
 		List<Employee> employees = new ArrayList<>(parameters.getNumberOfEmployees());
@@ -78,6 +88,14 @@ public class GeneratorNRP {
 					employeeSkills));
 		}
 		
+		return new ProblemData(tasks, employees, skills);
+	}
+
+	/**
+	 * Writes the data into generated.tasks and generated.employees files
+	 * @param data the data to write
+	 */
+	private static void writeFiles(ProblemData data) {
 		File tasksFile = new File("generated.tasks");
 		File employeesFile = new File("generated.employees");
 		FileWriter fileW;
@@ -85,18 +103,23 @@ public class GeneratorNRP {
 		try {
 			fileW = new FileWriter(tasksFile);
 			BufferedWriter bufferW = new BufferedWriter(fileW);
-			bufferW.write(getTasksText(tasks));
+			bufferW.write(getTasksText(data.getTasks()));
 			bufferW.close();
 			
 			fileW = new FileWriter(employeesFile);
 			bufferW = new BufferedWriter(fileW);
-			bufferW.write(getEmployeesText(employees));
+			bufferW.write(getEmployeesText(data.getEmployees()));
 			bufferW.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
+	/**
+	 * Return all the tasks rows in string format
+	 * @param tasks the tasks to write
+	 * @return the tasks into string file format
+	 */
 	private static String getTasksText(List<Task> tasks) {
 		StringBuilder sb = new StringBuilder();
 		
@@ -120,6 +143,11 @@ public class GeneratorNRP {
 		return sb.toString();
 	}
 	
+	/**
+	 * Return the employees in order to write in a data file
+	 * @param employees the employees to write
+	 * @return the string representing the employees
+	 */
 	private static String getEmployeesText(List<Employee> employees) {
 		StringBuilder sb = new StringBuilder();
 		
