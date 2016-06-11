@@ -6,8 +6,7 @@ public class ExecuteAlgorithm {
 
 	public static void main(String[] args) {
 		ParametersFrame frame = new ParametersFrame();
-		
-
+		frame.setVisible(true);
 	}
 
 }
