@@ -18,6 +18,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.border.EmptyBorder;
 
 import entities.AlgorithmChoice;
+import parameters.DefaultParameters;
 
 /**
  * @author Vavou
@@ -45,10 +46,21 @@ public class ParametersFrame extends JFrame {
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		
 		initializeComponents();
+		initializeValues();
 		
 		pack();
 	}
 	
+	private void initializeValues() {
+		hoursByWeekSpinner.setValue(DefaultParameters.HOURS_BY_WEEK);
+		nbWeekSpinner.setValue(DefaultParameters.NUMBER_OF_WEEK);
+		nbTasksSpinner.setValue(DefaultParameters.NUMBER_OF_TASKS);
+		nbEmployeesSpinner.setValue(DefaultParameters.NUMBER_OF_EMPLOYEES);
+		nbSkillsSpinner.setValue(DefaultParameters.NUMBER_OF_SKILLS);
+		precedenceRateSpinner.setValue(DefaultParameters.PRECEDENCE_RATE);
+		
+	}
+
 	private void initializeComponents() {
 		int margin = 20;
 		
@@ -73,7 +85,8 @@ public class ParametersFrame extends JFrame {
 		gbc.gridy++;
 		gbc.gridx = 0;
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
-		mainPanel.add(new JLabel("Iteration"), gbc);
+		gbc.anchor = GridBagConstraints.CENTER;
+		mainPanel.add(new JLabel("ITERATION"), gbc);
 		
 		gbc.gridy++;
 		gbc.gridx = 0;
@@ -84,9 +97,7 @@ public class ParametersFrame extends JFrame {
 		gbc.gridx++;
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		gbc.anchor = GridBagConstraints.LINE_START;
-		SpinnerNumberModel spinnerModel = new SpinnerNumberModel();
-		spinnerModel.setMinimum(1);
-		nbWeekSpinner = new JSpinner(spinnerModel);
+		nbWeekSpinner = new JSpinner(getNewPositiveIntegerModel());
 		raiseTextFieldSize(nbWeekSpinner);
 		mainPanel.add(nbWeekSpinner, gbc);
 		
@@ -99,14 +110,15 @@ public class ParametersFrame extends JFrame {
 		gbc.gridx++;
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		gbc.anchor = GridBagConstraints.LINE_START;
-		hoursByWeekSpinner = new JSpinner(spinnerModel);
+		hoursByWeekSpinner = new JSpinner(getNewPositiveIntegerModel());
 		raiseTextFieldSize(hoursByWeekSpinner);
 		mainPanel.add(hoursByWeekSpinner, gbc);
 		
 		gbc.gridy++;
 		gbc.gridx = 0;
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
-		mainPanel.add(new JLabel("Test case"), gbc);
+		gbc.anchor = GridBagConstraints.CENTER;
+		mainPanel.add(new JLabel("TEST CASE"), gbc);
 		
 		gbc.gridy++;
 		gbc.gridx = 0;
@@ -117,8 +129,7 @@ public class ParametersFrame extends JFrame {
 		gbc.gridx++;
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		gbc.anchor = GridBagConstraints.LINE_START;
-		spinnerModel.setMinimum(1);
-		nbTasksSpinner = new JSpinner(spinnerModel);
+		nbTasksSpinner = new JSpinner(getNewPositiveIntegerModel());
 		raiseTextFieldSize(nbTasksSpinner);
 		mainPanel.add(nbTasksSpinner, gbc);
 		
@@ -131,7 +142,7 @@ public class ParametersFrame extends JFrame {
 		gbc.gridx++;
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		gbc.anchor = GridBagConstraints.LINE_START;
-		nbEmployeesSpinner = new JSpinner(spinnerModel);
+		nbEmployeesSpinner = new JSpinner(getNewPositiveIntegerModel());
 		raiseTextFieldSize(nbEmployeesSpinner);
 		mainPanel.add(nbEmployeesSpinner, gbc);
 		
@@ -144,7 +155,7 @@ public class ParametersFrame extends JFrame {
 		gbc.gridx++;
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		gbc.anchor = GridBagConstraints.LINE_START;
-		nbSkillsSpinner = new JSpinner(spinnerModel);
+		nbSkillsSpinner = new JSpinner(getNewPositiveIntegerModel());
 		raiseTextFieldSize(nbSkillsSpinner);
 		mainPanel.add(nbSkillsSpinner, gbc);
 		
@@ -171,5 +182,11 @@ public class ParametersFrame extends JFrame {
     	JComponent editor = spinner.getEditor();
     	JFormattedTextField ftf = ((JSpinner.DefaultEditor)editor).getTextField();
     	ftf.setColumns(6);
+    }
+    
+    private SpinnerNumberModel getNewPositiveIntegerModel() {
+    	SpinnerNumberModel model = new SpinnerNumberModel();
+    	model.setMinimum(1);
+    	return model;
     }
 }

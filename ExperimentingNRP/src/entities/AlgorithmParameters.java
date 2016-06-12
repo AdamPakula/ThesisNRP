@@ -1,5 +1,7 @@
 package entities;
 
+import parameters.DefaultParameters;
+
 public class AlgorithmParameters {
 	
 	/* --- Attributes --- */
@@ -87,17 +89,13 @@ public class AlgorithmParameters {
 	/* --- Constructors --- */
 
 	/**
-	 * Constructor initializing the attributes:
-	 * - number of iterations to 500
-	 * - probability of mutation to 0.1
-	 * - crossover probability to 0.5
-	 * - population size to 100
+	 * Constructor initializing the attributes with default values
 	 */
 	public AlgorithmParameters() {
-		this.numberOfIterations = 500;
+		this.numberOfIterations = DefaultParameters.nbIterations;
 		this.mutationProbability = 0.1;
-		this.crossoverProbability = 0.5;
-		this.populationSize = 100;
+		this.crossoverProbability = DefaultParameters.crossoverProbability;
+		this.populationSize = DefaultParameters.populationSize;
 	}
 
 	/**
