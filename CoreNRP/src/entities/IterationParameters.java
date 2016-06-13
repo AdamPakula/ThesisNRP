@@ -17,7 +17,7 @@ public class IterationParameters {
 	/**
 	 * The number of worked hours by week
 	 */
-	private int hoursByWeek;
+	private double hoursByWeek;
 	
 	/**
 	 * @return the numberOfWeek
@@ -36,14 +36,14 @@ public class IterationParameters {
 	/**
 	 * @return the hoursByWeek
 	 */
-	public int getHoursByWeek() {
+	public double getHoursByWeek() {
 		return hoursByWeek;
 	}
 
 	/**
 	 * @param hoursByWeek the hoursByWeek to set
 	 */
-	public void setHoursByWeek(int hoursByWeek) {
+	public void setHoursByWeek(double hoursByWeek) {
 		this.hoursByWeek = hoursByWeek;
 	}
 
@@ -52,7 +52,7 @@ public class IterationParameters {
 	 * @param numberOfWeek The number of week of the iteration
 	 * @param hoursByWeek The number of worked hours by week
 	 */
-	public IterationParameters(int numberOfWeek, int hoursByWeek) {
+	public IterationParameters(int numberOfWeek, double hoursByWeek) {
 		this.numberOfWeek = numberOfWeek;
 		this.hoursByWeek = hoursByWeek;
 	}
