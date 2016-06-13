@@ -2,7 +2,7 @@ package entities;
 
 public enum AlgorithmChoice {
 	NSGAII("NSGA II"),
-	OTHER("other");
+	MOCELL("MOCell");
 	
 	private String name;
 	
