@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.uma.jmetal.util.SolutionUtils;
 
 import entities.Employee;
+import entities.IterationParameters;
 import entities.ProblemData;
 import entities.Task;
 import junit.framework.TestCase;
@@ -31,7 +32,7 @@ public class ComparatorTest extends TestCase {
 		List<Task> tasks = data.getTasks();
 		List<Employee> employees = data.getEmployees();
 		
-		NextReleaseProblem nrp = new NextReleaseProblem(tasks, employees, 3, 35);
+		NextReleaseProblem nrp = new NextReleaseProblem(tasks, employees, new IterationParameters(3, 35));
 		
 		PlanningSolution emptySolution = new PlanningSolution(nrp);
 		while (emptySolution.getNumberOfPlannedTasks() > 0) {

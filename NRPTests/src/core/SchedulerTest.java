@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.uma.jmetal.util.solutionattribute.impl.OverallConstraintViolation;
 
 import entities.Employee;
+import entities.IterationParameters;
 import entities.PlannedTask;
 import entities.ProblemData;
 import entities.Task;
@@ -46,7 +47,7 @@ public class SchedulerTest extends TestCase {
 		List<Task> tasks = data.getTasks();
 		List<Employee> employees = data.getEmployees();
 		
-		NextReleaseProblem nrp = new NextReleaseProblem(tasks, employees, 3, 35);
+		NextReleaseProblem nrp = new NextReleaseProblem(tasks, employees, new IterationParameters(3, 35));
 		PlanningSolution solution;
 		List<PlannedTask> plannedTasks = new ArrayList<>();
 		plannedTasks.add(new PlannedTask(tasks.get(0), employees.get(0)));

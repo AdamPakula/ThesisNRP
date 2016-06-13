@@ -12,6 +12,7 @@ import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
 import org.uma.jmetal.util.AlgorithmRunner;
 
 import entities.Employee;
+import entities.IterationParameters;
 import entities.PlannedTask;
 import entities.ProblemData;
 import entities.Task;
@@ -36,7 +37,7 @@ public class SetTest extends TestCase {
 	
 	@Test
 	public void testSkills() {
-		PlanningSolution bestSolution = getBestSolution(TestFile.SKILLS, 2, 35.0);
+		PlanningSolution bestSolution = getBestSolution(TestFile.SKILLS, new IterationParameters(2, 35.0));
 		
 		assertEquals(2, bestSolution.getNumberOfPlannedTasks());
 		for (PlannedTask plannedTask : bestSolution.getPlannedTasks()) {
@@ -47,7 +48,7 @@ public class SetTest extends TestCase {
 	
 	@Test
 	public void testEmployeeOverflow() {
-		PlanningSolution bestSolution = getBestSolution(TestFile.EMPLOYEE_OVERFLOW, 2, 35.0);
+		PlanningSolution bestSolution = getBestSolution(TestFile.EMPLOYEE_OVERFLOW, new IterationParameters(2, 35.0));
 		
 		assertEquals(1, bestSolution.getNumberOfPlannedTasks());
 		assertEquals(40.0, bestSolution.getEndDate());
@@ -55,21 +56,21 @@ public class SetTest extends TestCase {
 	
 	@Test
 	public void testOverflow() {
-		PlanningSolution bestSolution = getBestSolution(TestFile.OVERFLOW, 1, 35.0);
+		PlanningSolution bestSolution = getBestSolution(TestFile.OVERFLOW, new IterationParameters(1, 35.0));
 		
 		assertEquals(0, bestSolution.getNumberOfPlannedTasks());
 	}
 	
 	@Test
 	public void testOverflowOptimisation() {
-		PlanningSolution bestSolution = getBestSolution(TestFile.OVERFLOW_OPTIMISATION, 1, 35.0);
+		PlanningSolution bestSolution = getBestSolution(TestFile.OVERFLOW_OPTIMISATION, new IterationParameters(1, 35.0));
 		
 		assertTrue(bestSolution.getPriorityScore() <= 80.0);
 	}
 	
 	@Test
 	public void testSimplest() {
-		PlanningSolution bestSolution = getBestSolution(TestFile.SIMPLEST, 3, 35.0);
+		PlanningSolution bestSolution = getBestSolution(TestFile.SIMPLEST, new IterationParameters(3, 35.0));
 		
 		assertEquals(1, bestSolution.getNumberOfPlannedTasks());
 		assertEquals(2.0, bestSolution.getEndDate());
@@ -77,7 +78,7 @@ public class SetTest extends TestCase {
 	
 	@Test
 	public void testSimpleOptimisation() {
-		PlanningSolution bestSolution = getBestSolution(TestFile.SIMPLE_OPTIMISATION, 3, 35.0);
+		PlanningSolution bestSolution = getBestSolution(TestFile.SIMPLE_OPTIMISATION, new IterationParameters(3, 35.0));
 		
 		assertEquals(2, bestSolution.getNumberOfPlannedTasks());
 		assertEquals(4.0, bestSolution.getEndDate());
@@ -85,7 +86,7 @@ public class SetTest extends TestCase {
 	
 	@Test
 	public void testPrecedence() {
-		PlanningSolution bestSolution = getBestSolution(TestFile.PRECEDENCE, 3, 35.0);
+		PlanningSolution bestSolution = getBestSolution(TestFile.PRECEDENCE, new IterationParameters(3, 35.0));
 		
 		assertEquals(2, bestSolution.getNumberOfPlannedTasks());
 		assertEquals(4.0, bestSolution.getEndDate());
@@ -94,7 +95,7 @@ public class SetTest extends TestCase {
 	
 	@Test
 	public void testPrecedences() {
-		PlanningSolution bestSolution = getBestSolution(TestFile.PRECEDENCES, 3, 35.0);
+		PlanningSolution bestSolution = getBestSolution(TestFile.PRECEDENCES, new IterationParameters(3, 35.0));
 		
 		assertEquals(4, bestSolution.getNumberOfPlannedTasks());
 		assertEquals(7.0, bestSolution.getEndDate());
@@ -103,12 +104,12 @@ public class SetTest extends TestCase {
 	
 	
 
-	private PlanningSolution getBestSolution(TestFile testFile, int nbWEEk, double nbHoursByWeek) {
+	private PlanningSolution getBestSolution(TestFile testFile, IterationParameters iterationParam) {
 		ProblemData data = DataLoader.readData(testFile);
 		List<Task> tasks = data.getTasks();
 		List<Employee> employees = data.getEmployees();
 		
-		NextReleaseProblem problem = new NextReleaseProblem(tasks, employees, nbWEEk, nbHoursByWeek);
+		NextReleaseProblem problem = new NextReleaseProblem(tasks, employees, iterationParam);
 		Algorithm<List<PlanningSolution>> algorithm;
 		CrossoverOperator<PlanningSolution> crossover;
 	    MutationOperator<PlanningSolution> mutation;
