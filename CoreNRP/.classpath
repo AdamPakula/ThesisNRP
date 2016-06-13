@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry exported="true" kind="lib" path="lib/jmetal-core-5.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jmetal-algorithm-5.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jmetal-core-5.0.jar" sourcepath="C:/Users/Vavou/Informatique/ZZ3/Tesis/jMetal-jmetal-5.0/jMetal-jmetal-5.0/jmetal-core"/>
+	<classpathentry exported="true" kind="lib" path="lib/jmetal-algorithm-5.0.jar" sourcepath="C:/Users/Vavou/Informatique/ZZ3/Tesis/jMetal-jmetal-5.0/jMetal-jmetal-5.0/jmetal-algorithm"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

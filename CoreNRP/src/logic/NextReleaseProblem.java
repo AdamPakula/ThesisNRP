@@ -16,6 +16,7 @@ import org.uma.jmetal.util.solutionattribute.impl.OverallConstraintViolation;
 import entities.Employee;
 import entities.PlannedTask;
 import entities.EmployeeWeekAvailability;
+import entities.IterationParameters;
 import entities.Skill;
 import entities.Task;
 
@@ -173,13 +174,13 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 	 * Constructor
 	 * @param tasks tasks of the iteration
 	 * @param employees employees available during the iteration
-	 * @param nbWeeks The number of weeks of the iteration
+	 * @param iterationParam The parameters of the iteration
 	 */
-	public NextReleaseProblem(List<Task> tasks, List<Employee> employees, int nbWeeks, double nbHoursByWeek) {
+	public NextReleaseProblem(List<Task> tasks, List<Employee> employees, IterationParameters iterationParam) {
 		this.tasks = tasks;
 		this.employees = employees;
-		this.nbWeeks = nbWeeks;
-		this.nbHoursByWeek = nbHoursByWeek;
+		this.nbWeeks = iterationParam.getNumberOfWeek();
+		this.nbHoursByWeek = iterationParam.getHoursByWeek();
 		
 		skilledEmployees = new HashMap<>();
 		for (Employee employee : employees) {
