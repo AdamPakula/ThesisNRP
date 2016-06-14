@@ -20,6 +20,7 @@ import junit.framework.TestCase;
 import logic.NextReleaseProblem;
 import logic.PlanningSolution;
 import logic.PopulationCleaner;
+import logic.SolutionQuality;
 import logic.comparators.PlanningSolutionDominanceComparator;
 import logic.operators.PlanningCrossoverOperator;
 import logic.operators.PlanningMutationOperator;
@@ -74,6 +75,9 @@ public class SetTest extends TestCase {
 		
 		assertEquals(1, bestSolution.getNumberOfPlannedTasks());
 		assertEquals(2.0, bestSolution.getEndDate());
+		
+		double expectedQuality = (1.0 - (2.0/(3.0*35.0)) + 1 ) / 2;
+		assertEquals(expectedQuality, new SolutionQuality().getAttribute(bestSolution));
 	}
 	
 	@Test
@@ -129,7 +133,7 @@ public class SetTest extends TestCase {
 				.setPopulationSize(100)
 				.build();
 		
-		AlgorithmRunner algoRunner = new AlgorithmRunner.Executor(algorithm).execute();
+		new AlgorithmRunner.Executor(algorithm).execute();
 		
 		List<PlanningSolution> population = algorithm.getResult();
 		
