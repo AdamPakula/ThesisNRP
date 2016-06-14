@@ -182,7 +182,6 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 	 * @param iterationParam The parameters of the iteration
 	 */
 	public NextReleaseProblem(List<Task> tasks, List<Employee> employees, IterationParameters iterationParam) {
-		this.tasks = tasks;
 		this.employees = employees;
 		this.nbWeeks = iterationParam.getNumberOfWeek();
 		this.nbHoursByWeek = iterationParam.getHoursByWeek();
@@ -197,6 +196,12 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 				}
 				employeesList.add(employee);
 			}
+		}
+		
+		this.tasks = new ArrayList<>();
+		for (Task task : tasks) {
+			if (skilledEmployees.get(task.getRequiredSkills().get(0)) != null)
+				this.tasks.add(task);
 		}
 		
 		worstEndDate = nbWeeks * nbHoursByWeek;
