@@ -20,6 +20,12 @@ public class PopulationFilter {
 		Collections.sort(population, new PlanningSolutionDominanceComparator());
 	}
 	
+	/**
+	 * Returns the best solution
+	 * after sorting by dominance, it returns the first one
+	 * @param population the base population
+	 * @return the best solution
+	 */
 	public static PlanningSolution getBestSolution(List<PlanningSolution> population) {
 		sortByDominance(population);
 		
