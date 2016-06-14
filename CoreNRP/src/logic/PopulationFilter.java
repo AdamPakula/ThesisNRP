@@ -9,7 +9,7 @@ import java.util.Set;
 
 import logic.comparators.PlanningSolutionDominanceComparator;
 
-public class PopulationCleaner {
+public class PopulationFilter {
 	
 	/**
 	 * Sorts the population by dominance
