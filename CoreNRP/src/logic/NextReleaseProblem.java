@@ -58,6 +58,11 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 	private OverallConstraintViolation<PlanningSolution> overallConstraintViolation;
 	
 	/**
+	 * The solution quality attribute
+	 */
+	private SolutionQuality solutionQuality;
+	
+	/**
 	 * Employees sorted by skill 
 	 * An employee is in a the lists of all his skills
 	 */
@@ -203,6 +208,7 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 		
 		numberOfViolatedConstraints = new NumberOfViolatedConstraints<PlanningSolution>();
 		overallConstraintViolation = new OverallConstraintViolation<>();
+		solutionQuality = new SolutionQuality();
 	}
 	
 	
@@ -321,6 +327,7 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 		solution.setObjective(INDEX_PRIORITY_OBJECTIVE, solution.getPriorityScore());
 		solution.setObjective(INDEX_END_DATE_OBJECTIVE, 
 				plannedTasks.size() == 0 ? worstEndDate : endPlanningHour);
+		computeQuality(solution);
 	}
 
 	@Override
@@ -350,5 +357,21 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 		this.numberOfViolatedConstraints.setAttribute(solution, numberOfViolatedConstraints);
 		
 		overallConstraintViolation.setAttribute(solution, overall);
+		if (numberOfViolatedConstraints > 0) {
+			solutionQuality.setAttribute(solution, 0.0);
+		}
+	}
+	
+	/**
+	 * Updates the quality attribute of the solution
+	 * @param solution The solution to evaluate quality
+	 */
+	private void computeQuality(PlanningSolution solution) {
+		double globalQuality;
+		double endDateQuality = 1.0 - (solution.getObjective(INDEX_END_DATE_OBJECTIVE) / worstEndDate);
+		double priorityQuality = 1.0 - (solution.getObjective(INDEX_PRIORITY_OBJECTIVE) / worstScore);
+		
+		globalQuality = (endDateQuality + priorityQuality) / 2;
+		solutionQuality.setAttribute(solution, globalQuality);
 	}
 }
