@@ -5,6 +5,9 @@ package view;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Locale;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -18,13 +21,16 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.border.EmptyBorder;
 
 import entities.AlgorithmChoice;
+import entities.GeneratorParameters;
+import entities.IterationParameters;
+import logic.ExecutorController;
 import parameters.DefaultParameters;
 
 /**
  * @author Vavou
  *
  */
-public class ParametersFrame extends JFrame {
+public class ParametersFrame extends JFrame implements ActionListener {
 
 	/**
 	 * 
@@ -37,13 +43,18 @@ public class ParametersFrame extends JFrame {
 	private JSpinner nbEmployeesSpinner;
 	private JSpinner nbSkillsSpinner;
 	private JSpinner precedenceRateSpinner;
+	private JButton launchButton;
+	private JComboBox<AlgorithmChoice> algorithmComboBox;
+	
+	private ExecutorController controller;
 
 	/**
 	 * 
 	 */
-	public ParametersFrame() {
+	public ParametersFrame(ExecutorController controller) {
 		super("Execute Algorithm");
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		this.controller = controller;
 		
 		initializeComponents();
 		initializeValues();
@@ -63,6 +74,7 @@ public class ParametersFrame extends JFrame {
 
 	private void initializeComponents() {
 		int margin = 20;
+		Locale.setDefault(Locale.Category.FORMAT, Locale.ENGLISH);
 		
 		JPanel mainPanel = new JPanel();
 		mainPanel.setBorder(new EmptyBorder(margin, margin, margin, margin));
@@ -80,7 +92,8 @@ public class ParametersFrame extends JFrame {
 		gbc.gridx++;
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		gbc.anchor = GridBagConstraints.LINE_START;
-		mainPanel.add(new JComboBox<>(AlgorithmChoice.values()), gbc);
+		algorithmComboBox = new JComboBox<>(AlgorithmChoice.values());
+		mainPanel.add(algorithmComboBox, gbc);
 		
 		gbc.gridy++;
 		gbc.gridx = 0;
@@ -110,7 +123,7 @@ public class ParametersFrame extends JFrame {
 		gbc.gridx++;
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		gbc.anchor = GridBagConstraints.LINE_START;
-		hoursByWeekSpinner = new JSpinner(getNewPositiveIntegerModel());
+		hoursByWeekSpinner = new JSpinner(new SpinnerNumberModel(1.0, 1.0, 24.0*7, 1.0));
 		raiseTextFieldSize(hoursByWeekSpinner);
 		mainPanel.add(hoursByWeekSpinner, gbc);
 		
@@ -175,7 +188,11 @@ public class ParametersFrame extends JFrame {
 		gbc.gridx = 1;
 		gbc.gridy++;
 		gbc.gridwidth = 1;
-		mainPanel.add(new JButton("Launch"), gbc);
+		launchButton = new JButton("Launch");
+		getRootPane().setDefaultButton(launchButton);
+		launchButton.addActionListener(this);
+		launchButton.setFocusPainted(false);
+		mainPanel.add(launchButton, gbc);
 	}
     
     private void raiseTextFieldSize(JSpinner spinner) {
@@ -189,4 +206,22 @@ public class ParametersFrame extends JFrame {
     	model.setMinimum(1);
     	return model;
     }
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == launchButton) {
+			int nbTasks = (int) nbTasksSpinner.getValue(),
+				nbEmployees = (int) nbEmployeesSpinner.getValue(),
+				nbSkills = (int) nbSkillsSpinner.getValue(),
+				nbWeeks = (int)nbWeekSpinner.getValue();
+
+			double precedenceRate = (double)precedenceRateSpinner.getValue(),
+				hoursByWeek = (double)hoursByWeekSpinner.getValue();
+			
+			GeneratorParameters genParam = new GeneratorParameters(nbTasks, nbEmployees, 
+					nbSkills, precedenceRate);
+			IterationParameters iterationParam = new IterationParameters(nbWeeks, hoursByWeek);
+			controller.launch((AlgorithmChoice)algorithmComboBox.getSelectedItem(), genParam, iterationParam);
+		}
+	}
 }

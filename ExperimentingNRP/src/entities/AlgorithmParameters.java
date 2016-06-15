@@ -92,10 +92,10 @@ public class AlgorithmParameters {
 	 * Constructor initializing the attributes with default values
 	 */
 	public AlgorithmParameters() {
-		this.numberOfIterations = DefaultParameters.nbIterations;
+		this.numberOfIterations = DefaultParameters.NUMBER_OF_ITERATIONS;
 		this.mutationProbability = 0.1;
-		this.crossoverProbability = DefaultParameters.crossoverProbability;
-		this.populationSize = DefaultParameters.populationSize;
+		this.crossoverProbability = DefaultParameters.CROSSOVER_PROBABILITY;
+		this.populationSize = DefaultParameters.POPULATION_SIZE;
 	}
 
 	/**
