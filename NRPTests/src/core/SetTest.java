@@ -19,7 +19,7 @@ import entities.Task;
 import junit.framework.TestCase;
 import logic.NextReleaseProblem;
 import logic.PlanningSolution;
-import logic.PopulationCleaner;
+import logic.PopulationFilter;
 import logic.SolutionQuality;
 import logic.comparators.PlanningSolutionDominanceComparator;
 import logic.operators.PlanningCrossoverOperator;
@@ -137,6 +137,6 @@ public class SetTest extends TestCase {
 		
 		List<PlanningSolution> population = algorithm.getResult();
 		
-		return PopulationCleaner.getBestSolution(population);
+		return PopulationFilter.getBestSolution(population);
 	}
 }
