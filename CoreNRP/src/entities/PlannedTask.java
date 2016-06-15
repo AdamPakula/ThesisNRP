@@ -104,7 +104,10 @@ public class PlannedTask {
 	}
 	
 	public PlannedTask(PlannedTask origin) {
-		this(origin.getTask(), origin.getEmployee());
+		this.employee = origin.getEmployee();
+		this.beginHour = origin.getBeginHour();
+		this.task = origin.getTask();
+		this.endHour = origin.getEndHour();
 	}
 	
 	/* --- Methods --- */

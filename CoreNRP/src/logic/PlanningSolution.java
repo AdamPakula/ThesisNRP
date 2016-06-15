@@ -5,6 +5,7 @@
 package logic;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -165,18 +166,38 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 
 	/**
 	 * Copy constructor
-	 * @param planningSolution PlanningSoltion to copy
+	 * @param origin PlanningSoltion to copy
 	 */
-	public PlanningSolution(PlanningSolution planningSolution) {
-		super(planningSolution.problem);
+	public PlanningSolution(PlanningSolution origin) {
+		super(origin.problem);
 
-	    numberOfViolatedConstraints = planningSolution.numberOfViolatedConstraints;
+	    numberOfViolatedConstraints = origin.numberOfViolatedConstraints;
 	    
 	    plannedTasks = new CopyOnWriteArrayList<>();
-	    for (PlannedTask plannedTask : planningSolution.getPlannedTasks()) {
+	    for (PlannedTask plannedTask : origin.getPlannedTasks()) {
 			plannedTasks.add(new PlannedTask(plannedTask));
 		}
-	    undoneTasks = new CopyOnWriteArrayList<>(planningSolution.getUndoneTasks());
+	    
+	    // Copy constraints and quality
+	    this.attributes.putAll(origin.attributes);
+	    
+	    employeesPlanning = new HashMap<>();
+	    
+	    for (Employee e : origin.employeesPlanning.keySet()) {
+	    	List<EmployeeWeekAvailability> old = origin.employeesPlanning.get(e);
+			List<EmployeeWeekAvailability> availabilities = new ArrayList<>(old.size());
+			for (EmployeeWeekAvailability employeeWeekAvailability : old) {
+				availabilities.add(new EmployeeWeekAvailability(employeeWeekAvailability));
+			}
+			employeesPlanning.put(e, availabilities);
+		}
+	    
+	    for (int i = 0 ; i < origin.getNumberOfObjectives() ; i++) {
+	    	this.setObjective(i, origin.getObjective(i));
+	    }
+	    
+	    endDate = origin.getEndDate();
+	    undoneTasks = new CopyOnWriteArrayList<>(origin.getUndoneTasks());
 	}
 	
 	
@@ -307,13 +328,14 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 		Task taskToDo;
 		List<Employee> skilledEmployees;
 		List<Task> possibleTasks = updatePossibleTasks();
-		
-		for (int i = 0 ; i < number ; i++) {
+		int i = 0;
+		while (i < number && possibleTasks.size() > 0) {
 			taskToDo = possibleTasks.get(randomGenerator.nextInt(0, possibleTasks.size()-1));
 			skilledEmployees = problem.getSkilledEmployees(taskToDo.getRequiredSkills().get(0));
 			scheduleAtTheEnd(taskToDo,
 					skilledEmployees.get(randomGenerator.nextInt(0, skilledEmployees.size()-1)));
 			possibleTasks = updatePossibleTasks();
+			i++;
 		}
 	}
 	

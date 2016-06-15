@@ -200,8 +200,11 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 		
 		this.tasks = new ArrayList<>();
 		for (Task task : tasks) {
-			if (skilledEmployees.get(task.getRequiredSkills().get(0)) != null)
-				this.tasks.add(task);
+			if (skilledEmployees.get(task.getRequiredSkills().get(0)) != null) {
+				if (tasks.containsAll(task.getPreviousTasks())) {
+					this.tasks.add(task);
+				}
+			}
 		}
 		
 		worstEndDate = nbWeeks * nbHoursByWeek;
@@ -337,32 +340,30 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 
 	@Override
 	public void evaluateConstraints(PlanningSolution solution) {
-		int numberOfPrecedencesViolated = 0;
-		int numberOfViolatedConstraints;
+		int precedencesViolated = 0;
+		int violatedConstraints;
 		double overall;
 		
 		for (PlannedTask currentTask : solution.getPlannedTasks()) {
 			for (Task previousTask : currentTask.getTask().getPreviousTasks()) {
 				PlannedTask previousPlannedTask = solution.findPlannedTask(previousTask);
-				
 				if (previousPlannedTask == null || previousPlannedTask.getEndHour() > currentTask.getBeginHour()) {
-					numberOfPrecedencesViolated++;
+					precedencesViolated++;
 				}
 			}
 		}
 		
-		overall = -1.0 * numberOfPrecedencesViolated * precedenceConstraintOverall;
-		numberOfViolatedConstraints = numberOfPrecedencesViolated;
+		overall = -1.0 * precedencesViolated * precedenceConstraintOverall;
+		violatedConstraints = precedencesViolated;
 		
 		if (solution.getEndDate() > nbWeeks * nbHoursByWeek) {
-			numberOfViolatedConstraints++;
+			violatedConstraints++;
 			overall -= 1.0;
 		}
 		
-		this.numberOfViolatedConstraints.setAttribute(solution, numberOfViolatedConstraints);
-		
+		numberOfViolatedConstraints.setAttribute(solution, violatedConstraints);
 		overallConstraintViolation.setAttribute(solution, overall);
-		if (numberOfViolatedConstraints > 0) {
+		if (violatedConstraints > 0) {
 			solutionQuality.setAttribute(solution, 0.0);
 		}
 	}
