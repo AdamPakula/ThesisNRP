@@ -1,4 +1,4 @@
-package program;
+package programs;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,13 +14,17 @@ import org.uma.jmetal.operator.SelectionOperator;
 import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
 import org.uma.jmetal.util.AlgorithmRunner;
 
+import entities.IterationParameters;
 import entities.ProblemData;
 import logic.NextReleaseProblem;
 import logic.PlanningSolution;
-import logic.PopulationCleaner;
+import logic.PopulationFilter;
 import logic.comparators.PlanningSolutionDominanceComparator;
 import logic.operators.PlanningCrossoverOperator;
 import logic.operators.PlanningMutationOperator;
+import parameters.DefaultParameters;
+import program.DataLoader;
+import program.TestFile;
 import view.HTMLPrinter;
 
 public class Program {
@@ -38,30 +42,30 @@ public class Program {
 	public static void main(String[] args) {		
 		ProblemData data = DataLoader.readData(TestFile.PRECEDENCES);
 		
-		NextReleaseProblem problem = new NextReleaseProblem(data.getTasks(), data.getEmployees(), 3, 35.0);
+		NextReleaseProblem problem = new NextReleaseProblem(data.getTasks(), data.getEmployees(), new IterationParameters(3, 35.0));
 		Algorithm<List<PlanningSolution>> algorithm;
 		CrossoverOperator<PlanningSolution> crossover;
 	    MutationOperator<PlanningSolution> mutation;
 	    SelectionOperator<List<PlanningSolution>, PlanningSolution> selection;
 	    
-	    double crossoverProbability = 0.5;
+	    double crossoverProbability = DefaultParameters.CROSSOVER_PROBABILITY;
 		crossover = new PlanningCrossoverOperator(problem, crossoverProbability);
 	    
-	    double mutationProbability = 2.0 / problem.getTasks().size(); // 1/nbTask*2
+	    double mutationProbability = 1.0 / data.getTasks().size();
 	    mutation = new PlanningMutationOperator(problem, mutationProbability);
 	    
 		selection = new BinaryTournamentSelection<>(new PlanningSolutionDominanceComparator());
 
 		algorithm = new NSGAIIBuilder<PlanningSolution>(problem, crossover, mutation)
 				.setSelectionOperator(selection)
-				.setMaxIterations(500)
-				.setPopulationSize(100)
+				.setMaxIterations(DefaultParameters.NUMBER_OF_ITERATIONS)
+				.setPopulationSize(DefaultParameters.POPULATION_SIZE)
 				.build();
 		
 		AlgorithmRunner algoRunner = new AlgorithmRunner.Executor(algorithm).execute();
 		
 		List<PlanningSolution> population = algorithm.getResult();
-		Set<PlanningSolution> filteredPopulation = PopulationCleaner.getBestSolutions(population);
+		Set<PlanningSolution> filteredPopulation = PopulationFilter.getBestSolutions(population);
 		printPopulation(population);
 		printPopulation(filteredPopulation);
 		
