@@ -5,6 +5,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +13,9 @@ import java.util.Map;
 import entities.Employee;
 import entities.EmployeeWeekAvailability;
 import entities.PlannedTask;
+import logic.NextReleaseProblem;
 import logic.PlanningSolution;
+import logic.SolutionQuality;
 
 public class HTMLPrinter implements Runnable {
 	
@@ -33,6 +36,11 @@ public class HTMLPrinter implements Runnable {
 	 */
 	public HTMLPrinter(List<PlanningSolution> solutions) {
 		this.solutions = solutions;
+	}
+	
+	public HTMLPrinter(PlanningSolution solution) {
+		this.solutions = new ArrayList<>();
+		solutions.add(solution);
 	}
 
 	@Override
@@ -110,6 +118,9 @@ public class HTMLPrinter implements Runnable {
 		}
 				
 		sb.append("</tbody></table>");
+		
+		sb.append("<p>End date: ").append(solution.getObjective(NextReleaseProblem.INDEX_END_DATE_OBJECTIVE))
+			.append("<br />Quality: ").append(new SolutionQuality().getAttribute(solution)).append("%</p>");
 		
 		return sb;
 	}
