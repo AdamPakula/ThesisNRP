@@ -91,4 +91,15 @@ public class EmployeeWeekAvailability {
 		endHour = beginHour;
 		this.plannedTasks = new ArrayList<>();
 	}
+	
+	
+	public EmployeeWeekAvailability(EmployeeWeekAvailability origin) {
+		this.beginHour = origin.getBeginHour();
+		this.remainHoursAvailable = origin.getRemainHoursAvailable();
+		this.endHour = origin.getEndHour();
+		this.plannedTasks = new ArrayList<>(origin.getPlannedTasks().size());
+		for (PlannedTask plannedTask : origin.getPlannedTasks()) {
+			this.plannedTasks.add(new PlannedTask(plannedTask));
+		}
+	}
 }
