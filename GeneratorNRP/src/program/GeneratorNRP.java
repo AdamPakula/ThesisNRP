@@ -53,18 +53,19 @@ public class GeneratorNRP {
 		
 		// Initialization of the tasks
 		Priority[] priorities = Priority.values();
+		int remainPreviousConstraints = new Double(parameters.getNumberOfTasks() * parameters.getRateOfPrecedenceConstraints()).intValue();
 		
-		for (int i = 1 ; i <= parameters.getNumberOfTasks() ; i++) {
+		for (int i = 0 ; i < parameters.getNumberOfTasks() ; i++) {
 			List<Task> previousTasks = new ArrayList<>();
-			if (randomGenerator.nextDouble() < parameters.getRateOfPrecedenceConstraints()) {
-				if (tasks.size() > 0) {
-					int nbPreviousTasks = randomGenerator.nextInt(tasks.size());
-					List<Task> futurPreviousTasks = new ArrayList<>(tasks);
-					for (int j = 0 ; j < nbPreviousTasks ; j++) {
-						int indexTask = randomGenerator.nextInt(futurPreviousTasks.size());
-						previousTasks.add(futurPreviousTasks.get(indexTask));
-						futurPreviousTasks.remove(indexTask);
-					}
+			if (tasks.size() > 0) {
+				double probability = remainPreviousConstraints/(1.0*parameters.getNumberOfTasks()-i);
+				List<Task> possiblePreviousTasks = new ArrayList<>(tasks);
+				while (remainPreviousConstraints > 0 && possiblePreviousTasks.size() > 0 && randomGenerator.nextDouble() < probability) {
+					int indexTask = randomGenerator.nextInt(possiblePreviousTasks.size());
+					previousTasks.add(possiblePreviousTasks.get(indexTask));
+					possiblePreviousTasks.remove(indexTask);
+					remainPreviousConstraints--;
+					probability = remainPreviousConstraints/(parameters.getNumberOfTasks()-i);
 				}
 			}
 			
