@@ -23,5 +23,6 @@ public class DefaultParameters {
 	/* Experiment */
 	public final static int TASKS_BY_EMPLOYEE = 5;
 	public final static int MAX_PROBLEM_SIZE = 400;
+	public final static int TEST_REPRODUCTION = 10;
 
 }

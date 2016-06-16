@@ -1,5 +1,8 @@
 package logic;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartFrame;
 import org.jfree.chart.JFreeChart;
@@ -39,13 +42,25 @@ public class ExperimentController {
 		
 		while (size <= DefaultParameters.MAX_PROBLEM_SIZE) {
 			ProblemData data = GeneratorNRP.generate(new GeneratorParameters(nbTasks, nbEmployees, nbEmployees, DefaultParameters.PRECEDENCE_RATE));
-			NextReleaseProblem nrp = new NextReleaseProblem(data.getTasks(), data.getEmployees(), new IterationParameters(DefaultParameters.NUMBER_OF_WEEK, DefaultParameters.HOURS_BY_WEEK));
+			Map<AlgorithmChoice, Double[]> qualityValues = new HashMap<>();
+			for (AlgorithmChoice algorithm : AlgorithmChoice.values()) {
+				qualityValues.put(algorithm, new Double[DefaultParameters.TEST_REPRODUCTION]);
+			}
+			
+			for (int i = 0; i < DefaultParameters.TEST_REPRODUCTION ; i++) {
+				NextReleaseProblem nrp = new NextReleaseProblem(data.getTasks(), data.getEmployees(), new IterationParameters(DefaultParameters.NUMBER_OF_WEEK, DefaultParameters.HOURS_BY_WEEK));
+				
+				for (AlgorithmChoice algorithm : AlgorithmChoice.values()) {
+					System.out.println("Executing algorithm " + algorithm.toString() + " (size: " + size +")");
+					AlgorithmExecutor executor = new AlgorithmExecutor(nrp, new AlgorithmParameters());
+					PlanningSolution solution = PopulationFilter.getBestSolution(executor.executeAlgorithm(algorithm));
+					Double[] values = qualityValues.get(algorithm);
+					values[i] = qualityAttribute.getAttribute(solution);
+				}
+			}
 			
 			for (AlgorithmChoice algorithm : AlgorithmChoice.values()) {
-				System.out.println("Executing algorithm " + algorithm.toString() + " (size: " + size +")");
-				AlgorithmExecutor executor = new AlgorithmExecutor(nrp, new AlgorithmParameters());
-				PlanningSolution solution = PopulationFilter.getBestSolution(executor.executeAlgorithm(algorithm));
-				dataset.getSeries(algorithm.toString()).add(size, qualityAttribute.getAttribute(solution));
+				dataset.getSeries(algorithm.toString()).add(size, getAverage(qualityValues.get(algorithm)));
 			}
 			
 			nbEmployees++;
@@ -54,5 +69,16 @@ public class ExperimentController {
 		}
 		
 		return dataset;
+	}
+	
+	
+	private double getAverage(Double[] values) {
+		double sum = 0.0;
+		
+		for (Double value : values) {
+			sum += value;
+		}
+		
+		return sum/values.length;
 	}
 }
