@@ -12,10 +12,10 @@ import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
 import org.uma.jmetal.util.AlgorithmRunner;
 
 import entities.Employee;
-import entities.IterationParameters;
 import entities.PlannedTask;
 import entities.ProblemData;
 import entities.Task;
+import entities.parameters.IterationParameters;
 import junit.framework.TestCase;
 import logic.NextReleaseProblem;
 import logic.PlanningSolution;

@@ -23,8 +23,8 @@ import javax.swing.border.EmptyBorder;
 import entities.AlgorithmChoice;
 import entities.DefaultGeneratorParameters;
 import entities.GeneratorParameters;
-import entities.IterationParameters;
 import entities.parameters.DefaultIterationParameters;
+import entities.parameters.IterationParameters;
 import logic.ExecutorController;
 
 /**

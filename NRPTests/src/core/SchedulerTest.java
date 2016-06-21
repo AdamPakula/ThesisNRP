@@ -10,10 +10,10 @@ import org.junit.Test;
 import org.uma.jmetal.util.solutionattribute.impl.OverallConstraintViolation;
 
 import entities.Employee;
-import entities.IterationParameters;
 import entities.PlannedTask;
 import entities.ProblemData;
 import entities.Task;
+import entities.parameters.IterationParameters;
 import junit.framework.TestCase;
 import logic.NextReleaseProblem;
 import logic.PlanningSolution;

@@ -16,9 +16,9 @@ import org.uma.jmetal.util.solutionattribute.impl.OverallConstraintViolation;
 import entities.Employee;
 import entities.PlannedTask;
 import entities.EmployeeWeekAvailability;
-import entities.IterationParameters;
 import entities.Skill;
 import entities.Task;
+import entities.parameters.IterationParameters;
 
 /**
  * @author Vavou

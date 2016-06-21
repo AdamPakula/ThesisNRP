@@ -14,9 +14,9 @@ import entities.AlgorithmChoice;
 import entities.AlgorithmParameters;
 import entities.DefaultGeneratorParameters;
 import entities.GeneratorParameters;
-import entities.IterationParameters;
 import entities.ProblemData;
 import entities.parameters.DefaultIterationParameters;
+import entities.parameters.IterationParameters;
 import parameters.DefaultParameters;
 import program.GeneratorNRP;
 

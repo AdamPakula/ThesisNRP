@@ -1,13 +1,16 @@
 /**
  * 
  */
-package entities;
+package entities.parameters;
 
 /**
+ * This class encapsulates the iteration parameters
  * @author Vavou
  *
  */
 public class IterationParameters {
+	
+	/* --- Attributes --- */
 	
 	/**
 	 * The number of week of the iteration
@@ -18,6 +21,9 @@ public class IterationParameters {
 	 * The number of worked hours by week
 	 */
 	private double hoursByWeek;
+	
+	
+	/* --- Getters and setters --- */
 	
 	/**
 	 * @return the numberOfWeek
@@ -45,6 +51,18 @@ public class IterationParameters {
 	 */
 	public void setHoursByWeek(double hoursByWeek) {
 		this.hoursByWeek = hoursByWeek;
+	}
+	
+	
+	/* --- Constructors --- */
+	
+	/**
+	 * Default constructor that construct the parameters with their default values
+	 * Default values from <code>DefaultIterationParameters</code> class
+	 */
+	public IterationParameters() {
+		this.numberOfWeek = DefaultIterationParameters.NUMBER_OF_WEEK;
+		this.hoursByWeek = DefaultIterationParameters.HOURS_BY_WEEK;
 	}
 
 	/**

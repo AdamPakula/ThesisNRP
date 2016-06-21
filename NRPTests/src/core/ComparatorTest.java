@@ -6,9 +6,9 @@ import org.junit.Test;
 import org.uma.jmetal.util.SolutionUtils;
 
 import entities.Employee;
-import entities.IterationParameters;
 import entities.ProblemData;
 import entities.Task;
+import entities.parameters.IterationParameters;
 import junit.framework.TestCase;
 import logic.NextReleaseProblem;
 import logic.PlanningSolution;
