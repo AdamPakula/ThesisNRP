@@ -21,10 +21,11 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.border.EmptyBorder;
 
 import entities.AlgorithmChoice;
+import entities.DefaultGeneratorParameters;
 import entities.GeneratorParameters;
 import entities.IterationParameters;
+import entities.parameters.DefaultIterationParameters;
 import logic.ExecutorController;
-import parameters.DefaultParameters;
 
 /**
  * @author Vavou
@@ -63,12 +64,12 @@ public class ParametersFrame extends JFrame implements ActionListener {
 	}
 	
 	private void initializeValues() {
-		hoursByWeekSpinner.setValue(DefaultParameters.HOURS_BY_WEEK);
-		nbWeekSpinner.setValue(DefaultParameters.NUMBER_OF_WEEK);
-		nbTasksSpinner.setValue(DefaultParameters.NUMBER_OF_TASKS);
-		nbEmployeesSpinner.setValue(DefaultParameters.NUMBER_OF_EMPLOYEES);
-		nbSkillsSpinner.setValue(DefaultParameters.NUMBER_OF_SKILLS);
-		precedenceRateSpinner.setValue(DefaultParameters.PRECEDENCE_RATE);
+		hoursByWeekSpinner.setValue(DefaultIterationParameters.HOURS_BY_WEEK);
+		nbWeekSpinner.setValue(DefaultIterationParameters.NUMBER_OF_WEEK);
+		nbTasksSpinner.setValue(DefaultGeneratorParameters.NUMBER_OF_TASKS);
+		nbEmployeesSpinner.setValue(DefaultGeneratorParameters.NUMBER_OF_EMPLOYEES);
+		nbSkillsSpinner.setValue(DefaultGeneratorParameters.NUMBER_OF_SKILLS);
+		precedenceRateSpinner.setValue(DefaultGeneratorParameters.PRECEDENCE_RATE);
 		
 	}
 

@@ -12,9 +12,11 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 import entities.AlgorithmChoice;
 import entities.AlgorithmParameters;
+import entities.DefaultGeneratorParameters;
 import entities.GeneratorParameters;
 import entities.IterationParameters;
 import entities.ProblemData;
+import entities.parameters.DefaultIterationParameters;
 import parameters.DefaultParameters;
 import program.GeneratorNRP;
 
@@ -41,14 +43,14 @@ public class ExperimentController {
 		}
 		
 		while (size <= DefaultParameters.MAX_PROBLEM_SIZE) {
-			ProblemData data = GeneratorNRP.generate(new GeneratorParameters(nbTasks, nbEmployees, nbEmployees, DefaultParameters.PRECEDENCE_RATE));
+			ProblemData data = GeneratorNRP.generate(new GeneratorParameters(nbTasks, nbEmployees, nbEmployees, DefaultGeneratorParameters.PRECEDENCE_RATE));
 			Map<AlgorithmChoice, Double[]> qualityValues = new HashMap<>();
 			for (AlgorithmChoice algorithm : AlgorithmChoice.values()) {
 				qualityValues.put(algorithm, new Double[DefaultParameters.TEST_REPRODUCTION]);
 			}
 			
 			for (int i = 0; i < DefaultParameters.TEST_REPRODUCTION ; i++) {
-				NextReleaseProblem nrp = new NextReleaseProblem(data.getTasks(), data.getEmployees(), new IterationParameters(DefaultParameters.NUMBER_OF_WEEK, DefaultParameters.HOURS_BY_WEEK));
+				NextReleaseProblem nrp = new NextReleaseProblem(data.getTasks(), data.getEmployees(), new IterationParameters(DefaultIterationParameters.NUMBER_OF_WEEK, DefaultIterationParameters.HOURS_BY_WEEK));
 				
 				for (AlgorithmChoice algorithm : AlgorithmChoice.values()) {
 					System.out.println("Executing algorithm " + algorithm.toString() + " (size: " + size +")");
