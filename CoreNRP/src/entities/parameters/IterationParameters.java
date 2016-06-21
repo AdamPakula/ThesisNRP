@@ -61,8 +61,7 @@ public class IterationParameters {
 	 * Default values from <code>DefaultIterationParameters</code> class
 	 */
 	public IterationParameters() {
-		this.numberOfWeek = DefaultIterationParameters.NUMBER_OF_WEEK;
-		this.hoursByWeek = DefaultIterationParameters.HOURS_BY_WEEK;
+		this(DefaultIterationParameters.NUMBER_OF_WEEK, DefaultIterationParameters.HOURS_BY_WEEK);
 	}
 
 	/**
