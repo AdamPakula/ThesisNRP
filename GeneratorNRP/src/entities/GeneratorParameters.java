@@ -87,6 +87,17 @@ public class GeneratorParameters {
 	/* --- Constructors --- */
 	
 	/**
+	 * Default constructors that initializes the parameters with their default values
+	 * Default values cna be found in the {@link DefaultGeneratorParameters} class
+	 */
+	public GeneratorParameters() {
+		this.numberOfTasks = DefaultGeneratorParameters.NUMBER_OF_TASKS;
+		this.numberOfEmployees = DefaultGeneratorParameters.NUMBER_OF_EMPLOYEES;
+		this.numberOfSkills = DefaultGeneratorParameters.NUMBER_OF_SKILLS;
+		this.rateOfPrecedenceConstraints = DefaultGeneratorParameters.PRECEDENCE_RATE;
+	}
+	
+	/**
 	 * @param numberOfTasks
 	 * @param numberOfEmployees
 	 * @param numberOfSkills
