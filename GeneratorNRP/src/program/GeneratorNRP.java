@@ -10,7 +10,7 @@ import java.util.Random;
 
 import entities.Employee;
 import entities.GeneratorParameters;
-import entities.Priority;
+import entities.PriorityLevel;
 import entities.ProblemData;
 import entities.Skill;
 import entities.Task;
@@ -52,7 +52,7 @@ public class GeneratorNRP {
 		
 		
 		// Initialization of the tasks
-		Priority[] priorities = Priority.values();
+		PriorityLevel[] priorities = PriorityLevel.values();
 		int remainPreviousConstraints = new Double(parameters.getNumberOfTasks() * parameters.getRateOfPrecedenceConstraints()).intValue();
 		
 		for (int i = 0 ; i < parameters.getNumberOfTasks() ; i++) {

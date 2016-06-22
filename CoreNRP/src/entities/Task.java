@@ -16,7 +16,7 @@ public class Task {
 	 * The priority of the task
 	 * There is no special scale but we consider than the lowest number is the most important task
 	 */
-	private Priority priority;
+	private PriorityLevel priority;
 	
 	/**
 	 * The duration of the task in hours
@@ -46,7 +46,7 @@ public class Task {
 	/**
 	 * @return the priority
 	 */
-	public Priority getPriority() {
+	public PriorityLevel getPriority() {
 		return priority;
 	}
 
@@ -82,7 +82,7 @@ public class Task {
 	 * @param previousTasks the list of the previous tasks or null
 	 * @param requiredSkills the required skills to do this task
 	 */
-	public Task(String name, Priority priority, Double duration, List<Task> previousTasks, List<Skill> requiredSkills) {
+	public Task(String name, PriorityLevel priority, Double duration, List<Task> previousTasks, List<Skill> requiredSkills) {
 		this.name = name;
 		this.priority = priority;
 		this.duration = duration;

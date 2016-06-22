@@ -7,7 +7,7 @@ package entities;
  * @author Vavou
  *
  */
-public enum Priority {
+public enum PriorityLevel {
 	ONE(1, 160),
 	TWO(2, 80),
 	THREE(3, 40),
@@ -43,23 +43,23 @@ public enum Priority {
 	 * @param level the level of the priority
 	 * @param score the score of the priority
 	 */
-	private Priority(int level, int score) {
+	private PriorityLevel(int level, int score) {
 		this.level = level;
 		this.score = score;
 	}
 
-	public static Priority getPriorityByLevel(int level) {
+	public static PriorityLevel getPriorityByLevel(int level) {
 		switch (level) {
 			case 1:
-				return Priority.ONE;
+				return PriorityLevel.ONE;
 			case 2:
-				return Priority.TWO;
+				return PriorityLevel.TWO;
 			case 3:
-				return Priority.THREE;
+				return PriorityLevel.THREE;
 			case 4:
-				return Priority.FOUR;
+				return PriorityLevel.FOUR;
 			default:
-				return Priority.FIVE;
+				return PriorityLevel.FIVE;
 		}
 	}
 }

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import entities.Employee;
-import entities.Priority;
+import entities.PriorityLevel;
 import entities.ProblemData;
 import entities.Skill;
 import entities.Task;
@@ -108,7 +108,7 @@ public class DataLoader {
 		}
 		
 		Task task = new Task(parts[INDEX_TASK_NAME], 
-						Priority.getPriorityByLevel(new Integer(parts[INDEX_TASK_PRIORITY])), 
+						PriorityLevel.getPriorityByLevel(new Integer(parts[INDEX_TASK_PRIORITY])), 
 						new Double(parts[INDEX_TASK_DURATION]), 
 						previousTasks, 
 						readSkills(skills, parts[INDEX_TASK_SKILLS]));
