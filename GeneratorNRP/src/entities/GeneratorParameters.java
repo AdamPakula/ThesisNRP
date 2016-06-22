@@ -88,7 +88,7 @@ public class GeneratorParameters {
 	
 	/**
 	 * Default constructors that initializes the parameters with their default values
-	 * Default values cna be found in the {@link DefaultGeneratorParameters} class
+	 * Default values can be found in the {@link DefaultGeneratorParameters} class
 	 */
 	public GeneratorParameters() {
 		this(DefaultGeneratorParameters.NUMBER_OF_TASKS,
