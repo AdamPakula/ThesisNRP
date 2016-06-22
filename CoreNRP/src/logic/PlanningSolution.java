@@ -312,7 +312,7 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 		undoneTasks.addAll(problem.getTasks());
 		plannedTasks = new CopyOnWriteArrayList<PlannedTask>();
 	
-		if (randomGenerator.nextDouble() < 0.3) {
+		if (randomGenerator.nextDouble() > 0.3) {
 			initializePlannedTasksRandomly(nbTasksToDo);
 		}
 		else {

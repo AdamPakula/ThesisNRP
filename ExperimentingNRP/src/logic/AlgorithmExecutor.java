@@ -14,7 +14,7 @@ import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.util.AlgorithmRunner;
 
 import entities.AlgorithmChoice;
-import entities.AlgorithmParameters;
+import entities.ExecutorParameters;
 import logic.operators.PlanningCrossoverOperator;
 import logic.operators.PlanningMutationOperator;
 
@@ -28,20 +28,20 @@ public class AlgorithmExecutor {
 	/**
 	 * To parameters of the algorithm
 	 */
-	private AlgorithmParameters parameters;
+	private ExecutorParameters parameters;
 
 	/**
 	 * @param problem
 	 */
-	public AlgorithmExecutor(NextReleaseProblem problem, AlgorithmParameters parameters) {
+	public AlgorithmExecutor(NextReleaseProblem problem, ExecutorParameters parameters) {
 		this.problem = problem;
 		this.parameters = parameters;
 	}
 	
 	public List<PlanningSolution> executeAlgorithm(AlgorithmChoice algorithmChoice) {
 		List<PlanningSolution> population;
-		CrossoverOperator<PlanningSolution> crossoverOperator = new PlanningCrossoverOperator(problem, parameters.getCrossoverProbability());
-	    MutationOperator<PlanningSolution> mutationOperator = new PlanningMutationOperator(problem, parameters.getMutationProbability());
+		CrossoverOperator<PlanningSolution> crossoverOperator = new PlanningCrossoverOperator(problem);
+	    MutationOperator<PlanningSolution> mutationOperator = new PlanningMutationOperator(problem);
 	    
 		switch (algorithmChoice) {
 			/*case GENERATIONAL: { 

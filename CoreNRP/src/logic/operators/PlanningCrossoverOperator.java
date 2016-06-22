@@ -12,6 +12,7 @@ import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetal.util.pseudorandom.JMetalRandom;
 
 import entities.PlannedTask;
+import entities.parameters.DefaultAlgorithmParameters;
 import logic.NextReleaseProblem;
 import logic.PlanningSolution;
 
@@ -40,9 +41,19 @@ public class PlanningCrossoverOperator implements CrossoverOperator<PlanningSolu
 
 	
 	/* --- Constructors --- */
+	
+	/**
+	 * Constructor that initializes the crossover probability with it default value
+	 * Default value from {@link DefaultAlgorithmParameters}
+	 * @param problem
+	 */
+	public PlanningCrossoverOperator(NextReleaseProblem problem) {
+		this(problem, DefaultAlgorithmParameters.CROSSOVER_PROBABILITY);
+	}
 
 	/**
 	 * Constructor
+	 * @param problem the next release problem
 	 * @param crossoverProbability the probability to do crossover, between 0.0 and 1.0
 	 */
 	public PlanningCrossoverOperator(NextReleaseProblem problem, double crossoverProbability) {

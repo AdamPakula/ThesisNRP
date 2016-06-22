@@ -12,6 +12,7 @@ import org.uma.jmetal.util.pseudorandom.JMetalRandom;
 
 import entities.Employee;
 import entities.PlannedTask;
+import entities.parameters.DefaultAlgorithmParameters;
 import logic.NextReleaseProblem;
 import logic.PlanningSolution;
 
@@ -52,7 +53,17 @@ public class PlanningMutationOperator implements MutationOperator<PlanningSoluti
 		return mutationProbability;
 	}
 	
-	/* --- Constructors */
+	
+	/* --- Constructors --- */
+	
+	/**
+	 * Constructs a new PlanningMutationOperator with a default value for the mutation probability
+	 * Default value from {@link DefaultAlgorithmParameters}
+	 * @param problem the next release problem to solve
+	 */
+	public PlanningMutationOperator(NextReleaseProblem problem) {
+		this(problem, DefaultAlgorithmParameters.MUTATION_PROBABILITY(problem.getTasks().size()));
+	}
 	
 	/**
 	 * Constructor
@@ -69,6 +80,7 @@ public class PlanningMutationOperator implements MutationOperator<PlanningSoluti
 		this.problem = problem;
 		randomGenerator = JMetalRandom.getInstance() ;
 	}
+	
 	
 	/* --- Methods --- */
 	

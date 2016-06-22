@@ -11,7 +11,7 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import entities.AlgorithmChoice;
-import entities.AlgorithmParameters;
+import entities.ExecutorParameters;
 import entities.DefaultGeneratorParameters;
 import entities.GeneratorParameters;
 import entities.ProblemData;
@@ -54,7 +54,7 @@ public class ExperimentController {
 				
 				for (AlgorithmChoice algorithm : AlgorithmChoice.values()) {
 					System.out.println("Executing algorithm " + algorithm.toString() + " (size: " + size +")");
-					AlgorithmExecutor executor = new AlgorithmExecutor(nrp, new AlgorithmParameters());
+					AlgorithmExecutor executor = new AlgorithmExecutor(nrp, new ExecutorParameters());
 					PlanningSolution solution = PopulationFilter.getBestSolution(executor.executeAlgorithm(algorithm));
 					Double[] values = qualityValues.get(algorithm);
 					values[i] = qualityAttribute.getAttribute(solution);

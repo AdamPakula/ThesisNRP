@@ -3,7 +3,7 @@ package logic;
 import java.util.List;
 
 import entities.AlgorithmChoice;
-import entities.AlgorithmParameters;
+import entities.ExecutorParameters;
 import entities.GeneratorParameters;
 import entities.ProblemData;
 import entities.parameters.IterationParameters;
@@ -21,8 +21,7 @@ public class ExecutorController {
 	public void launch(AlgorithmChoice algorithmChoice, GeneratorParameters genParam, IterationParameters iterationParam) {
 		ProblemData problemData =  GeneratorNRP.generate(genParam);
 		NextReleaseProblem nrp = new NextReleaseProblem(problemData.getTasks(), problemData.getEmployees(), iterationParam);
-		AlgorithmParameters algoParam = new AlgorithmParameters();
-		algoParam.setMutationProbability(1.0/problemData.getTasks().size());
+		ExecutorParameters algoParam = new ExecutorParameters();
 		
 		AlgorithmExecutor executor = new AlgorithmExecutor(nrp, algoParam);
 		List<PlanningSolution> population = executor.executeAlgorithm(algorithmChoice);

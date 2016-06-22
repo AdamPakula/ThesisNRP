@@ -48,11 +48,9 @@ public class Program {
 	    MutationOperator<PlanningSolution> mutation;
 	    SelectionOperator<List<PlanningSolution>, PlanningSolution> selection;
 	    
-	    double crossoverProbability = DefaultParameters.CROSSOVER_PROBABILITY;
-		crossover = new PlanningCrossoverOperator(problem, crossoverProbability);
+		crossover = new PlanningCrossoverOperator(problem);
 	    
-	    double mutationProbability = 1.0 / data.getTasks().size();
-	    mutation = new PlanningMutationOperator(problem, mutationProbability);
+	    mutation = new PlanningMutationOperator(problem);
 	    
 		selection = new BinaryTournamentSelection<>(new PlanningSolutionDominanceComparator());
 
@@ -62,7 +60,7 @@ public class Program {
 				.setPopulationSize(DefaultParameters.POPULATION_SIZE)
 				.build();
 		
-		AlgorithmRunner algoRunner = new AlgorithmRunner.Executor(algorithm).execute();
+		new AlgorithmRunner.Executor(algorithm).execute();
 		
 		List<PlanningSolution> population = algorithm.getResult();
 		Set<PlanningSolution> filteredPopulation = PopulationFilter.getBestSolutions(population);

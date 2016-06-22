@@ -7,14 +7,30 @@ import entities.Task;
 import logic.NextReleaseProblem;
 import logic.PlanningSolution;
 
+/**
+ * Fixer for solutions with violated constraints
+ * @author Vavou
+ *
+ */
 public class RepairOperator {
 	
+	/**
+	 * The problem to solve
+	 */
 	private NextReleaseProblem problem;
 	
+	/**
+	 * Constructor of the reparator
+	 * @param problem problem to solve
+	 */
 	public RepairOperator(NextReleaseProblem problem) {
 		this.problem = problem;
 	}
 	
+	/**
+	 * Repair a solution by removing the features that violated constraints
+	 * @param solution the solution to repair
+	 */
 	public void repair(PlanningSolution solution) {
 		Iterator<PlannedTask> it = solution.getPlannedTasks().iterator();
 		problem.evaluate(solution);
