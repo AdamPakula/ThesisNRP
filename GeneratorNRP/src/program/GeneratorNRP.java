@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import entities.DefaultGeneratorParameters;
 import entities.Employee;
 import entities.GeneratorParameters;
 import entities.PriorityLevel;
@@ -27,7 +28,7 @@ public class GeneratorNRP {
 			int nbEmployees = new Integer(args[1]);
 			int nbSkills = new Integer(args[2]);
 			
-			writeFiles(generate(new GeneratorParameters(nbTasks, nbEmployees, nbSkills, 0.1)));
+			writeFiles(generate(new GeneratorParameters(nbTasks, nbEmployees, nbSkills, DefaultGeneratorParameters.PRECEDENCE_RATE)));
 		}
 		else {
 			System.err.println("Need the numbers of tasks, employees and skills in parameter");
@@ -40,48 +41,79 @@ public class GeneratorNRP {
 	 * @return the generated data
 	 */
 	public static ProblemData generate(GeneratorParameters parameters) {
-		List<Skill> skills = new ArrayList<>(parameters.getNumberOfSkills());
-		List<Task> tasks = new ArrayList<>(parameters.getNumberOfTasks());
-		List<Employee> employees = new ArrayList<>(parameters.getNumberOfEmployees());
-		Random randomGenerator = new Random();
+		List<Skill> skills = generateSkills(parameters.getNumberOfSkills());
+		List<Task> tasks = generateFeatures(parameters.getNumberOfTasks(), parameters.getRateOfPrecedenceConstraints(), skills);
+		List<Employee> employees = generateEmployees(parameters.getNumberOfEmployees(), skills);
 		
-		// Initialization of the skills
-		for (int i = 1 ; i <= parameters.getNumberOfSkills() ; i++) {
+		return new ProblemData(tasks, employees, skills);
+	}
+	
+	/**
+	 * Generate numberOfSkills skills into a list
+	 * @param numberOfSkills the number of skills to generate
+	 * @return the list containing the skills
+	 */
+	private static List<Skill> generateSkills(int numberOfSkills) {
+		List<Skill> skills = new ArrayList<>(numberOfSkills);
+		
+		for (int i = 1 ; i <= numberOfSkills ; i++) {
 			skills.add(new Skill("Skill " + i));
 		}
 		
-		
-		// Initialization of the tasks
+		return skills;
+	}
+	
+	/**
+	 * Generates new list of new features
+	 * @param numberOfFeatures the number of features to generate
+	 * @param precedenciesRate the rate of precedences constraint
+	 * @param skills the available skills
+	 * @return the list of the new generated features
+	 */
+	private static List<Task> generateFeatures(int numberOfFeatures, double precedenciesRate, List<Skill> skills) {
+		Random randomGenerator = new Random();
 		PriorityLevel[] priorities = PriorityLevel.values();
-		int remainPreviousConstraints = new Double(parameters.getNumberOfTasks() * parameters.getRateOfPrecedenceConstraints()).intValue();
+		int remainPreviousConstraints = new Double(numberOfFeatures * precedenciesRate).intValue();
+		List<Task> features = new ArrayList<>(numberOfFeatures);
 		
-		for (int i = 0 ; i < parameters.getNumberOfTasks() ; i++) {
-			List<Task> previousTasks = new ArrayList<>();
-			if (tasks.size() > 0) {
-				double probability = remainPreviousConstraints/(1.0*parameters.getNumberOfTasks()-i);
-				List<Task> possiblePreviousTasks = new ArrayList<>(tasks);
-				while (remainPreviousConstraints > 0 && possiblePreviousTasks.size() > 0 && randomGenerator.nextDouble() < probability) {
-					int indexTask = randomGenerator.nextInt(possiblePreviousTasks.size());
-					previousTasks.add(possiblePreviousTasks.get(indexTask));
-					possiblePreviousTasks.remove(indexTask);
+		for (int i = 0 ; i < numberOfFeatures ; i++) {
+			List<Task> previousFeatures = new ArrayList<>();
+			if (features.size() > 0 && remainPreviousConstraints > 0) {
+				double probability = remainPreviousConstraints/(1.0*numberOfFeatures-i);
+				List<Task> possiblePreviousFeatures = new ArrayList<>(features);
+				while (remainPreviousConstraints > 0 && possiblePreviousFeatures.size() > 0 && randomGenerator.nextDouble() < probability) {
+					int indexFeature = randomGenerator.nextInt(possiblePreviousFeatures.size());
+					previousFeatures.add(possiblePreviousFeatures.get(indexFeature));
+					possiblePreviousFeatures.remove(indexFeature);
 					remainPreviousConstraints--;
-					probability = remainPreviousConstraints/(parameters.getNumberOfTasks()-i);
+					probability = remainPreviousConstraints/(numberOfFeatures-i);
 				}
 			}
 			
 			List<Skill> requiredSkills = new ArrayList<>(1);
 			requiredSkills.add(skills.get(randomGenerator.nextInt(skills.size())));
 			
-			tasks.add(new Task("Task " + i,
+			features.add(new Task("Task " + i,
 					priorities[randomGenerator.nextInt(priorities.length)],
 					1.0 * (1 + randomGenerator.nextInt(40)),
-					previousTasks,
+					previousFeatures,
 					requiredSkills));
 		}
 		
+		return features;
+	}
+	
+	/**
+	 * Generates new employees
+	 * @param numberOfEmployees the number of employees to generate
+	 * @param skills the available skills
+	 * @return the list of new employees
+	 */
+	private static List<Employee> generateEmployees(int numberOfEmployees, List<Skill> skills) {
+		Random randomGenerator = new Random();
+		List<Employee> employees = new ArrayList<>(numberOfEmployees);
 		
-		// Initialization of the employees
-		for (int i = 1 ; i <= parameters.getNumberOfEmployees() ; i ++) {
+		for (int i = 1 ; i <= numberOfEmployees ; i ++) {
 			int numberOfSkills = 1 + randomGenerator.nextInt(skills.size());
 			List<Skill> employeeSkills = new ArrayList<>(numberOfSkills);
 			List<Skill> availableSkills = new ArrayList<>(skills);
@@ -95,7 +127,7 @@ public class GeneratorNRP {
 					employeeSkills));
 		}
 		
-		return new ProblemData(tasks, employees, skills);
+		return employees;
 	}
 
 	/**

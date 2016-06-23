@@ -16,7 +16,7 @@ public class DefaultGeneratorParameters {
 	/**
 	 * The default number of employees to generate
 	 */
-	public final static int NUMBER_OF_EMPLOYEES = 2;
+	public final static int NUMBER_OF_EMPLOYEES = 4;
 	
 	/**
 	 * The default number of skills to generate
