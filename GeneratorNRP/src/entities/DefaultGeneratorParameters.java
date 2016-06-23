@@ -26,6 +26,6 @@ public class DefaultGeneratorParameters {
 	/**
 	 * The default precedence rate for the generation
 	 */
-	public final static double PRECEDENCE_RATE = 0.1;
+	public final static double PRECEDENCE_RATE = 0.3;
 
 }
