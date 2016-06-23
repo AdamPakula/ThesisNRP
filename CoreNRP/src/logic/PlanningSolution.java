@@ -1,6 +1,6 @@
 /**
  * A solution of the NRP
- * It contains a plannedTasks list which give the order of the tasks which are planned
+ * It contains a plannedFeatures list which give the order of the features which are planned
  */
 package logic;
 
@@ -17,14 +17,15 @@ import org.uma.jmetal.util.solutionattribute.impl.NumberOfViolatedConstraints;
 
 import entities.Employee;
 import entities.EmployeeWeekAvailability;
-import entities.PlannedTask;
-import entities.Task;
+import entities.PlannedFeature;
+import entities.parameters.DefaultAlgorithmParameters;
+import entities.Feature;
 
 /**
  * @author Vavou
  *
  */
-public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextReleaseProblem> {
+public class PlanningSolution extends AbstractGenericSolution<PlannedFeature, NextReleaseProblem> {
 
 	/* --- Attributes --- */
 	
@@ -34,14 +35,14 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 	private static final long serialVersionUID = 615615442782301271L;
 	
 	/**
-	 * Tasks planned for the solution
+	 * Features planned for the solution
 	 */
-	private List<PlannedTask> plannedTasks;
+	private List<PlannedFeature> plannedFeatures;
 	
 	/**
-	 * Tasks unplanned for the solution
+	 * Features unplanned for the solution
 	 */
-	private List<Task> undoneTasks;
+	private List<Feature> undoneFeatures;
 
 	/**
 	 * The end hour of the solution
@@ -58,7 +59,7 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 	/* --- Getters and Setters --- */
 
 	/**
-	 * Return the hour in all of the planned tasks will be done
+	 * Return the hour in all of the planned features will be done
 	 * @return the end hour
 	 */
 	public double getEndDate() {
@@ -74,46 +75,46 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 	}
 	
 	/**
-	 * Returns the number of tasks already planned
-	 * @return The number of tasks already planned
+	 * Returns the number of features already planned
+	 * @return The number of features already planned
 	 */
-	public int getNumberOfPlannedTasks() {
-		return plannedTasks.size();
+	public int getNumberOfPlannedFeatures() {
+		return plannedFeatures.size();
 	}
 
 	/**
-	 * @return the plannedTasks
+	 * @return the plannedFeatures
 	 */
-	public List<PlannedTask> getPlannedTasks() {
-		return new ArrayList<>(plannedTasks);
+	public List<PlannedFeature> getPlannedFeatures() {
+		return new ArrayList<>(plannedFeatures);
 	}
 	
 	/**
-	 * Return the planned task at position in the list
+	 * Return the planned feature at <code>position</code> in the list
 	 * @param position The position in the list
-	 * @return the planned task or null
+	 * @return the planned feature or null
 	 */
-	public PlannedTask getPlannedTask(int position) {
-		if (position >= 0 && position < plannedTasks.size())
-			return plannedTasks.get(position);
+	public PlannedFeature getPlannedFeature(int position) {
+		if (position >= 0 && position < plannedFeatures.size())
+			return plannedFeatures.get(position);
 		return null;
 	}
 	
 	/**
-	 * Get a copy of the planned task from position in the original list
+	 * Get a copy of the planned feature from position in the original list
 	 * @param beginPosition the begin position
 	 * @return a copy of the end list
 	 */
-	public List<PlannedTask> getEndPlannedTasksSubListCopy(int beginPosition) {
-		return new ArrayList<>(plannedTasks.subList(beginPosition, plannedTasks.size()));
+	public List<PlannedFeature> getEndPlannedFeaturesSubListCopy(int beginPosition) {
+		return new ArrayList<>(plannedFeatures.subList(beginPosition, plannedFeatures.size()));
 	}
 	
 	/**
-	 * private getter for undone tasks list
-	 * @return the undone tasks list
+	 * private getter for undone features list
+	 * @return the undone features list
 	 */
-	private List<Task> getUndoneTasks() {
-		return undoneTasks;
+	private List<Feature> getUndoneFeatures() {
+		return undoneFeatures;
 	}
 	
 	/**
@@ -135,31 +136,31 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 
 	/**
 	 * Constructor
-	 * initialize a random set of planned tasks
+	 * initialize a random set of planned features
 	 * @param problem
 	 */
 	public PlanningSolution(NextReleaseProblem problem) {
 		super(problem);
 	    numberOfViolatedConstraints = 0;
 
-	    initializePlannedTaskVariables();
+	    initializePlannedFeatureVariables();
 	    initializeObjectiveValues();
 	}
 	
 	/**
 	 * Constructor
-	 * initialize a random set of planned tasks
+	 * initialize a random set of planned features
 	 * @param problem
 	 */
-	public PlanningSolution(NextReleaseProblem problem, List<PlannedTask> plannedTasks) {
+	public PlanningSolution(NextReleaseProblem problem, List<PlannedFeature> plannedFeatures) {
 		super(problem);
 	    numberOfViolatedConstraints = 0;
 
-	    undoneTasks = new CopyOnWriteArrayList<Task>();
-		undoneTasks.addAll(problem.getTasks());
-		this.plannedTasks = new CopyOnWriteArrayList<PlannedTask>();
-		for (PlannedTask plannedTask : plannedTasks) {
-			scheduleAtTheEnd(plannedTask.getTask(), plannedTask.getEmployee());
+	    undoneFeatures = new CopyOnWriteArrayList<Feature>();
+		undoneFeatures.addAll(problem.getFeatures());
+		this.plannedFeatures = new CopyOnWriteArrayList<PlannedFeature>();
+		for (PlannedFeature plannedFeature : plannedFeatures) {
+			scheduleAtTheEnd(plannedFeature.getFeature(), plannedFeature.getEmployee());
 		}
 	    initializeObjectiveValues();
 	}
@@ -173,9 +174,9 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 
 	    numberOfViolatedConstraints = origin.numberOfViolatedConstraints;
 	    
-	    plannedTasks = new CopyOnWriteArrayList<>();
-	    for (PlannedTask plannedTask : origin.getPlannedTasks()) {
-			plannedTasks.add(new PlannedTask(plannedTask));
+	    plannedFeatures = new CopyOnWriteArrayList<>();
+	    for (PlannedFeature plannedFeature : origin.getPlannedFeatures()) {
+			plannedFeatures.add(new PlannedFeature(plannedFeature));
 		}
 	    
 	    // Copy constraints and quality
@@ -197,68 +198,68 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 	    }
 	    
 	    endDate = origin.getEndDate();
-	    undoneTasks = new CopyOnWriteArrayList<>(origin.getUndoneTasks());
+	    undoneFeatures = new CopyOnWriteArrayList<>(origin.getUndoneFeatures());
 	}
 	
 	
 	/* --- Methods --- */
 	
 	/**
-	 * Exchange the two tasks in positions pos1 and pos2
-	 * @param pos1 The position of the first planned task to exchange
-	 * @param pos2 The position of the second planned task to exchange
+	 * Exchange the two features in positions pos1 and pos2
+	 * @param pos1 The position of the first planned feature to exchange
+	 * @param pos2 The position of the second planned feature to exchange
 	 */
 	public void exchange(int pos1, int pos2) {
-		if (pos1 >= 0 && pos2 >= 0 && pos1 < plannedTasks.size() && pos2 < plannedTasks.size() && pos1 != pos2) {
-			PlannedTask task1 = plannedTasks.get(pos1);
-			plannedTasks.set(pos1, new PlannedTask(plannedTasks.get(pos2)));
-			plannedTasks.set(pos2, new PlannedTask(task1));
+		if (pos1 >= 0 && pos2 >= 0 && pos1 < plannedFeatures.size() && pos2 < plannedFeatures.size() && pos1 != pos2) {
+			PlannedFeature feature1 = plannedFeatures.get(pos1);
+			plannedFeatures.set(pos1, new PlannedFeature(plannedFeatures.get(pos2)));
+			plannedFeatures.set(pos2, new PlannedFeature(feature1));
 		}
 	}
 	
 	/**
-	 * Calculate the sum of the priority of each task
+	 * Calculate the sum of the priority of each feature
 	 * @return the priority score
 	 */
 	public double getPriorityScore() {
 		double score = problem.getWorstScore();
 		
-		for (PlannedTask plannedTask : plannedTasks) {
-			score -= plannedTask.getTask().getPriority().getScore();
+		for (PlannedFeature plannedFeature : plannedFeatures) {
+			score -= plannedFeature.getFeature().getPriority().getScore();
 		}
 		
 		return score;
 	}
 	
 	/**
-	 * Returns all of the planned tasks done by a specific employee
+	 * Returns all of the planned features done by a specific employee
 	 * @param e The employee
-	 * @return The list of tasks done by the employee
+	 * @return The list of features done by the employee
 	 */
-	public List<PlannedTask> getTasksDoneBy(Employee e) {
-		List<PlannedTask> tasksOfEmployee = new ArrayList<>();
+	public List<PlannedFeature> getFeaturesDoneBy(Employee e) {
+		List<PlannedFeature> featuresOfEmployee = new ArrayList<>();
 
-		for (PlannedTask plannedTask : plannedTasks) {
-			if (plannedTask.getEmployee() == e) {
-				tasksOfEmployee.add(plannedTask);
+		for (PlannedFeature plannedFeature : plannedFeatures) {
+			if (plannedFeature.getEmployee() == e) {
+				featuresOfEmployee.add(plannedFeature);
 			}
 		}
 
-		return tasksOfEmployee;
+		return featuresOfEmployee;
 	}
 
 	/**
-	 * Return true if the task is already in the planned tasks
-	 * @param task Task to search
-	 * @return true if the task is already planned
+	 * Return true if the feature is already in the planned features
+	 * @param feature Feature to search
+	 * @return true if the feature is already planned
 	 */
-	public boolean isAlreadyPlanned(Task task) {
+	public boolean isAlreadyPlanned(Feature feature) {
 		boolean found = false;
-		Iterator<PlannedTask> it = plannedTasks.iterator();
+		Iterator<PlannedFeature> it = plannedFeatures.iterator();
 		
 		while (!found && it.hasNext()) {
-			PlannedTask plannedTask = (PlannedTask) it.next();
-			if (plannedTask.getTask().equals(task)) {
+			PlannedFeature plannedFeature = (PlannedFeature) it.next();
+			if (plannedFeature.getFeature().equals(feature)) {
 				found = true;
 			}
 		}
@@ -269,15 +270,15 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 	/* --- Methods --- */
 	
 	/**
-	 * Returns the planned task corresponding to the task given in parameter
-	 * @param task The searched task
-	 * @return The planned Task or null if it is not yet planned
+	 * Returns the planned feature corresponding to the feature given in parameter
+	 * @param feature The searched feature
+	 * @return The planned feature or null if it is not yet planned
 	 */
-	public PlannedTask findPlannedTask(Task task) {
-		for (Iterator<PlannedTask> iterator = plannedTasks.iterator(); iterator.hasNext();) {
-			PlannedTask plannedTask = iterator.next();
-			if (plannedTask.getTask().equals(task)) {
-				return plannedTask;
+	public PlannedFeature findPlannedFeature(Feature feature) {
+		for (Iterator<PlannedFeature> iterator = plannedFeatures.iterator(); iterator.hasNext();) {
+			PlannedFeature plannedFeature = iterator.next();
+			if (plannedFeature.getFeature().equals(feature)) {
+				return plannedFeature;
 			}
 		}
 		
@@ -285,157 +286,158 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 	}
 	
 	/**
-	 * Initializes the planned tasks randomly
-	 * @param number the number of tasks to plan
+	 * Initializes the planned features randomly
+	 * @param number the number of features to plan
 	 */
-	private void initializePlannedTasksRandomly(int number) {
-		Task taskToDo;
+	private void initializePlannedFeaturesRandomly(int number) {
+		Feature featureToDo;
 		List<Employee> skilledEmployees;
 		
 		for (int i = 0 ; i < number ; i++) {
-			taskToDo = undoneTasks.get(randomGenerator.nextInt(0, undoneTasks.size()-1));
-			skilledEmployees = problem.getSkilledEmployees(taskToDo.getRequiredSkills().get(0));
-			scheduleAtTheEnd(taskToDo,
+			featureToDo = undoneFeatures.get(randomGenerator.nextInt(0, undoneFeatures.size()-1));
+			skilledEmployees = problem.getSkilledEmployees(featureToDo.getRequiredSkills().get(0));
+			scheduleAtTheEnd(featureToDo,
 					skilledEmployees.get(randomGenerator.nextInt(0, skilledEmployees.size()-1)));
 		}
 	}
 
 	/**
 	 * Initialize the variables
-	 * Load a random number of planned tasks
+	 * Load a random number of planned features
 	 */
-	private void initializePlannedTaskVariables() {
-		int numberOfTasks = problem.getTasks().size();
-		int nbTasksToDo = randomGenerator.nextInt(0, numberOfTasks);
+	private void initializePlannedFeatureVariables() {
+		int numberOfFeatures = problem.getFeatures().size();
+		int nbFeaturesToDo = randomGenerator.nextInt(0, numberOfFeatures);
 		
-		undoneTasks = new CopyOnWriteArrayList<Task>();
-		undoneTasks.addAll(problem.getTasks());
-		plannedTasks = new CopyOnWriteArrayList<PlannedTask>();
+		undoneFeatures = new CopyOnWriteArrayList<Feature>();
+		undoneFeatures.addAll(problem.getFeatures());
+		plannedFeatures = new CopyOnWriteArrayList<PlannedFeature>();
 	
-		if (randomGenerator.nextDouble() > 0.3) {
-			initializePlannedTasksRandomly(nbTasksToDo);
+		if (randomGenerator.nextDouble() > DefaultAlgorithmParameters.RATE_OF_NOT_RANDOM_GENERATED_SOLUTION) {
+			initializePlannedFeaturesRandomly(nbFeaturesToDo);
 		}
 		else {
-			initializePlannedTasksWithPrecedences(nbTasksToDo);
+			initializePlannedFeaturesWithPrecedences(nbFeaturesToDo);
 		}
 	}
 	
 	/**
-	 * Initializes the planned tasks considering the precedences
-	 * @param number the number of tasks to plan
+	 * Initializes the planned features considering the precedences
+	 * @param number the number of features to plan
 	 */
-	private void initializePlannedTasksWithPrecedences(int number) {
-		Task taskToDo;
+	private void initializePlannedFeaturesWithPrecedences(int number) {
+		Feature featureToDo;
 		List<Employee> skilledEmployees;
-		List<Task> possibleTasks = updatePossibleTasks();
+		List<Feature> possibleFeatures = updatePossibleFeatures();
 		int i = 0;
-		while (i < number && possibleTasks.size() > 0) {
-			taskToDo = possibleTasks.get(randomGenerator.nextInt(0, possibleTasks.size()-1));
-			skilledEmployees = problem.getSkilledEmployees(taskToDo.getRequiredSkills().get(0));
-			scheduleAtTheEnd(taskToDo,
+		while (i < number && possibleFeatures.size() > 0) {
+			featureToDo = possibleFeatures.get(randomGenerator.nextInt(0, possibleFeatures.size()-1));
+			skilledEmployees = problem.getSkilledEmployees(featureToDo.getRequiredSkills().get(0));
+			scheduleAtTheEnd(featureToDo,
 					skilledEmployees.get(randomGenerator.nextInt(0, skilledEmployees.size()-1)));
-			possibleTasks = updatePossibleTasks();
+			possibleFeatures = updatePossibleFeatures();
 			i++;
 		}
 	}
 	
 	/**
-	 * Reset the begin hours of all the planned task to 0.0
+	 * Reset the begin hours of all the planned feature to 0.0
 	 */
 	public void resetBeginHours() {
-		for (PlannedTask plannedTask : plannedTasks) {
-			plannedTask.setBeginHour(0.0);
+		for (PlannedFeature plannedFeature : plannedFeatures) {
+			plannedFeature.setBeginHour(0.0);
 		}
-	}
-	
-	/**
-	 * Schedule a planned task to a position in the planning
-	 * @param position the position of the planning
-	 * @param plannedTask the planned task to integrate to the planning
-	 */
-	public void schedule(int position, Task task, Employee e) {
-		undoneTasks.remove(task);
-		plannedTasks.add(position, new PlannedTask(task, e));
-	}
-	
-	/**
-	 * Schedule a task in the planning
-	 * Remove the task from the undoneTasks 
-	 * and add the planned Task at the end of the planned tasks list
-	 * @param plannedTask
-	 */
-	public void scheduleAtTheEnd(Task task, Employee e) {
-		if (!isAlreadyPlanned(task)) {
-			undoneTasks.remove(task);
-			plannedTasks.add(new PlannedTask(task, e));
-		}
-	}
-	
-	/**
-	 * Schedule a random undone task to a random place in the planning
-	 */
-	public void scheduleRandomTask() {
-		scheduleRandomTask(randomGenerator.nextInt(0, plannedTasks.size()));
-	}
-	
-	/**
-	 * Schedule a random task to insertionPosition of the planning list
-	 * @param insertionPosition the insertion position
-	 */
-	public void scheduleRandomTask(int insertionPosition) {
-		if (undoneTasks.size() <= 0)
-			return;
-		Task newTask = undoneTasks.get(randomGenerator.nextInt(0, undoneTasks.size() -1));
-		List<Employee> skilledEmployees = problem.getSkilledEmployees(newTask.getRequiredSkills().get(0));
-		Employee newEmployee = skilledEmployees.get(randomGenerator.nextInt(0, skilledEmployees.size()-1));
-		schedule(insertionPosition, newTask, newEmployee);
-	}
-	
-	/**
-	 * Schedule the planned task at a random position in the planning
-	 * @param plannedTask the plannedTask to integrate to the planning
-	 */
-	public void scheduleRandomly(PlannedTask plannedTask) {
-		schedule(randomGenerator.nextInt(0, plannedTasks.size()), plannedTask.getTask(), plannedTask.getEmployee());
 	}
 
 	/**
-	 * Unschedule a task : remove it from the planned tasks and add it to the undone ones
-	 * <code>isUpToDate field becomes false
-	 * @param plannedTask
+	 * Schedule a planned feature to a position in the planning
+	 * @param position the position of the planning
+	 * @param feature the feature to plan
+	 * @param e the employee who will execute the feature
 	 */
-	public void unschedule(PlannedTask plannedTask) {
-		if (isAlreadyPlanned(plannedTask.getTask())) {
-			undoneTasks.add(plannedTask.getTask());
-			plannedTasks.remove(plannedTask);
+	public void schedule(int position, Feature feature, Employee e) {
+		undoneFeatures.remove(feature);
+		plannedFeatures.add(position, new PlannedFeature(feature, e));
+	}
+		
+	/**
+	 * Schedule a feature in the planning
+	 * Remove the feature from the undoneFeatures 
+	 * and add the planned feature at the end of the planned features list
+	 * @param feature the feature to schedule
+	 * @param e the employee who will realize the feature
+	 */
+	public void scheduleAtTheEnd(Feature feature, Employee e) {
+		if (!isAlreadyPlanned(feature)) {
+			undoneFeatures.remove(feature);
+			plannedFeatures.add(new PlannedFeature(feature, e));
+		}
+	}
+	
+	/**
+	 * Schedule a random undone feature to a random place in the planning
+	 */
+	public void scheduleRandomFeature() {
+		scheduleRandomFeature(randomGenerator.nextInt(0, plannedFeatures.size()));
+	}
+	
+	/**
+	 * Schedule a random feature to insertionPosition of the planning list
+	 * @param insertionPosition the insertion position
+	 */
+	public void scheduleRandomFeature(int insertionPosition) {
+		if (undoneFeatures.size() <= 0)
+			return;
+		Feature newFeature = undoneFeatures.get(randomGenerator.nextInt(0, undoneFeatures.size() -1));
+		List<Employee> skilledEmployees = problem.getSkilledEmployees(newFeature.getRequiredSkills().get(0));
+		Employee newEmployee = skilledEmployees.get(randomGenerator.nextInt(0, skilledEmployees.size()-1));
+		schedule(insertionPosition, newFeature, newEmployee);
+	}
+	
+	/**
+	 * Schedule the planned feature at a random position in the planning
+	 * @param plannedFeature the plannedFeature to integrate to the planning
+	 */
+	public void scheduleRandomly(PlannedFeature plannedFeature) {
+		schedule(randomGenerator.nextInt(0, plannedFeatures.size()), plannedFeature.getFeature(), plannedFeature.getEmployee());
+	}
+
+	/**
+	 * Unschedule a feature : remove it from the planned features and add it to the undone ones
+	 * @param plannedFeature the planned feature to unschedule
+	 */
+	public void unschedule(PlannedFeature plannedFeature) {
+		if (isAlreadyPlanned(plannedFeature.getFeature())) {
+			undoneFeatures.add(plannedFeature.getFeature());
+			plannedFeatures.remove(plannedFeature);
 				
 		}
 	}
 
 	/**
-	 * Creates a list of the possible tasks to do regarding to the precedences of the undone tasks
-	 * @return the list of the possible tasks to do
+	 * Creates a list of the possible features to do regarding to the precedences of the undone features
+	 * @return the list of the possible features to do
 	 */
-	private List<Task> updatePossibleTasks() {
-		List<Task> possibleTasks = new ArrayList<>();
+	private List<Feature> updatePossibleFeatures() {
+		List<Feature> possibleFeatures = new ArrayList<>();
 		boolean possible;
 		int i;
 		
-		for (Task task : undoneTasks) {
+		for (Feature feature : undoneFeatures) {
 			possible = true;
 			i = 0;
-			while (possible && i < task.getPreviousTasks().size()) {
-				if (!isAlreadyPlanned(task.getPreviousTasks().get(i))) {
+			while (possible && i < feature.getPreviousFeatures().size()) {
+				if (!isAlreadyPlanned(feature.getPreviousFeatures().get(i))) {
 					possible = false;
 				}
 				i++;
 			}
 			if (possible) {
-				possibleTasks.add(task);
+				possibleFeatures.add(feature);
 			}
 		}
 		
-		return possibleTasks;
+		return possibleFeatures;
 	}
 
 	@Override
@@ -444,13 +446,13 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 	}
 
 	@Override
-	public Solution<PlannedTask> copy() {
+	public Solution<PlannedFeature> copy() {
 		return new PlanningSolution(this);
 	}
 	
 	@Override
 	public int hashCode() {
-		return getPlannedTasks().size();
+		return getPlannedFeatures().size();
 	};
 	
 	@Override
@@ -463,11 +465,11 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 
 		PlanningSolution other = (PlanningSolution) obj;
 		
-		int size = this.getPlannedTasks().size();
-		boolean equals = other.getPlannedTasks().size() == size;
+		int size = this.getPlannedFeatures().size();
+		boolean equals = other.getPlannedFeatures().size() == size;
 		int i = 0;
 		while (equals && i < size) {
-			if (!other.getPlannedTasks().contains(this.getPlannedTasks().get(i))) {
+			if (!other.getPlannedFeatures().contains(this.getPlannedFeatures().get(i))) {
 				equals = false;
 			}
 			i++;
@@ -489,8 +491,8 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedTask, NextR
 		sb.append(new NumberOfViolatedConstraints<>().getAttribute(this));
 		sb.append(')').append(lineSeparator);
 		
-		for (PlannedTask task : getPlannedTasks()) {
-			sb.append("-").append(task);
+		for (PlannedFeature feature : getPlannedFeatures()) {
+			sb.append("-").append(feature);
 			sb.append(lineSeparator);
 		}
 		

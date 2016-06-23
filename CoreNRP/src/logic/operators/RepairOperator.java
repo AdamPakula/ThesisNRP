@@ -2,8 +2,8 @@ package logic.operators;
 
 import java.util.Iterator;
 
-import entities.PlannedTask;
-import entities.Task;
+import entities.PlannedFeature;
+import entities.Feature;
 import logic.NextReleaseProblem;
 import logic.PlanningSolution;
 
@@ -32,19 +32,19 @@ public class RepairOperator {
 	 * @param solution the solution to repair
 	 */
 	public void repair(PlanningSolution solution) {
-		Iterator<PlannedTask> it = solution.getPlannedTasks().iterator();
+		Iterator<PlannedFeature> it = solution.getPlannedFeatures().iterator();
 		problem.evaluate(solution);
 		
 		while (it.hasNext()) {
-			PlannedTask currentPlannedTask = it.next();
+			PlannedFeature currentPlannedFeature = it.next();
 			boolean fine = true;
-			Iterator<Task> itPrevious = currentPlannedTask.getTask().getPreviousTasks().iterator();
+			Iterator<Feature> itPrevious = currentPlannedFeature.getFeature().getPreviousFeatures().iterator();
 			
 			while (fine && itPrevious.hasNext()) {
-				Task previousTask = itPrevious.next();
-				PlannedTask currentPreviousPlannedTask = solution.findPlannedTask(previousTask);
-				if (currentPreviousPlannedTask == null || currentPreviousPlannedTask.getEndHour() > currentPlannedTask.getBeginHour()) {
-					solution.unschedule(currentPlannedTask);
+				Feature previousFeature = itPrevious.next();
+				PlannedFeature currentPreviousPlannedFeature = solution.findPlannedFeature(previousFeature);
+				if (currentPreviousPlannedFeature == null || currentPreviousPlannedFeature.getEndHour() > currentPlannedFeature.getBeginHour()) {
+					solution.unschedule(currentPlannedFeature);
 					it.remove();
 					fine = false;
 					problem.evaluate(solution);

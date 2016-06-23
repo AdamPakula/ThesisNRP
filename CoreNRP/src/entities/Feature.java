@@ -3,33 +3,37 @@ package entities;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Task {
+/**
+ * Class representing a feature of the Next Release Problem
+ * @author Vavou
+ *
+ */
+public class Feature {
 
 	/* --- Atributes --- */
 	
 	/**
-	 * The name of the task
+	 * The name of the feature
 	 */
 	private String name;
 	
 	/**
-	 * The priority of the task
-	 * There is no special scale but we consider than the lowest number is the most important task
+	 * The priority of the feature
 	 */
 	private PriorityLevel priority;
 	
 	/**
-	 * The duration of the task in hours
+	 * The duration of the feature in hours
 	 */
 	private double duration;
 	
 	/**
-	 * The tasks which needed to be executed before
+	 * The features which needed to be executed before
 	 */
-	private List<Task> previousTasks;
+	private List<Feature> previousFeatures;
 	
 	/**
-	 * The skills required to do the task
+	 * The skills required to do the feature
 	 */
 	private List<Skill> requiredSkills;
 
@@ -37,31 +41,31 @@ public class Task {
 	/* --- Getters and setters --- */
 	
 	/**
-	 * @return the name
+	 * @return the name of the feature
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * @return the priority
+	 * @return the priority of the feature
 	 */
 	public PriorityLevel getPriority() {
 		return priority;
 	}
 
 	/**
-	 * @return the duration
+	 * @return the duration of the feature
 	 */
 	public double getDuration() {
 		return duration;
 	}
 
 	/**
-	 * @return the previous
+	 * @return the previous features needed to be finished
 	 */
-	public List<Task> getPreviousTasks() {
-		return previousTasks;
+	public List<Feature> getPreviousFeatures() {
+		return previousFeatures;
 	}
 	
 	/**
@@ -75,18 +79,18 @@ public class Task {
 	/* --- Constructors --- */
 	
 	/**
-	 * Construct a task
-	 * @param name the name of the task
-	 * @param priority the priority of the task
-	 * @param duration the duration of the task
-	 * @param previousTasks the list of the previous tasks or null
-	 * @param requiredSkills the required skills to do this task
+	 * Construct a feature
+	 * @param name the name of the feature
+	 * @param priority the priority of the feature
+	 * @param duration the duration of the feature
+	 * @param previousFeatures the list of the previous features or null
+	 * @param requiredSkills the required skills to do this feature
 	 */
-	public Task(String name, PriorityLevel priority, Double duration, List<Task> previousTasks, List<Skill> requiredSkills) {
+	public Feature(String name, PriorityLevel priority, Double duration, List<Feature> previousFeatures, List<Skill> requiredSkills) {
 		this.name = name;
 		this.priority = priority;
 		this.duration = duration;
-		this.previousTasks = previousTasks == null ? new ArrayList<Task>() : previousTasks;
+		this.previousFeatures = previousFeatures == null ? new ArrayList<Feature>() : previousFeatures;
 		this.requiredSkills = requiredSkills == null ? new ArrayList<Skill>() : requiredSkills;
 	}
 	
@@ -103,7 +107,7 @@ public class Task {
 		if (getClass() != obj.getClass())
 			return false;
 
-		Task other = (Task) obj;
+		Feature other = (Feature) obj;
 
 		return other.getName().equals(this.getName());
 	}

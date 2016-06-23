@@ -40,7 +40,7 @@ public class ParametersFrame extends JFrame implements ActionListener {
 	
 	private JSpinner nbWeekSpinner;
 	private JSpinner hoursByWeekSpinner;
-	private JSpinner nbTasksSpinner;
+	private JSpinner nbFeaturesSpinner;
 	private JSpinner nbEmployeesSpinner;
 	private JSpinner nbSkillsSpinner;
 	private JSpinner precedenceRateSpinner;
@@ -66,7 +66,7 @@ public class ParametersFrame extends JFrame implements ActionListener {
 	private void initializeValues() {
 		hoursByWeekSpinner.setValue(DefaultIterationParameters.HOURS_BY_WEEK);
 		nbWeekSpinner.setValue(DefaultIterationParameters.NUMBER_OF_WEEK);
-		nbTasksSpinner.setValue(DefaultGeneratorParameters.NUMBER_OF_TASKS);
+		nbFeaturesSpinner.setValue(DefaultGeneratorParameters.NUMBER_OF_FEATURES);
 		nbEmployeesSpinner.setValue(DefaultGeneratorParameters.NUMBER_OF_EMPLOYEES);
 		nbSkillsSpinner.setValue(DefaultGeneratorParameters.NUMBER_OF_SKILLS);
 		precedenceRateSpinner.setValue(DefaultGeneratorParameters.PRECEDENCE_RATE);
@@ -138,14 +138,14 @@ public class ParametersFrame extends JFrame implements ActionListener {
 		gbc.gridx = 0;
 		gbc.gridwidth = 1;
 		gbc.anchor = GridBagConstraints.LINE_END;
-		mainPanel.add(new JLabel("Number of tasks: "), gbc);
+		mainPanel.add(new JLabel("Number of features: "), gbc);
 		
 		gbc.gridx++;
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		gbc.anchor = GridBagConstraints.LINE_START;
-		nbTasksSpinner = new JSpinner(getNewPositiveIntegerModel());
-		raiseTextFieldSize(nbTasksSpinner);
-		mainPanel.add(nbTasksSpinner, gbc);
+		nbFeaturesSpinner = new JSpinner(getNewPositiveIntegerModel());
+		raiseTextFieldSize(nbFeaturesSpinner);
+		mainPanel.add(nbFeaturesSpinner, gbc);
 		
 		gbc.gridy++;
 		gbc.gridx = 0;
@@ -211,7 +211,7 @@ public class ParametersFrame extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == launchButton) {
-			int nbTasks = (int) nbTasksSpinner.getValue(),
+			int nbFeatures = (int) nbFeaturesSpinner.getValue(),
 				nbEmployees = (int) nbEmployeesSpinner.getValue(),
 				nbSkills = (int) nbSkillsSpinner.getValue(),
 				nbWeeks = (int)nbWeekSpinner.getValue();
@@ -219,7 +219,7 @@ public class ParametersFrame extends JFrame implements ActionListener {
 			double precedenceRate = (double)precedenceRateSpinner.getValue(),
 				hoursByWeek = (double)hoursByWeekSpinner.getValue();
 			
-			GeneratorParameters genParam = new GeneratorParameters(nbTasks, nbEmployees, 
+			GeneratorParameters genParam = new GeneratorParameters(nbFeatures, nbEmployees, 
 					nbSkills, precedenceRate);
 			IterationParameters iterationParam = new IterationParameters(nbWeeks, hoursByWeek);
 			controller.launch((AlgorithmChoice)algorithmComboBox.getSelectedItem(), genParam, iterationParam);

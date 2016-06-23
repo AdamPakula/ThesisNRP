@@ -11,7 +11,7 @@ import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetal.util.pseudorandom.JMetalRandom;
 
 import entities.Employee;
-import entities.PlannedTask;
+import entities.PlannedFeature;
 import entities.parameters.DefaultAlgorithmParameters;
 import logic.NextReleaseProblem;
 import logic.PlanningSolution;
@@ -62,7 +62,7 @@ public class PlanningMutationOperator implements MutationOperator<PlanningSoluti
 	 * @param problem the next release problem to solve
 	 */
 	public PlanningMutationOperator(NextReleaseProblem problem) {
-		this(problem, DefaultAlgorithmParameters.MUTATION_PROBABILITY(problem.getTasks().size()));
+		this(problem, DefaultAlgorithmParameters.MUTATION_PROBABILITY(problem.getFeatures().size()));
 	}
 	
 	/**
@@ -75,7 +75,7 @@ public class PlanningMutationOperator implements MutationOperator<PlanningSoluti
 			throw new JMetalException("Mutation probability is negative: " + mutationProbability) ;
 		}
 		
-		this.numberOfTasks = problem.getTasks().size();
+		this.numberOfTasks = problem.getFeatures().size();
 		this.mutationProbability = mutationProbability;
 		this.problem = problem;
 		randomGenerator = JMetalRandom.getInstance() ;
@@ -87,11 +87,11 @@ public class PlanningMutationOperator implements MutationOperator<PlanningSoluti
 	@Override
 	public PlanningSolution execute(PlanningSolution parent) {
 		PlanningSolution child = new PlanningSolution(parent);
-		int nbPlannedTasks = child.getNumberOfPlannedTasks();
+		int nbPlannedTasks = child.getNumberOfPlannedFeatures();
 		
 		for (int i = 0 ; i < nbPlannedTasks ; i++) {
 			if (doMutation()) { // If we have to do a mutation
-				PlannedTask taskToMutate = child.getPlannedTask(i);
+				PlannedFeature taskToMutate = child.getPlannedFeature(i);
 				if (randomGenerator.nextDouble() < 0.5) {
 					changeEmployee(taskToMutate);
 				}
@@ -101,7 +101,7 @@ public class PlanningMutationOperator implements MutationOperator<PlanningSoluti
 			}
 		}
 		
-		for (int i = nbPlannedTasks ; i < problem.getTasks().size() ; i++) {
+		for (int i = nbPlannedTasks ; i < problem.getFeatures().size() ; i++) {
 			if (doMutation()) {
 				addNewTask(child);
 			}
@@ -131,7 +131,7 @@ public class PlanningMutationOperator implements MutationOperator<PlanningSoluti
 	 * @param solution the solution to mutate
 	 */
 	private void addNewTask(PlanningSolution solution) {
-		solution.scheduleRandomTask();
+		solution.scheduleRandomFeature();
 	}
 	
 	/**
@@ -141,9 +141,9 @@ public class PlanningMutationOperator implements MutationOperator<PlanningSoluti
 	 * @param taskToChange The planned task to modify
 	 * @param taskPosition The position of the task to modify in the planning (the plannedTask list)
 	 */
-	private void changeTask(PlanningSolution solution, PlannedTask taskToChange, int taskPosition) {
+	private void changeTask(PlanningSolution solution, PlannedFeature taskToChange, int taskPosition) {
 		int randomPosition = randomGenerator.nextInt(0, numberOfTasks);
-		if (randomPosition < solution.getNumberOfPlannedTasks() - 1) { // If the random selected task is already planned then exchange with the current
+		if (randomPosition < solution.getNumberOfPlannedFeatures() - 1) { // If the random selected task is already planned then exchange with the current
 			if (taskPosition == randomPosition) { 
 				randomPosition++; // If problem then apply a % (modulo) size
 			}
@@ -151,7 +151,7 @@ public class PlanningMutationOperator implements MutationOperator<PlanningSoluti
 		}
 		else { // If the random selected task is not yet planned, let's do it
 			solution.unschedule(taskToChange);
-			solution.scheduleRandomTask(taskPosition);
+			solution.scheduleRandomFeature(taskPosition);
 		}
 	}
 	
@@ -159,8 +159,8 @@ public class PlanningMutationOperator implements MutationOperator<PlanningSoluti
 	 * Change the employee of a planned task by a random one
 	 * @param taskToChange the planned task to modify
 	 */
-	private void changeEmployee(PlannedTask taskToChange) {
-		List<Employee> skilledEmployees = new ArrayList<>(problem.getSkilledEmployees(taskToChange.getTask().getRequiredSkills().get(0)));
+	private void changeEmployee(PlannedFeature taskToChange) {
+		List<Employee> skilledEmployees = new ArrayList<>(problem.getSkilledEmployees(taskToChange.getFeature().getRequiredSkills().get(0)));
 		skilledEmployees.remove(taskToChange.getEmployee());
 		if (skilledEmployees.size() > 0) {
 			taskToChange.setEmployee(skilledEmployees.get(randomGenerator.nextInt(0, skilledEmployees.size()-1)));

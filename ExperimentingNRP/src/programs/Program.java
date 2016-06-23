@@ -42,7 +42,7 @@ public class Program {
 	public static void main(String[] args) {		
 		ProblemData data = DataLoader.readData(TestFile.PRECEDENCES);
 		
-		NextReleaseProblem problem = new NextReleaseProblem(data.getTasks(), data.getEmployees(), new IterationParameters(3, 35.0));
+		NextReleaseProblem problem = new NextReleaseProblem(data.getFeatures(), data.getEmployees(), new IterationParameters(3, 35.0));
 		Algorithm<List<PlanningSolution>> algorithm;
 		CrossoverOperator<PlanningSolution> crossover;
 	    MutationOperator<PlanningSolution> mutation;

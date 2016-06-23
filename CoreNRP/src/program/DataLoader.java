@@ -11,15 +11,15 @@ import entities.Employee;
 import entities.PriorityLevel;
 import entities.ProblemData;
 import entities.Skill;
-import entities.Task;
+import entities.Feature;
 
 public class DataLoader {
 	
-	private final static int INDEX_TASK_NAME = 0;
-	private final static int INDEX_TASK_PRIORITY = 1;
-	private final static int INDEX_TASK_DURATION = 2;
-	private final static int INDEX_TASK_SKILLS = 3;
-	private final static int INDEX_TASK_PREVIOUS = 4;
+	private final static int INDEX_FEATURE_NAME = 0;
+	private final static int INDEX_FEATURE_PRIORITY = 1;
+	private final static int INDEX_FEATURE_DURATION = 2;
+	private final static int INDEX_FEATURE_SKILLS = 3;
+	private final static int INDEX_FEATURE_PREVIOUS = 4;
 	private final static int INDEX_EMPLOYEE_NAME = 0;
 	private final static int INDEX_EMPLOYEE_AVAILABILITY = 1;
 	private final static int INDEX_EMPLOYEE_SKILLS = 2;
@@ -29,20 +29,20 @@ public class DataLoader {
 	public static ProblemData readData(TestFile file) {
 		ProblemData data = null;
 		
-		try(BufferedReader tasksBufferedReader = new BufferedReader(new FileReader(INPUT_DIRECTORY + file.getTasksFileName()));
+		try(BufferedReader featuresBufferedReader = new BufferedReader(new FileReader(INPUT_DIRECTORY + file.getFeaturesFileName()));
 				BufferedReader employeesBufferedReader = new BufferedReader(new FileReader(INPUT_DIRECTORY + file.getEmployeesFileName()))) {
 			
-			// Reading the tasks and skills
+			// Reading the features and skills
 			List<Skill> skills = new ArrayList<>();
-			List<Task> tasks = new ArrayList<>();
-			String line = tasksBufferedReader.readLine();
+			List<Feature> features = new ArrayList<>();
+			String line = featuresBufferedReader.readLine();
 
 			while (line != null) {
-				tasks.add(readTask(line, skills, tasks));
+				features.add(readFeature(line, skills, features));
 				
-				line = tasksBufferedReader.readLine();
+				line = featuresBufferedReader.readLine();
 			}
-			tasksBufferedReader.close();
+			featuresBufferedReader.close();
 			
 			// Reading the employees
 			List<Employee> employees = new ArrayList<>();
@@ -55,7 +55,7 @@ public class DataLoader {
 			}
 			employeesBufferedReader.close();
 			
-			data = new ProblemData(tasks, employees, skills);
+			data = new ProblemData(features, employees, skills);
 		} catch (FileNotFoundException e) {
 			System.err.println("Input file not found");
 		} catch (IOException e) {
@@ -87,33 +87,33 @@ public class DataLoader {
 	}
 
 	/**
-	 * Reads a task in the line and update the skills list if there is a new
+	 * Reads a feature in the line and update the skills list if there is a new
 	 * @param line data file line
 	 * @param skills list of skills already known
-	 * @param tasks The tasks already planned
-	 * @return the new task or null if the line is not well formated
+	 * @param features The features already planned
+	 * @return the new feature or null if the line is not well formated
 	 */
-	private static Task readTask(String line, List<Skill> skills, List<Task> tasks) {
+	private static Feature readFeature(String line, List<Skill> skills, List<Feature> features) {
 		String[] parts = line.split("\\t");
 		
 		if (parts.length < 4)
 			return null;
 		
-		List<Task> previousTasks = new ArrayList<>();
+		List<Feature> previousFeatures = new ArrayList<>();
 		if(parts.length == 5) {
-			String previousTaksNames[] = parts[INDEX_TASK_PREVIOUS].split(",");
-			for (String previousTaskName : previousTaksNames) {
-				previousTasks.add(findTask(tasks, previousTaskName));
+			String previousFeaturesNames[] = parts[INDEX_FEATURE_PREVIOUS].split(",");
+			for (String previousFeatureName : previousFeaturesNames) {
+				previousFeatures.add(findFeature(features, previousFeatureName));
 			}
 		}
 		
-		Task task = new Task(parts[INDEX_TASK_NAME], 
-						PriorityLevel.getPriorityByLevel(new Integer(parts[INDEX_TASK_PRIORITY])), 
-						new Double(parts[INDEX_TASK_DURATION]), 
-						previousTasks, 
-						readSkills(skills, parts[INDEX_TASK_SKILLS]));
+		Feature feature = new Feature(parts[INDEX_FEATURE_NAME], 
+						PriorityLevel.getPriorityByLevel(new Integer(parts[INDEX_FEATURE_PRIORITY])), 
+						new Double(parts[INDEX_FEATURE_DURATION]), 
+						previousFeatures, 
+						readSkills(skills, parts[INDEX_FEATURE_SKILLS]));
 		
-		return task;
+		return feature;
 	}
 	
 	private static List<Skill> readSkills(List<Skill> skills, String skillsList) {
@@ -146,22 +146,22 @@ public class DataLoader {
 	}
 	
 	/**
-	 * Find a task by its name in the tasks list
-	 * @param tasks the list of tasks
-	 * @param name the name of the task to search
-	 * @return the corresponding task or null if it does not exist
+	 * Find a feature by its name in the features list
+	 * @param features the list of features
+	 * @param name the name of the feature to search
+	 * @return the corresponding feature or null if it does not exist
 	 */
-	private static Task findTask(List<Task> tasks, String name) {
-		Task task = null;
+	private static Feature findFeature(List<Feature> features, String name) {
+		Feature feature = null;
 		int i = 0;
 		
-		while (task == null && i < tasks.size()) {
-			if (tasks.get(i).getName().equals(name)) {
-				task = tasks.get(i);
+		while (feature == null && i < features.size()) {
+			if (features.get(i).getName().equals(name)) {
+				feature = features.get(i);
 			}
 			i++;
 		}
 		
-		return task;
+		return feature;
 	}
 }

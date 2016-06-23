@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Describes an employee which can realize a task
+ * Describes an employee who can realize a feature
  * @author Vavou
  *
  */

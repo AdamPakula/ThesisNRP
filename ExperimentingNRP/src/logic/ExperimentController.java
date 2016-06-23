@@ -32,8 +32,8 @@ public class ExperimentController {
 	
 	public XYDataset executeExperiment() {
 		int nbEmployees = 1;
-		int nbTasks = DefaultParameters.TASKS_BY_EMPLOYEE;
-		int size = nbEmployees * nbTasks;
+		int nbFeatures = DefaultParameters.FEATURES_BY_EMPLOYEE;
+		int size = nbEmployees * nbFeatures;
 		SolutionQuality qualityAttribute = new SolutionQuality();
 		
 		XYSeriesCollection dataset = new XYSeriesCollection();
@@ -43,14 +43,14 @@ public class ExperimentController {
 		}
 		
 		while (size <= DefaultParameters.MAX_PROBLEM_SIZE) {
-			ProblemData data = GeneratorNRP.generate(new GeneratorParameters(nbTasks, nbEmployees, nbEmployees, DefaultGeneratorParameters.PRECEDENCE_RATE));
+			ProblemData data = GeneratorNRP.generate(new GeneratorParameters(nbFeatures, nbEmployees, nbEmployees, DefaultGeneratorParameters.PRECEDENCE_RATE));
 			Map<AlgorithmChoice, Double[]> qualityValues = new HashMap<>();
 			for (AlgorithmChoice algorithm : AlgorithmChoice.values()) {
 				qualityValues.put(algorithm, new Double[DefaultParameters.TEST_REPRODUCTION]);
 			}
 			
 			for (int i = 0; i < DefaultParameters.TEST_REPRODUCTION ; i++) {
-				NextReleaseProblem nrp = new NextReleaseProblem(data.getTasks(), data.getEmployees(), new IterationParameters(DefaultIterationParameters.NUMBER_OF_WEEK, DefaultIterationParameters.HOURS_BY_WEEK));
+				NextReleaseProblem nrp = new NextReleaseProblem(data.getFeatures(), data.getEmployees(), new IterationParameters(DefaultIterationParameters.NUMBER_OF_WEEK, DefaultIterationParameters.HOURS_BY_WEEK));
 				
 				for (AlgorithmChoice algorithm : AlgorithmChoice.values()) {
 					System.out.println("Executing algorithm " + algorithm.toString() + " (size: " + size +")");
@@ -66,8 +66,8 @@ public class ExperimentController {
 			}
 			
 			nbEmployees++;
-			nbTasks += DefaultParameters.TASKS_BY_EMPLOYEE;
-			size = nbEmployees * nbTasks;
+			nbFeatures += DefaultParameters.FEATURES_BY_EMPLOYEE;
+			size = nbEmployees * nbFeatures;
 		}
 		
 		return dataset;

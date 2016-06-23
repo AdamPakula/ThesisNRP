@@ -3,6 +3,11 @@ package entities;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents the week planning of an employee
+ * @author Vavou
+ *
+ */
 public class EmployeeWeekAvailability {
 
 	/**
@@ -21,9 +26,9 @@ public class EmployeeWeekAvailability {
 	private double endHour;
 	
 	/**
-	 * The task done during the week
+	 * The features done during the week
 	 */
-	private List<PlannedTask> plannedTasks;
+	private List<PlannedFeature> plannedFeatures;
 	
 	
 	/* --- Getters and Setters --- */
@@ -64,17 +69,17 @@ public class EmployeeWeekAvailability {
 	}
 	
 	/**
-	 * @return the plannedTasks
+	 * @return the plannedFeatures
 	 */
-	public List<PlannedTask> getPlannedTasks() {
-		return plannedTasks;
+	public List<PlannedFeature> getPlannedFeatures() {
+		return plannedFeatures;
 	}
 
 	/**
-	 * @param plannedTasks the plannedTasks to set
+	 * @param plannedFeatures the plannedFeatures to set
 	 */
-	public void addPlannedTask(PlannedTask plannedTask) {
-		this.plannedTasks.add(plannedTask);
+	public void addPlannedFeature(PlannedFeature plannedFeature) {
+		this.plannedFeatures.add(plannedFeature);
 	}
 
 	
@@ -89,17 +94,20 @@ public class EmployeeWeekAvailability {
 		this.beginHour = beginHour;
 		this.remainHoursAvailable = remainHoursAvailable;
 		endHour = beginHour;
-		this.plannedTasks = new ArrayList<>();
+		this.plannedFeatures = new ArrayList<>();
 	}
 	
-	
+	/**
+	 * Copy constructor
+	 * @param origin the object to copy
+	 */
 	public EmployeeWeekAvailability(EmployeeWeekAvailability origin) {
 		this.beginHour = origin.getBeginHour();
 		this.remainHoursAvailable = origin.getRemainHoursAvailable();
 		this.endHour = origin.getEndHour();
-		this.plannedTasks = new ArrayList<>(origin.getPlannedTasks().size());
-		for (PlannedTask plannedTask : origin.getPlannedTasks()) {
-			this.plannedTasks.add(new PlannedTask(plannedTask));
+		this.plannedFeatures = new ArrayList<>(origin.getPlannedFeatures().size());
+		for (PlannedFeature plannedFeature : origin.getPlannedFeatures()) {
+			this.plannedFeatures.add(new PlannedFeature(plannedFeature));
 		}
 	}
 }

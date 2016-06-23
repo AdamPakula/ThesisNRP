@@ -91,7 +91,7 @@ public class GeneratorParameters {
 	 * Default values can be found in the {@link DefaultGeneratorParameters} class
 	 */
 	public GeneratorParameters() {
-		this(DefaultGeneratorParameters.NUMBER_OF_TASKS,
+		this(DefaultGeneratorParameters.NUMBER_OF_FEATURES,
 				DefaultGeneratorParameters.NUMBER_OF_EMPLOYEES,
 				DefaultGeneratorParameters.NUMBER_OF_SKILLS,
 				DefaultGeneratorParameters.PRECEDENCE_RATE);

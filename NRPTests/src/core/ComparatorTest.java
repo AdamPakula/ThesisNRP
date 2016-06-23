@@ -7,7 +7,7 @@ import org.uma.jmetal.util.SolutionUtils;
 
 import entities.Employee;
 import entities.ProblemData;
-import entities.Task;
+import entities.Feature;
 import entities.parameters.IterationParameters;
 import junit.framework.TestCase;
 import logic.NextReleaseProblem;
@@ -29,14 +29,14 @@ public class ComparatorTest extends TestCase {
 	@Test
 	public void testDates() {		
 		ProblemData data = DataLoader.readData(TestFile.PRECEDENCES);
-		List<Task> tasks = data.getTasks();
+		List<Feature> tasks = data.getFeatures();
 		List<Employee> employees = data.getEmployees();
 		
 		NextReleaseProblem nrp = new NextReleaseProblem(tasks, employees, new IterationParameters(3, 35));
 		
 		PlanningSolution emptySolution = new PlanningSolution(nrp);
-		while (emptySolution.getNumberOfPlannedTasks() > 0) {
-			emptySolution.unschedule(emptySolution.getPlannedTask(0));
+		while (emptySolution.getNumberOfPlannedFeatures() > 0) {
+			emptySolution.unschedule(emptySolution.getPlannedFeature(0));
 		}
 		nrp.evaluate(emptySolution);
 		nrp.evaluateConstraints(emptySolution);

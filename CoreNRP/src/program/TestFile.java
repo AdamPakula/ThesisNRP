@@ -13,8 +13,8 @@ public enum TestFile {
 	
 	private String fileName;
 	
-	public String getTasksFileName() {
-		return fileName + ".tasks";
+	public String getFeaturesFileName() {
+		return fileName + ".features";
 	}
 	
 	public String getEmployeesFileName() {

@@ -12,9 +12,9 @@ import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
 import org.uma.jmetal.util.AlgorithmRunner;
 
 import entities.Employee;
-import entities.PlannedTask;
+import entities.PlannedFeature;
 import entities.ProblemData;
-import entities.Task;
+import entities.Feature;
 import entities.parameters.IterationParameters;
 import junit.framework.TestCase;
 import logic.NextReleaseProblem;
@@ -40,9 +40,9 @@ public class SetTest extends TestCase {
 	public void testSkills() {
 		PlanningSolution bestSolution = getBestSolution(TestFile.SKILLS, new IterationParameters(2, 35.0));
 		
-		assertEquals(2, bestSolution.getNumberOfPlannedTasks());
-		for (PlannedTask plannedTask : bestSolution.getPlannedTasks()) {
-			assertEquals(plannedTask.getTask().getRequiredSkills(), plannedTask.getEmployee().getSkills());
+		assertEquals(2, bestSolution.getNumberOfPlannedFeatures());
+		for (PlannedFeature plannedTask : bestSolution.getPlannedFeatures()) {
+			assertEquals(plannedTask.getFeature().getRequiredSkills(), plannedTask.getEmployee().getSkills());
 		}
 		assertEquals(4.0, bestSolution.getEndDate());
 	}
@@ -51,7 +51,7 @@ public class SetTest extends TestCase {
 	public void testEmployeeOverflow() {
 		PlanningSolution bestSolution = getBestSolution(TestFile.EMPLOYEE_OVERFLOW, new IterationParameters(2, 35.0));
 		
-		assertEquals(1, bestSolution.getNumberOfPlannedTasks());
+		assertEquals(1, bestSolution.getNumberOfPlannedFeatures());
 		assertEquals(40.0, bestSolution.getEndDate());
 	}
 	
@@ -59,7 +59,7 @@ public class SetTest extends TestCase {
 	public void testOverflow() {
 		PlanningSolution bestSolution = getBestSolution(TestFile.OVERFLOW, new IterationParameters(1, 35.0));
 		
-		assertEquals(0, bestSolution.getNumberOfPlannedTasks());
+		assertEquals(0, bestSolution.getNumberOfPlannedFeatures());
 	}
 	
 	@Test
@@ -73,7 +73,7 @@ public class SetTest extends TestCase {
 	public void testSimplest() {
 		PlanningSolution bestSolution = getBestSolution(TestFile.SIMPLEST, new IterationParameters(3, 35.0));
 		
-		assertEquals(1, bestSolution.getNumberOfPlannedTasks());
+		assertEquals(1, bestSolution.getNumberOfPlannedFeatures());
 		assertEquals(2.0, bestSolution.getEndDate());
 		
 		double expectedQuality = (1.0 - (2.0/(3.0*35.0)) + 1 ) / 2;
@@ -84,7 +84,7 @@ public class SetTest extends TestCase {
 	public void testSimpleOptimisation() {
 		PlanningSolution bestSolution = getBestSolution(TestFile.SIMPLE_OPTIMISATION, new IterationParameters(3, 35.0));
 		
-		assertEquals(2, bestSolution.getNumberOfPlannedTasks());
+		assertEquals(2, bestSolution.getNumberOfPlannedFeatures());
 		assertEquals(4.0, bestSolution.getEndDate());
 	}
 	
@@ -92,25 +92,25 @@ public class SetTest extends TestCase {
 	public void testPrecedence() {
 		PlanningSolution bestSolution = getBestSolution(TestFile.PRECEDENCE, new IterationParameters(3, 35.0));
 		
-		assertEquals(2, bestSolution.getNumberOfPlannedTasks());
+		assertEquals(2, bestSolution.getNumberOfPlannedFeatures());
 		assertEquals(4.0, bestSolution.getEndDate());
-		assertTrue(bestSolution.getPlannedTask(0).getTask().getPreviousTasks().size() == 0);
+		assertTrue(bestSolution.getPlannedFeature(0).getFeature().getPreviousFeatures().size() == 0);
 	}
 	
 	@Test
 	public void testPrecedences() {
 		PlanningSolution bestSolution = getBestSolution(TestFile.PRECEDENCES, new IterationParameters(3, 35.0));
 		
-		assertEquals(4, bestSolution.getNumberOfPlannedTasks());
+		assertEquals(4, bestSolution.getNumberOfPlannedFeatures());
 		assertEquals(7.0, bestSolution.getEndDate());
-		assertTrue(bestSolution.getPlannedTask(0).getTask().getPreviousTasks().size() == 0);
+		assertTrue(bestSolution.getPlannedFeature(0).getFeature().getPreviousFeatures().size() == 0);
 	}
 	
 	
 
 	private PlanningSolution getBestSolution(TestFile testFile, IterationParameters iterationParam) {
 		ProblemData data = DataLoader.readData(testFile);
-		List<Task> tasks = data.getTasks();
+		List<Feature> tasks = data.getFeatures();
 		List<Employee> employees = data.getEmployees();
 		
 		NextReleaseProblem problem = new NextReleaseProblem(tasks, employees, iterationParam);

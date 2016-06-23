@@ -5,6 +5,11 @@ import org.uma.jmetal.util.solutionattribute.impl.NumberOfViolatedConstraints;
 
 import logic.PlanningSolution;
 
+/**
+ * Constraint violation comparator for planning solutions
+ * @author Vavou
+ *
+ */
 public class PlanningSolutionConstraintViolationComparator implements ConstraintViolationComparator<PlanningSolution> {
 
 	/* --- Atributes --- */

@@ -11,7 +11,7 @@ public class DefaultGeneratorParameters {
 	/**
 	 * The default number of tasks to generate
 	 */
-	public final static int NUMBER_OF_TASKS = 20;
+	public final static int NUMBER_OF_FEATURES = 20;
 	
 	/**
 	 * The default number of employees to generate

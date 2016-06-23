@@ -14,7 +14,7 @@ import entities.GeneratorParameters;
 import entities.PriorityLevel;
 import entities.ProblemData;
 import entities.Skill;
-import entities.Task;
+import entities.Feature;
 
 public class GeneratorNRP {
 
@@ -42,7 +42,7 @@ public class GeneratorNRP {
 	 */
 	public static ProblemData generate(GeneratorParameters parameters) {
 		List<Skill> skills = generateSkills(parameters.getNumberOfSkills());
-		List<Task> tasks = generateFeatures(parameters.getNumberOfTasks(), parameters.getRateOfPrecedenceConstraints(), skills);
+		List<Feature> tasks = generateFeatures(parameters.getNumberOfTasks(), parameters.getRateOfPrecedenceConstraints(), skills);
 		List<Employee> employees = generateEmployees(parameters.getNumberOfEmployees(), skills);
 		
 		return new ProblemData(tasks, employees, skills);
@@ -70,17 +70,17 @@ public class GeneratorNRP {
 	 * @param skills the available skills
 	 * @return the list of the new generated features
 	 */
-	private static List<Task> generateFeatures(int numberOfFeatures, double precedenciesRate, List<Skill> skills) {
+	private static List<Feature> generateFeatures(int numberOfFeatures, double precedenciesRate, List<Skill> skills) {
 		Random randomGenerator = new Random();
 		PriorityLevel[] priorities = PriorityLevel.values();
 		int remainPreviousConstraints = new Double(numberOfFeatures * precedenciesRate).intValue();
-		List<Task> features = new ArrayList<>(numberOfFeatures);
+		List<Feature> features = new ArrayList<>(numberOfFeatures);
 		
 		for (int i = 0 ; i < numberOfFeatures ; i++) {
-			List<Task> previousFeatures = new ArrayList<>();
+			List<Feature> previousFeatures = new ArrayList<>();
 			if (features.size() > 0 && remainPreviousConstraints > 0) {
 				double probability = remainPreviousConstraints/(1.0*numberOfFeatures-i);
-				List<Task> possiblePreviousFeatures = new ArrayList<>(features);
+				List<Feature> possiblePreviousFeatures = new ArrayList<>(features);
 				while (remainPreviousConstraints > 0 && possiblePreviousFeatures.size() > 0 && randomGenerator.nextDouble() < probability) {
 					int indexFeature = randomGenerator.nextInt(possiblePreviousFeatures.size());
 					previousFeatures.add(possiblePreviousFeatures.get(indexFeature));
@@ -93,7 +93,7 @@ public class GeneratorNRP {
 			List<Skill> requiredSkills = new ArrayList<>(1);
 			requiredSkills.add(skills.get(randomGenerator.nextInt(skills.size())));
 			
-			features.add(new Task("Task " + i,
+			features.add(new Feature("Task " + i,
 					priorities[randomGenerator.nextInt(priorities.length)],
 					1.0 * (1 + randomGenerator.nextInt(new Double(DefaultGeneratorParameters.MAX_FEATURE_DURATION).intValue())),
 					previousFeatures,
@@ -143,7 +143,7 @@ public class GeneratorNRP {
 		try {
 			fileW = new FileWriter(tasksFile);
 			BufferedWriter bufferW = new BufferedWriter(fileW);
-			bufferW.write(getTasksText(data.getTasks()));
+			bufferW.write(getTasksText(data.getFeatures()));
 			bufferW.close();
 			
 			fileW = new FileWriter(employeesFile);
@@ -160,19 +160,19 @@ public class GeneratorNRP {
 	 * @param tasks the tasks to write
 	 * @return the tasks into string file format
 	 */
-	private static String getTasksText(List<Task> tasks) {
+	private static String getTasksText(List<Feature> tasks) {
 		StringBuilder sb = new StringBuilder();
 		
-		for (Task task : tasks) {
+		for (Feature task : tasks) {
 			sb.append(task.getName()).append('\t')
 				.append(task.getPriority().getLevel()).append('\t')
 				.append(task.getDuration()).append('\t')
 				.append(task.getRequiredSkills().get(0).getName()).append('\t');
 			
-			for (Task previousTask : task.getPreviousTasks()) {
+			for (Feature previousTask : task.getPreviousFeatures()) {
 				sb.append(previousTask.getName()).append(',');
 			}
-			if (task.getPreviousTasks().size() > 0) {
+			if (task.getPreviousFeatures().size() > 0) {
 				sb.deleteCharAt(sb.length() - 1);
 			}
 			

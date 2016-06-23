@@ -12,7 +12,7 @@ import java.util.Map;
 
 import entities.Employee;
 import entities.EmployeeWeekAvailability;
-import entities.PlannedTask;
+import entities.PlannedFeature;
 import logic.NextReleaseProblem;
 import logic.PlanningSolution;
 import logic.SolutionQuality;
@@ -100,8 +100,8 @@ public class HTMLPrinter implements Runnable {
 		StringBuilder sb = new StringBuilder();
 		int numberOfTimeSlots = getNumberOfTimeSlots(solution);
 		
-		if (solution.getNumberOfPlannedTasks() == 0) {
-			return sb.append("There is no planned task in this solution");
+		if (solution.getNumberOfPlannedFeatures() == 0) {
+			return sb.append("There is no planned feature in this solution");
 		}
 		sb.append("<table><thead><tr><th></th>");
 		
@@ -136,7 +136,7 @@ public class HTMLPrinter implements Runnable {
 		
 		while (i < nbTimeSlot) {
 			
-			if (currentPlanning == null || currentPlanning.getBeginHour() != 1.0*i) { // If there is no more task to display
+			if (currentPlanning == null || currentPlanning.getBeginHour() != 1.0*i) { // If there is no more feature to display
 				sb.append("<td></td>");
 				i++;
 			}
@@ -157,16 +157,16 @@ public class HTMLPrinter implements Runnable {
 		StringBuilder sb = new StringBuilder();
 		double currentHour = weekPlanning.getBeginHour();
 		
-		for (PlannedTask plannedTask : weekPlanning.getPlannedTasks()) {
-			while (currentHour < plannedTask.getBeginHour()) {
+		for (PlannedFeature plannedFeature : weekPlanning.getPlannedFeatures()) {
+			while (currentHour < plannedFeature.getBeginHour()) {
 				sb.append("<td></td>");
 				currentHour += 1.0;
 			}
-			double colspan = Math.min(weekPlanning.getEndHour(), plannedTask.getEndHour()) - currentHour;
-			sb.append("<td class=\"task\" colspan=\"")
+			double colspan = Math.min(weekPlanning.getEndHour(), plannedFeature.getEndHour()) - currentHour;
+			sb.append("<td class=\"feature\" colspan=\"")
 				.append(new Double(colspan).intValue())
-				.append("\">").append(plannedTask.getTask().getName()).append("</td>");
-			currentHour = plannedTask.getEndHour();
+				.append("\">").append(plannedFeature.getFeature().getName()).append("</td>");
+			currentHour = plannedFeature.getEndHour();
 		}
 		
 		return sb;
@@ -183,7 +183,7 @@ public class HTMLPrinter implements Runnable {
 			.append("table { width: auto; overflow-x: scroll; white-space: nowrap; border-collapse: collapse; } ")
 			.append("table, th, td { border: 1px solid black; } ")
 			.append("th, td { padding: 5px; } ")
-			.append(".task { background-color: #dfdfdf; }</style>");
+			.append(".feature { background-color: #dfdfdf; }</style>");
 		
 		return sb;
 	}

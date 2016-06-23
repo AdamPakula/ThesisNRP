@@ -4,6 +4,7 @@
 package entities;
 
 /**
+ * Priority Level of a feature
  * @author Vavou
  *
  */
@@ -48,6 +49,11 @@ public enum PriorityLevel {
 		this.score = score;
 	}
 
+	/**
+	 * Return the PriorityLevel of a level
+	 * @param level
+	 * @return the corresponding PriorityLevel
+	 */
 	public static PriorityLevel getPriorityByLevel(int level) {
 		switch (level) {
 			case 1:

@@ -10,9 +10,9 @@ import org.junit.Test;
 import org.uma.jmetal.util.solutionattribute.impl.OverallConstraintViolation;
 
 import entities.Employee;
-import entities.PlannedTask;
+import entities.PlannedFeature;
 import entities.ProblemData;
-import entities.Task;
+import entities.Feature;
 import entities.parameters.IterationParameters;
 import junit.framework.TestCase;
 import logic.NextReleaseProblem;
@@ -44,20 +44,20 @@ public class SchedulerTest extends TestCase {
 	@Test
 	public void testDates() {
 		ProblemData data = DataLoader.readData(TestFile.PRECEDENCES);
-		List<Task> tasks = data.getTasks();
+		List<Feature> tasks = data.getFeatures();
 		List<Employee> employees = data.getEmployees();
 		
 		NextReleaseProblem nrp = new NextReleaseProblem(tasks, employees, new IterationParameters(3, 35));
 		PlanningSolution solution;
-		List<PlannedTask> plannedTasks = new ArrayList<>();
-		plannedTasks.add(new PlannedTask(tasks.get(0), employees.get(0)));
-		plannedTasks.add(new PlannedTask(tasks.get(1), employees.get(0)));
-		plannedTasks.add(new PlannedTask(tasks.get(2), employees.get(1)));
-		plannedTasks.add(new PlannedTask(tasks.get(3), employees.get(1)));
+		List<PlannedFeature> plannedTasks = new ArrayList<>();
+		plannedTasks.add(new PlannedFeature(tasks.get(0), employees.get(0)));
+		plannedTasks.add(new PlannedFeature(tasks.get(1), employees.get(0)));
+		plannedTasks.add(new PlannedFeature(tasks.get(2), employees.get(1)));
+		plannedTasks.add(new PlannedFeature(tasks.get(3), employees.get(1)));
 		
 		solution = new PlanningSolution(nrp, plannedTasks);
 		nrp.evaluate(solution);
-		plannedTasks = solution.getPlannedTasks();
+		plannedTasks = solution.getPlannedFeatures();
 		
 		List<PlanningSolution> pop = new ArrayList<>();
 		pop.add(solution);

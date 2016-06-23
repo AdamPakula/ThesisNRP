@@ -6,6 +6,7 @@ package entities;
 import java.util.List;
 
 /**
+ * Encapsulates the data of a Next Release Problem
  * @author Vavou
  *
  */
@@ -14,9 +15,9 @@ public class ProblemData {
 	/* --- Attributes --- */
 	
 	/**
-	 * List of tasks
+	 * List of features
 	 */
-	private List<Task> tasks;
+	private List<Feature> features;
 	
 	/**
 	 * List of employees
@@ -32,17 +33,17 @@ public class ProblemData {
 	/* --- Getters and setters --- */
 	
 	/**
-	 * @return the tasks
+	 * @return the features
 	 */
-	public List<Task> getTasks() {
-		return tasks;
+	public List<Feature> getFeatures() {
+		return features;
 	}
 
 	/**
-	 * @param tasks the tasks to set
+	 * @param features the features to set
 	 */
-	public void setTasks(List<Task> tasks) {
-		this.tasks = tasks;
+	public void setFeatures(List<Feature> features) {
+		this.features = features;
 	}
 
 	/**
@@ -76,12 +77,13 @@ public class ProblemData {
 	/* --- Constructors --- */
 
 	/**
-	 * @param tasks
-	 * @param employees
-	 * @param skills
+	 * Constructor
+	 * @param features the features of the problem
+	 * @param employees the employees of the problem
+	 * @param skills the skills of the problem
 	 */
-	public ProblemData(List<Task> tasks, List<Employee> employees, List<Skill> skills) {
-		this.tasks = tasks;
+	public ProblemData(List<Feature> features, List<Employee> employees, List<Skill> skills) {
+		this.features = features;
 		this.employees = employees;
 		this.skills = skills;
 	}

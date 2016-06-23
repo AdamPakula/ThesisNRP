@@ -14,10 +14,10 @@ import org.uma.jmetal.util.solutionattribute.impl.NumberOfViolatedConstraints;
 import org.uma.jmetal.util.solutionattribute.impl.OverallConstraintViolation;
 
 import entities.Employee;
-import entities.PlannedTask;
+import entities.PlannedFeature;
 import entities.EmployeeWeekAvailability;
 import entities.Skill;
-import entities.Task;
+import entities.Feature;
 import entities.parameters.IterationParameters;
 
 /**
@@ -38,9 +38,9 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 	private static final long serialVersionUID = 3302475694747789178L;
 	
 	/**
-	 * Tasks available for the iteration
+	 * Features available for the iteration
 	 */
-	private List<Task> tasks;
+	private List<Feature> features;
 	
 	/**
 	 * Employees available for the iteration
@@ -84,12 +84,12 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 	private double precedenceConstraintOverall;
 	
 	/**
-	 * The priority score if there is no planned task
+	 * The priority score if there is no planned feature
 	 */
 	private double worstScore;
 	
 	/**
-	 * The worst end date, if there is no planned task
+	 * The worst end date, if there is no planned feature
 	 */
 	private double worstEndDate;
 	
@@ -107,17 +107,17 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 	/* --- Getters and setters --- */
 
 	/**
-	 * @return the tasks
+	 * @return the features
 	 */
-	public List<Task> getTasks() {
-		return tasks;
+	public List<Feature> getFeatures() {
+		return features;
 	}
 
 	/**
-	 * @param tasks the tasks to set
+	 * @param features the features to set
 	 */
-	public void setTasks(List<Task> tasks) {
-		this.tasks = tasks;
+	public void setFeatures(List<Feature> features) {
+		this.features = features;
 	}
 	
 	/**
@@ -177,11 +177,11 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 	
 	/**
 	 * Constructor
-	 * @param tasks tasks of the iteration
+	 * @param features features of the iteration
 	 * @param employees employees available during the iteration
 	 * @param iterationParam The parameters of the iteration
 	 */
-	public NextReleaseProblem(List<Task> tasks, List<Employee> employees, IterationParameters iterationParam) {
+	public NextReleaseProblem(List<Feature> features, List<Employee> employees, IterationParameters iterationParam) {
 		this.employees = employees;
 		this.nbWeeks = iterationParam.getNumberOfWeek();
 		this.nbHoursByWeek = iterationParam.getHoursByWeek();
@@ -198,11 +198,11 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 			}
 		}
 		
-		this.tasks = new ArrayList<>();
-		for (Task task : tasks) {
-			if (skilledEmployees.get(task.getRequiredSkills().get(0)) != null) {
-				if (tasks.containsAll(task.getPreviousTasks())) {
-					this.tasks.add(task);
+		this.features = new ArrayList<>();
+		for (Feature feature : features) {
+			if (skilledEmployees.get(feature.getRequiredSkills().get(0)) != null) {
+				if (features.containsAll(feature.getPreviousFeatures())) {
+					this.features.add(feature);
 				}
 			}
 		}
@@ -224,12 +224,12 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 	
 	/**
 	 * Initializes the worst score 
-	 * Corresponding to the addition of each task priority score
+	 * Corresponding to the addition of each feature priority score
 	 */
 	private void initializeWorstScore() {
 		worstScore = 0.0;
-		for (Task task : tasks) {
-			worstScore += task.getPriority().getScore();
+		for (Feature feature : features) {
+			worstScore += feature.getPriority().getScore();
 		}
 	}
 	
@@ -241,8 +241,8 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 		int numberOfConstraints = 0;
 		
 		//Precedences
-		for (Task task : tasks) {
-			numberOfConstraints += task.getPreviousTasks().size();
+		for (Feature feature : features) {
+			numberOfConstraints += feature.getPreviousFeatures().size();
 		}
 		
 		precedenceConstraintOverall = 1.0 / numberOfConstraints;
@@ -264,24 +264,24 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 		double newBeginHour;
 		double endPlanningHour = 0.0;
 		Map<Employee, List<EmployeeWeekAvailability>> employeesTimeSlots = new HashMap<>();
-		List<PlannedTask> plannedTasks = solution.getPlannedTasks();
+		List<PlannedFeature> plannedFeatures = solution.getPlannedFeatures();
 			
 		solution.resetBeginHours();
 		
-		for (PlannedTask currentPlannedTask : plannedTasks) {
+		for (PlannedFeature currentPlannedFeature : plannedFeatures) {
 			newBeginHour = 0.0;
-			Task currentTask = currentPlannedTask.getTask();
+			Feature currentFeature = currentPlannedFeature.getFeature();
 				
-			// Checks the previous tasks end hour
-			for (Task previousTask : currentTask.getPreviousTasks()) {
-				PlannedTask previousPlannedTask = solution.findPlannedTask(previousTask);
-				if (previousPlannedTask != null) {
-					newBeginHour = Math.max(newBeginHour, previousPlannedTask.getEndHour());
+			// Checks the previous features end hour
+			for (Feature previousFeature : currentFeature.getPreviousFeatures()) {
+				PlannedFeature previousPlannedFeature = solution.findPlannedFeature(previousFeature);
+				if (previousPlannedFeature != null) {
+					newBeginHour = Math.max(newBeginHour, previousPlannedFeature.getEndHour());
 				}
 			}
 				
 			// Checks the employee availability
-			Employee currentEmployee = currentPlannedTask.getEmployee();
+			Employee currentEmployee = currentPlannedFeature.getEmployee();
 			List<EmployeeWeekAvailability> employeeTimeSlots = employeesTimeSlots.get(currentEmployee);
 			int currentWeek;
 			
@@ -296,9 +296,9 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 				newBeginHour = Math.max(newBeginHour, employeeTimeSlots.get(currentWeek).getEndHour());
 			}
 
-			currentPlannedTask.setBeginHour(newBeginHour);
+			currentPlannedFeature.setBeginHour(newBeginHour);
 			
-			double remainTaskHours = currentPlannedTask.getTask().getDuration();
+			double remainFeatureHours = currentPlannedFeature.getFeature().getDuration();
 			double leftHoursInWeek;
 			EmployeeWeekAvailability currentWeekAvailability;
 			
@@ -310,31 +310,31 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 				leftHoursInWeek = Math.min((currentWeek + 1) * nbHoursByWeek - newBeginHour //Left Hours in the week
 						, currentWeekAvailability.getRemainHoursAvailable());
 				
-				if (remainTaskHours <= leftHoursInWeek) { // The task can be ended before the end of the week
-					currentWeekAvailability.setRemainHoursAvailable(currentWeekAvailability.getRemainHoursAvailable() - remainTaskHours);
-					currentWeekAvailability.setEndHour(newBeginHourInWeek + remainTaskHours);
-					remainTaskHours = 0.0;
+				if (remainFeatureHours <= leftHoursInWeek) { // The feature can be ended before the end of the week
+					currentWeekAvailability.setRemainHoursAvailable(currentWeekAvailability.getRemainHoursAvailable() - remainFeatureHours);
+					currentWeekAvailability.setEndHour(newBeginHourInWeek + remainFeatureHours);
+					remainFeatureHours = 0.0;
 				}
 				else {
 					currentWeekAvailability.setRemainHoursAvailable(currentWeekAvailability.getRemainHoursAvailable() - leftHoursInWeek);
 					currentWeekAvailability.setEndHour(currentWeekAvailability.getEndHour() + leftHoursInWeek);
-					remainTaskHours -= leftHoursInWeek;
+					remainFeatureHours -= leftHoursInWeek;
 					currentWeek++;
 					employeeTimeSlots.add(new EmployeeWeekAvailability(currentWeek*nbHoursByWeek, currentEmployee.getWeekAvailability()));
 				}
-				currentWeekAvailability.addPlannedTask(currentPlannedTask);
-			} while (remainTaskHours > 0.0);
+				currentWeekAvailability.addPlannedFeature(currentPlannedFeature);
+			} while (remainFeatureHours > 0.0);
 			
-			currentPlannedTask.setEndHour(currentWeekAvailability.getEndHour());
+			currentPlannedFeature.setEndHour(currentWeekAvailability.getEndHour());
 
-			endPlanningHour = Math.max(currentPlannedTask.getEndHour(), endPlanningHour);
+			endPlanningHour = Math.max(currentPlannedFeature.getEndHour(), endPlanningHour);
 		}
 		
 		solution.setEmployeesPlanning(employeesTimeSlots);
 		solution.setEndDate(endPlanningHour);
 		solution.setObjective(INDEX_PRIORITY_OBJECTIVE, solution.getPriorityScore());
 		solution.setObjective(INDEX_END_DATE_OBJECTIVE, 
-				plannedTasks.size() == 0 ? worstEndDate : endPlanningHour);
+				plannedFeatures.size() == 0 ? worstEndDate : endPlanningHour);
 		computeQuality(solution);
 	}
 
@@ -344,10 +344,10 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 		int violatedConstraints;
 		double overall;
 		
-		for (PlannedTask currentTask : solution.getPlannedTasks()) {
-			for (Task previousTask : currentTask.getTask().getPreviousTasks()) {
-				PlannedTask previousPlannedTask = solution.findPlannedTask(previousTask);
-				if (previousPlannedTask == null || previousPlannedTask.getEndHour() > currentTask.getBeginHour()) {
+		for (PlannedFeature currentFeature : solution.getPlannedFeatures()) {
+			for (Feature previousFeature : currentFeature.getFeature().getPreviousFeatures()) {
+				PlannedFeature previousPlannedFeature = solution.findPlannedFeature(previousFeature);
+				if (previousPlannedFeature == null || previousPlannedFeature.getEndHour() > currentFeature.getBeginHour()) {
 					precedencesViolated++;
 				}
 			}

@@ -20,7 +20,7 @@ public class ExecutorController {
 
 	public void launch(AlgorithmChoice algorithmChoice, GeneratorParameters genParam, IterationParameters iterationParam) {
 		ProblemData problemData =  GeneratorNRP.generate(genParam);
-		NextReleaseProblem nrp = new NextReleaseProblem(problemData.getTasks(), problemData.getEmployees(), iterationParam);
+		NextReleaseProblem nrp = new NextReleaseProblem(problemData.getFeatures(), problemData.getEmployees(), iterationParam);
 		ExecutorParameters algoParam = new ExecutorParameters();
 		
 		AlgorithmExecutor executor = new AlgorithmExecutor(nrp, algoParam);

@@ -1,5 +1,11 @@
 package entities;
 
+/**
+ * A skill to execute a task
+ * Posseed by employees
+ * @author Vavou
+ *
+ */
 public class Skill {
 	
 	/* --- Atributes --- */

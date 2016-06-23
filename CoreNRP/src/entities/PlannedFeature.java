@@ -1,38 +1,38 @@
 package entities;
 
 /**
- * Describes a task in a planning
+ * Describes a feature in a planning
  * Contains 
- * - the task to do
- * - the employee in charge of the task
+ * - the feature to do
+ * - the employee in charge of the feature
  * - the begin hour in the planning
  * - the end hour in the planning
  * @author Vavou
  *
  */
-public class PlannedTask {
+public class PlannedFeature {
 	
 	/* --- Attributes --- */
 	
 	/**
-	 * The begin hour of the planned task
+	 * The begin hour of the planned feature
 	 */
 	private double beginHour;
 	
 	/**
-	 * The employee who will do the task
+	 * The employee who will do the feature
 	 */
 	private Employee employee;
 	
 	/**
-	 * The end hour of the planned task
+	 * The end hour of the planned feature
 	 */
 	private double endHour;
 	
 	/**
-	 * The task to do
+	 * The feature to do
 	 */
-	private Task task;
+	private Feature feature;
 	
 	
 	/* --- Getters and setters --- */
@@ -81,32 +81,41 @@ public class PlannedTask {
 	}
 
 	/**
-	 * @return the task
+	 * @return the feature
 	 */
-	public Task getTask() {
-		return task;
+	public Feature getFeature() {
+		return feature;
 	}
 
 	/**
-	 * @param task the task to set
+	 * @param feature the feature to set
 	 */
-	public void setTask(Task task) {
-		this.task = task;
+	public void setFeature(Feature feature) {
+		this.feature = feature;
 	}
 	
 	
 	/* --- Constructors --- */
 
-	public PlannedTask(Task task, Employee employee) {
-		this.task = task;
+	/**
+	 * Construct a planned feature
+	 * @param feature the feature to plan
+	 * @param employee the employee who realize the feature
+	 */
+	public PlannedFeature(Feature feature, Employee employee) {
+		this.feature = feature;
 		this.employee = employee;
 		beginHour = 0.0;
 	}
 	
-	public PlannedTask(PlannedTask origin) {
+	/**
+	 * Copy constructor
+	 * @param origin the object to copy
+	 */
+	public PlannedFeature(PlannedFeature origin) {
 		this.employee = origin.getEmployee();
 		this.beginHour = origin.getBeginHour();
-		this.task = origin.getTask();
+		this.feature = origin.getFeature();
 		this.endHour = origin.getEndHour();
 	}
 	
@@ -120,9 +129,9 @@ public class PlannedTask {
 		if (getClass() != obj.getClass())
 			return false;
 
-		PlannedTask other = (PlannedTask) obj;
+		PlannedFeature other = (PlannedFeature) obj;
 
-		return other.getTask().equals(this.getTask()) &&
+		return other.getFeature().equals(this.getFeature()) &&
 				other.getEmployee().equals(this.getEmployee()) &&
 				other.getBeginHour() == this.getBeginHour() && 
 				other.getEndHour() == this.getEndHour();
@@ -137,7 +146,7 @@ public class PlannedTask {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		
-		sb.append(getTask()).append(" done by ").append(getEmployee())
+		sb.append(getFeature()).append(" done by ").append(getEmployee())
 			.append(" from ").append(getBeginHour()).append(" to ").append(getEndHour());
 		
 		return sb.toString();
