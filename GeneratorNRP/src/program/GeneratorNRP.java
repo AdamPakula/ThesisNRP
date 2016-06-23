@@ -82,8 +82,14 @@ public class GeneratorNRP {
 		
 		// Initialization of the employees
 		for (int i = 1 ; i <= parameters.getNumberOfEmployees() ; i ++) {
-			List<Skill> employeeSkills = new ArrayList<>(1);
-			employeeSkills.add(skills.get(randomGenerator.nextInt(skills.size())));
+			int numberOfSkills = 1 + randomGenerator.nextInt(skills.size());
+			List<Skill> employeeSkills = new ArrayList<>(numberOfSkills);
+			List<Skill> availableSkills = new ArrayList<>(skills);
+			for (int j = 0 ; j < numberOfSkills ; j++) {
+				int skillIndex = randomGenerator.nextInt(availableSkills.size());
+				employeeSkills.add(availableSkills.get(skillIndex));
+				availableSkills.remove(skillIndex);
+			}
 			employees.add(new Employee("Employee " + i, 
 					1.0 * (5 + randomGenerator.nextInt(30)), 
 					employeeSkills));
