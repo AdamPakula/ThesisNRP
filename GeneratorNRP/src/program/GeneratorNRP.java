@@ -95,7 +95,7 @@ public class GeneratorNRP {
 			
 			features.add(new Task("Task " + i,
 					priorities[randomGenerator.nextInt(priorities.length)],
-					1.0 * (1 + randomGenerator.nextInt(40)),
+					1.0 * (1 + randomGenerator.nextInt(new Double(DefaultGeneratorParameters.MAX_FEATURE_DURATION).intValue())),
 					previousFeatures,
 					requiredSkills));
 		}
@@ -112,6 +112,7 @@ public class GeneratorNRP {
 	private static List<Employee> generateEmployees(int numberOfEmployees, List<Skill> skills) {
 		Random randomGenerator = new Random();
 		List<Employee> employees = new ArrayList<>(numberOfEmployees);
+		int weekAvailabilityHightLimit = new Double(DefaultGeneratorParameters.MAX_EMPLOYEE_WEEK_AVAILABILITY - DefaultGeneratorParameters.MIN_EMPLOYEE_WEEK_AVAILABILITY + 1).intValue();
 		
 		for (int i = 1 ; i <= numberOfEmployees ; i ++) {
 			int numberOfSkills = 1 + randomGenerator.nextInt(skills.size());
@@ -123,7 +124,7 @@ public class GeneratorNRP {
 				availableSkills.remove(skillIndex);
 			}
 			employees.add(new Employee("Employee " + i, 
-					1.0 * (5 + randomGenerator.nextInt(30)), 
+					1.0 * (DefaultGeneratorParameters.MIN_EMPLOYEE_WEEK_AVAILABILITY + randomGenerator.nextInt(weekAvailabilityHightLimit)), 
 					employeeSkills));
 		}
 		

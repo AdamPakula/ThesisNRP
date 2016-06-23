@@ -27,5 +27,19 @@ public class DefaultGeneratorParameters {
 	 * The default precedence rate for the generation
 	 */
 	public final static double PRECEDENCE_RATE = 0.3;
-
+	
+	/**
+	 * The max duration of a feature
+	 */
+	public final static double MAX_FEATURE_DURATION = 40.0;
+	
+	/**
+	 * The max employee week availability
+	 */
+	public final static double MAX_EMPLOYEE_WEEK_AVAILABILITY = 35.0;
+	
+	/**
+	 * The min employee week availability
+	 */
+	public final static double MIN_EMPLOYEE_WEEK_AVAILABILITY = 5.0;
 }
