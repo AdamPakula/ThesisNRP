@@ -31,9 +31,8 @@ public class ExperimentController {
 	}
 	
 	public XYDataset executeExperiment() {
-		int nbEmployees = 1;
-		int nbFeatures = DefaultParameters.FEATURES_BY_EMPLOYEE;
-		int size = nbEmployees * nbFeatures;
+		int size = DefaultParameters.INITIAL_SIZE;
+		GeneratorParameters generatorParams = getParameters(size);
 		SolutionQuality qualityAttribute = new SolutionQuality();
 		
 		XYSeriesCollection dataset = new XYSeriesCollection();
@@ -43,7 +42,7 @@ public class ExperimentController {
 		}
 		
 		while (size <= DefaultParameters.MAX_PROBLEM_SIZE) {
-			ProblemData data = GeneratorNRP.generate(new GeneratorParameters(nbFeatures, nbEmployees, nbEmployees, DefaultGeneratorParameters.PRECEDENCE_RATE));
+			ProblemData data = GeneratorNRP.generate(generatorParams);
 			Map<AlgorithmChoice, Double[]> qualityValues = new HashMap<>();
 			for (AlgorithmChoice algorithm : AlgorithmChoice.values()) {
 				qualityValues.put(algorithm, new Double[DefaultParameters.TEST_REPRODUCTION]);
@@ -62,17 +61,25 @@ public class ExperimentController {
 			}
 			
 			for (AlgorithmChoice algorithm : AlgorithmChoice.values()) {
-				dataset.getSeries(algorithm.toString()).add(size, getAverage(qualityValues.get(algorithm)));
+				int realSize = generatorParams.getNumberOfEmployees() * generatorParams.getNumberOfTasks();
+				dataset.getSeries(algorithm.toString()).add(realSize, getAverage(qualityValues.get(algorithm)));
 			}
 			
-			nbEmployees++;
-			nbFeatures += DefaultParameters.FEATURES_BY_EMPLOYEE;
-			size = nbEmployees * nbFeatures;
+			size += DefaultParameters.SIZE_INCREMENT;
+			generatorParams = getParameters(size);
 		}
 		
 		return dataset;
 	}
 	
+	private GeneratorParameters getParameters(int size) {
+		int numberOfTasks = (int) Math.round(Math.sqrt(size/DefaultParameters.RATE_EMPLOYEES_BY_FEATURE)),
+			numberOfEmployees = (int) Math.round(numberOfTasks * DefaultParameters.RATE_EMPLOYEES_BY_FEATURE),
+			numberOfSkills = (int) Math.round(numberOfTasks * DefaultParameters.RATE_SKILLS_BY_FEATURE);
+		
+		
+		return new GeneratorParameters(numberOfTasks, numberOfEmployees, numberOfSkills, DefaultGeneratorParameters.PRECEDENCE_RATE);
+	}
 	
 	private double getAverage(Double[] values) {
 		double sum = 0.0;
