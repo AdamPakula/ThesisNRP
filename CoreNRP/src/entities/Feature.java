@@ -94,6 +94,23 @@ public class Feature {
 		this.requiredSkills = requiredSkills == null ? new ArrayList<Skill>() : requiredSkills;
 	}
 	
+	/**
+	 * Constructor with only one Skill
+	 * @param name name of the feature
+	 * @param priority priority of the feature
+	 * @param duration duration of the feature
+	 * @param previousFeatures the list of the previous features or null
+	 * @param requiredSkill the required skill to do the feature
+	 */
+	public Feature(String name, PriorityLevel priority, Double duration, List<Feature> previousFeatures, Skill requiredSkill) {
+		this.name = name;
+		this.priority = priority;
+		this.duration = duration;
+		this.previousFeatures = previousFeatures == null ? new ArrayList<Feature>() : previousFeatures;
+		this.requiredSkills = new ArrayList<>();
+		requiredSkills.add(requiredSkill);
+	}
+	
 	@Override
 	public String toString() {
 		return getName();
