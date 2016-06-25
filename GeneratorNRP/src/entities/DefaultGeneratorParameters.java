@@ -9,7 +9,7 @@ package entities;
 public class DefaultGeneratorParameters {
 
 	/**
-	 * The default number of tasks to generate
+	 * The default number of features to generate
 	 */
 	public final static int NUMBER_OF_FEATURES = 20;
 	

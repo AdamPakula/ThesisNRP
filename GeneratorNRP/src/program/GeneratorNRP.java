@@ -20,18 +20,18 @@ public class GeneratorNRP {
 
 	/**
 	 * Generate new data and write it into files
-	 * @param args number of tasks, employees and skill
+	 * @param args number of features, employees and skill
 	 */
 	public static void main(String[] args) {
 		if (args.length == 3) {
-			int nbTasks = new Integer(args[0]);
+			int nbFeatures = new Integer(args[0]);
 			int nbEmployees = new Integer(args[1]);
 			int nbSkills = new Integer(args[2]);
 			
-			writeFiles(generate(new GeneratorParameters(nbTasks, nbEmployees, nbSkills, DefaultGeneratorParameters.PRECEDENCE_RATE)));
+			writeFiles(generate(new GeneratorParameters(nbFeatures, nbEmployees, nbSkills, DefaultGeneratorParameters.PRECEDENCE_RATE)));
 		}
 		else {
-			System.err.println("Need the numbers of tasks, employees and skills in parameter");
+			System.err.println("Need the numbers of features, employees and skills in parameter");
 		}
 	}
 	
@@ -42,10 +42,10 @@ public class GeneratorNRP {
 	 */
 	public static ProblemData generate(GeneratorParameters parameters) {
 		List<Skill> skills = generateSkills(parameters.getNumberOfSkills());
-		List<Feature> tasks = generateFeatures(parameters.getNumberOfTasks(), parameters.getRateOfPrecedenceConstraints(), skills);
+		List<Feature> features = generateFeatures(parameters.getNumberOfFeatures(), parameters.getRateOfPrecedenceConstraints(), skills);
 		List<Employee> employees = generateEmployees(parameters.getNumberOfEmployees(), skills);
 		
-		return new ProblemData(tasks, employees, skills);
+		return new ProblemData(features, employees, skills);
 	}
 	
 	/**
@@ -93,7 +93,7 @@ public class GeneratorNRP {
 			List<Skill> requiredSkills = new ArrayList<>(1);
 			requiredSkills.add(skills.get(randomGenerator.nextInt(skills.size())));
 			
-			features.add(new Feature("Task " + i,
+			features.add(new Feature("Feature " + i,
 					priorities[randomGenerator.nextInt(priorities.length)],
 					1.0 * (1 + randomGenerator.nextInt(new Double(DefaultGeneratorParameters.MAX_FEATURE_DURATION).intValue())),
 					previousFeatures,
@@ -132,18 +132,18 @@ public class GeneratorNRP {
 	}
 
 	/**
-	 * Writes the data into generated.tasks and generated.employees files
+	 * Writes the data into generated.features and generated.employees files
 	 * @param data the data to write
 	 */
 	private static void writeFiles(ProblemData data) {
-		File tasksFile = new File("generated.tasks");
+		File featuresFile = new File("generated.features");
 		File employeesFile = new File("generated.employees");
 		FileWriter fileW;
 
 		try {
-			fileW = new FileWriter(tasksFile);
+			fileW = new FileWriter(featuresFile);
 			BufferedWriter bufferW = new BufferedWriter(fileW);
-			bufferW.write(getTasksText(data.getFeatures()));
+			bufferW.write(getFeaturesText(data.getFeatures()));
 			bufferW.close();
 			
 			fileW = new FileWriter(employeesFile);
@@ -156,23 +156,23 @@ public class GeneratorNRP {
 	}
 	
 	/**
-	 * Return all the tasks rows in string format
-	 * @param tasks the tasks to write
-	 * @return the tasks into string file format
+	 * Return all the features rows in string format
+	 * @param features the features to write
+	 * @return the features into string file format
 	 */
-	private static String getTasksText(List<Feature> tasks) {
+	private static String getFeaturesText(List<Feature> features) {
 		StringBuilder sb = new StringBuilder();
 		
-		for (Feature task : tasks) {
-			sb.append(task.getName()).append('\t')
-				.append(task.getPriority().getLevel()).append('\t')
-				.append(task.getDuration()).append('\t')
-				.append(task.getRequiredSkills().get(0).getName()).append('\t');
+		for (Feature feature : features) {
+			sb.append(feature.getName()).append('\t')
+				.append(feature.getPriority().getLevel()).append('\t')
+				.append(feature.getDuration()).append('\t')
+				.append(feature.getRequiredSkills().get(0).getName()).append('\t');
 			
-			for (Feature previousTask : task.getPreviousFeatures()) {
-				sb.append(previousTask.getName()).append(',');
+			for (Feature previousFeature : feature.getPreviousFeatures()) {
+				sb.append(previousFeature.getName()).append(',');
 			}
-			if (task.getPreviousFeatures().size() > 0) {
+			if (feature.getPreviousFeatures().size() > 0) {
 				sb.deleteCharAt(sb.length() - 1);
 			}
 			

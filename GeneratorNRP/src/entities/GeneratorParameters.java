@@ -5,9 +5,9 @@ public class GeneratorParameters {
 	/* --- Attributes --- */
 	
 	/**
-	 * The number of tasks to generate
+	 * The number of features to generate
 	 */
-	private int numberOfTasks;
+	private int numberOfFeatures;
 	
 	/**
 	 * The number of employees to generate
@@ -20,7 +20,7 @@ public class GeneratorParameters {
 	private int numberOfSkills;
 	
 	/**
-	 * The rate of tasks with precedence constraints
+	 * The rate of features with precedence constraints
 	 */
 	private double rateOfPrecedenceConstraints;
 
@@ -28,17 +28,17 @@ public class GeneratorParameters {
 	/* --- Getters and setters --- */
 	
 	/**
-	 * @return the numberOfTasks
+	 * @return the numberOfFeatures
 	 */
-	public int getNumberOfTasks() {
-		return numberOfTasks;
+	public int getNumberOfFeatures() {
+		return numberOfFeatures;
 	}
 
 	/**
-	 * @param numberOfTasks the numberOfTasks to set
+	 * @param numberOfFeatures the numberOfFeatures to set
 	 */
-	public void setNumberOfTasks(int numberOfTasks) {
-		this.numberOfTasks = numberOfTasks;
+	public void setNumberOfFeatures(int numberOfFeatures) {
+		this.numberOfFeatures = numberOfFeatures;
 	}
 
 	/**
@@ -98,14 +98,14 @@ public class GeneratorParameters {
 	}
 	
 	/**
-	 * @param numberOfTasks
+	 * @param numberOfFeatures
 	 * @param numberOfEmployees
 	 * @param numberOfSkills
 	 * @param rateOfPrecedenceConstraints
 	 */
-	public GeneratorParameters(int numberOfTasks, int numberOfEmployees, int numberOfSkills,
+	public GeneratorParameters(int numberOfFeatures, int numberOfEmployees, int numberOfSkills,
 			double rateOfPrecedenceConstraints) {
-		this.numberOfTasks = numberOfTasks;
+		this.numberOfFeatures = numberOfFeatures;
 		this.numberOfEmployees = numberOfEmployees;
 		this.numberOfSkills = numberOfSkills;
 		this.rateOfPrecedenceConstraints = rateOfPrecedenceConstraints;
