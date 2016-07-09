@@ -1,8 +1,7 @@
 package logic;
 
-import java.util.List;
-
 import entities.AlgorithmChoice;
+import entities.ExecuteResult;
 import entities.ExecutorParameters;
 import entities.GeneratorParameters;
 import entities.ProblemData;
@@ -24,11 +23,9 @@ public class ExecutorController {
 		ExecutorParameters algoParam = new ExecutorParameters();
 		
 		AlgorithmExecutor executor = new AlgorithmExecutor(nrp, algoParam);
-		List<PlanningSolution> population = executor.executeAlgorithm(algorithmChoice);
+		ExecuteResult result = executor.executeAlgorithm(algorithmChoice);
 		
-		PlanningSolution bestSolution = PopulationFilter.getBestSolution(population);
-		
-		HTMLPrinter browserDisplay = new HTMLPrinter(bestSolution);
+		HTMLPrinter browserDisplay = new HTMLPrinter(result.getSolution());
 		browserDisplay.run();
 	}
 

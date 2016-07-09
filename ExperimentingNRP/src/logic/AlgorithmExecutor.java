@@ -14,6 +14,7 @@ import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.util.AlgorithmRunner;
 
 import entities.AlgorithmChoice;
+import entities.ExecuteResult;
 import entities.ExecutorParameters;
 import logic.operators.PlanningCrossoverOperator;
 import logic.operators.PlanningMutationOperator;
@@ -38,8 +39,13 @@ public class AlgorithmExecutor {
 		this.parameters = parameters;
 	}
 	
-	public List<PlanningSolution> executeAlgorithm(AlgorithmChoice algorithmChoice) {
-		List<PlanningSolution> population;
+	/**
+	 * Execute an algorithm on the problem passed to the constructor
+	 * @param algorithmChoice the algorithm to execute
+	 * @return the result of the execution
+	 */
+	public ExecuteResult executeAlgorithm(AlgorithmChoice algorithmChoice) {
+		ExecuteResult result = null;
 		CrossoverOperator<PlanningSolution> crossoverOperator = new PlanningCrossoverOperator(problem);
 	    MutationOperator<PlanningSolution> mutationOperator = new PlanningMutationOperator(problem);
 	    
@@ -60,8 +66,8 @@ public class AlgorithmExecutor {
 					.setMaxEvaluations(parameters.getNumberOfIterations())
 					.setPopulationSize(parameters.getPopulationSize())
 					.build();
-				new AlgorithmRunner.Executor(algorithm).execute();
-				population = algorithm.getResult();
+				AlgorithmRunner runner = new AlgorithmRunner.Executor(algorithm).execute();
+				result = new ExecuteResult(PopulationFilter.getBestSolution(algorithm.getResult()), runner.getComputingTime());
 				break;
 			}
 			case NSGAII: { 
@@ -69,17 +75,17 @@ public class AlgorithmExecutor {
 					.setMaxIterations(parameters.getNumberOfIterations())
 					.setPopulationSize(parameters.getPopulationSize())
 					.build();
-				new AlgorithmRunner.Executor(algorithm).execute();
-				population = algorithm.getResult();
+				AlgorithmRunner runner = new AlgorithmRunner.Executor(algorithm).execute();
+				result = new ExecuteResult(PopulationFilter.getBestSolution(algorithm.getResult()), runner.getComputingTime());
 				break;
 			}
 			case PESA2: { 
 				Algorithm<List<PlanningSolution>> algorithm = new PESA2Builder<PlanningSolution>(problem, crossoverOperator, mutationOperator)
-					.setMaxEvaluations(parameters.getNumberOfIterations())
+					.setMaxEvaluations(parameters.getNumberOfIterations()*parameters.getPopulationSize())
 					.setPopulationSize(parameters.getPopulationSize())
 					.build();
-				new AlgorithmRunner.Executor(algorithm).execute();
-				population = algorithm.getResult();
+				AlgorithmRunner runner = new AlgorithmRunner.Executor(algorithm).execute();
+				result = new ExecuteResult(PopulationFilter.getBestSolution(algorithm.getResult()), runner.getComputingTime());
 				break;
 			}
 			/*case SMSEMOA: { 
@@ -96,8 +102,8 @@ public class AlgorithmExecutor {
 					.setMaxIterations(parameters.getNumberOfIterations())
 					.setPopulationSize(parameters.getPopulationSize())
 					.build();
-				new AlgorithmRunner.Executor(algorithm).execute();
-				population = algorithm.getResult();
+				AlgorithmRunner runner = new AlgorithmRunner.Executor(algorithm).execute();
+				result = new ExecuteResult(PopulationFilter.getBestSolution(algorithm.getResult()), runner.getComputingTime());
 				break;
 			}
 			/*case STEADY: {
@@ -113,11 +119,10 @@ public class AlgorithmExecutor {
 			}*/
 			default:
 				System.err.println("Algorithm not implemented");
-				population = null;
 				break;
 		}
 		
-		return population;
+		return result;
 	}
 
 }
