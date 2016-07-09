@@ -5,6 +5,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -119,8 +120,11 @@ public class HTMLPrinter implements Runnable {
 				
 		sb.append("</tbody></table>");
 		
+		DecimalFormat df = new DecimalFormat() ; 
+		df.setMaximumFractionDigits ( 2 ) ;
+		
 		sb.append("<p>End date: ").append(solution.getObjective(NextReleaseProblem.INDEX_END_DATE_OBJECTIVE))
-			.append("<br />Quality: ").append(new SolutionQuality().getAttribute(solution)).append("%</p>");
+			.append("<br />Quality: ").append(df.format(new SolutionQuality().getAttribute(solution))).append("%</p>");
 		
 		return sb;
 	}
