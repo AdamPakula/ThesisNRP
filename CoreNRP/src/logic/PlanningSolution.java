@@ -343,9 +343,10 @@ public class PlanningSolution extends AbstractGenericSolution<PlannedFeature, Ne
 	/**
 	 * Reset the begin hours of all the planned feature to 0.0
 	 */
-	public void resetBeginHours() {
+	public void resetHours() {
 		for (PlannedFeature plannedFeature : plannedFeatures) {
 			plannedFeature.setBeginHour(0.0);
+			plannedFeature.setEndHour(0.0);
 		}
 	}
 

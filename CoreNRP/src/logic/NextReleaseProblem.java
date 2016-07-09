@@ -266,7 +266,7 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 		Map<Employee, List<EmployeeWeekAvailability>> employeesTimeSlots = new HashMap<>();
 		List<PlannedFeature> plannedFeatures = solution.getPlannedFeatures();
 			
-		solution.resetBeginHours();
+		solution.resetHours();
 		
 		for (PlannedFeature currentPlannedFeature : plannedFeatures) {
 			newBeginHour = 0.0;
@@ -302,12 +302,21 @@ public class NextReleaseProblem extends AbstractGenericProblem<PlanningSolution>
 			double leftHoursInWeek;
 			EmployeeWeekAvailability currentWeekAvailability;
 			
+			currentWeek = ((int) newBeginHour) / (int)nbHoursByWeek;
+			
+			while (newBeginHour > (currentWeek + 1) * nbHoursByWeek) {
+				System.err.println("go");
+				currentWeek++;
+			}
+			
+			
+			
 			
 			
 			do {
-				currentWeekAvailability = employeeTimeSlots.get(currentWeek);
+				currentWeekAvailability = employeeTimeSlots.get(employeeTimeSlots.size() - 1);
 				double newBeginHourInWeek = Math.max(newBeginHour, currentWeekAvailability.getEndHour());
-				leftHoursInWeek = Math.min((currentWeek + 1) * nbHoursByWeek - newBeginHour //Left Hours in the week
+				leftHoursInWeek = Math.min((currentWeek + 1) * nbHoursByWeek - newBeginHourInWeek //Left Hours in the week
 						, currentWeekAvailability.getRemainHoursAvailable());
 				
 				if (remainFeatureHours <= leftHoursInWeek) { // The feature can be ended before the end of the week
